@@ -120,6 +120,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -655,6 +656,7 @@ body {
 }
 
 @media (max-width: 850px) {
+
   .site-header nav,
   .site-header__cta {
     display: none;
@@ -760,8 +762,35 @@ body {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.modal--center .modal__content {
+  width: auto;
+  min-width: 675px;
+  max-width: 750px;
+  max-height: calc(100vh - 50px);
+  overflow-y: auto;
+  animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
     opacity: 1;
   }
 }
@@ -771,6 +800,48 @@ body {
   font-size: 20px;
   font-weight: 600;
   color: #f4f6fb;
+}
+
+/* Light mode overrides for Dashboard Modal */
+:root:not(.dark) .modal--center .modal__content {
+  background: #d3d9fb;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+:root:not(.dark) .modal--center .modal__title {
+  color: #1e293b;
+}
+
+:root:not(.dark) .modal--center .search-field input,
+:root:not(.dark) .modal--center .search-field textarea,
+:root:not(.dark) .modal--center .property-types-trigger,
+:root:not(.dark) .modal--center .budget-button {
+  background: #bcc4f0;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #1e293b;
+}
+
+:root:not(.dark) .modal--center .search-field input::placeholder,
+:root:not(.dark) .modal--center .search-field textarea::placeholder {
+  color: rgba(30, 41, 59, 0.5);
+}
+
+:root:not(.dark) .modal--center .search-card__label,
+:root:not(.dark) .modal--center .search-field span {
+  color: #334155;
+}
+
+:root:not(.dark) .modal--center .property-type {
+  background: #bcc4f0;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #334155;
+}
+
+:root:not(.dark) .modal--center .property-type--active {
+  background: #1565c0;
+  color: #fff;
+  border-color: transparent;
 }
 
 /* Property Types Modal */
@@ -2889,4 +2960,3 @@ body {
     font-size: 13px;
   }
 }
-
