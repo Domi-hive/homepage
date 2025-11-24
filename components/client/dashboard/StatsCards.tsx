@@ -14,7 +14,7 @@ export default function StatsCards() {
                         <ClipboardList className="w-6 h-6 text-slate-700" />
                     </div>
                 </div>
-                <a href="#" className="text-sm font-semibold text-purple-600 no-underline inline-block transition-colors hover:text-purple-800">
+                <a href="#" className="text-sm font-semibold text-[#1567c3] no-underline inline-block transition-colors hover:text-[#1567c3]/80">
                     View all →
                 </a>
             </div>
@@ -29,7 +29,7 @@ export default function StatsCards() {
                         <Calendar className="w-6 h-6 text-slate-700" />
                     </div>
                 </div>
-                <a href="#" className="text-sm font-semibold text-purple-600 no-underline inline-block transition-colors hover:text-purple-800">
+                <a href="#" className="text-sm font-semibold text-[#1567c3] no-underline inline-block transition-colors hover:text-[#1567c3]/80">
                     See details →
                 </a>
             </div>

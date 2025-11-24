@@ -24,7 +24,7 @@ export default function WelcomeCard() {
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+                    className="bg-[#1567c3] shadow-[0_20px_40px_rgba(21,103,195,0.35)] border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(21,103,195,0.45)]"
                 >
                     <Plus className="w-4 h-4" />
                     <span className="whitespace-nowrap">Create Property Request</span>
