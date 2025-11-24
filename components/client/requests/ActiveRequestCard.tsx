@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Clock, ArrowRight } from 'lucide-react';
 
 export default function ActiveRequestCard() {
@@ -34,10 +35,10 @@ export default function ActiveRequestCard() {
                 ))}
             </div>
             <div className="flex items-center gap-3">
-                <button type="button" className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30">
+                <Link href="/client/requests/1/responses" className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30">
                     <span>View Responses</span>
                     <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
                 <button type="button" className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900">
                     Edit
                 </button>
