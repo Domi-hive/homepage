@@ -90,9 +90,9 @@ function Header() {
                         </ul>
                     </nav>
 
-                    <button type="button" className="cta cta--primary site-header__cta">
+                    <Link href="/login" className="cta cta--primary site-header__cta">
                         Login / Signup
-                    </button>
+                    </Link>
 
                     <button
                         type="button"
@@ -124,9 +124,9 @@ function Header() {
                             ))}
                         </ul>
                     </nav>
-                    <button type="button" className="cta cta--primary site-header__drawer-cta">
+                    <Link href="/login" className="cta cta--primary site-header__drawer-cta">
                         Login / Signup
-                    </button>
+                    </Link>
                 </div>
             </div>
         </>
