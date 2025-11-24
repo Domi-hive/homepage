@@ -3,10 +3,7 @@
 import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, FolderOpen, Menu, X, User, Bell } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { ProfileMenu } from "@/components/client/profile-menu"
-import NotificationCenter from "@/components/agent/notification-center"
+import { LayoutDashboard, FolderOpen, Menu, X, LogOut } from "lucide-react"
 import { useState } from "react"
 
 export default function ClientLayout({
@@ -16,7 +13,6 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
 
   const navItems = [
     { href: "/client/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -46,8 +42,8 @@ export default function ClientLayout({
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
-                    ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent"
+                  ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent"
                   }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
@@ -58,31 +54,14 @@ export default function ClientLayout({
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-sidebar-border p-4 space-y-4">
-          <div className="flex flex-col md:group-hover:flex-row items-center gap-2 transition-all duration-300">
-            <ThemeToggle />
-            <div className="relative">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="rounded-lg p-2 hover:bg-sidebar-accent transition-colors"
-                aria-label="Profile"
-              >
-                <User className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="relative md:ml-auto">
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="rounded-lg p-2 hover:bg-sidebar-accent transition-colors relative"
-                aria-label="Notifications"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
-              </button>
-            </div>
-          </div>
-          {showNotifications && <NotificationCenter onClose={() => setShowNotifications(false)} />}
-          <ProfileMenu />
+        <div className="border-t border-sidebar-border p-4">
+          <button
+            className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors whitespace-nowrap overflow-hidden"
+            aria-label="Log out"
+          >
+            <LogOut className="h-5 w-5 flex-shrink-0" />
+            <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Log out</span>
+          </button>
         </div>
       </aside>
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Bell, MessageSquare, ChevronDown } from 'lucide-react';
+import { Bell, ChevronDown } from 'lucide-react';
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function RequestsHeader() {
     return (
@@ -12,9 +13,7 @@ export default function RequestsHeader() {
                 <button type="button" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
                     <Bell className="w-6 h-6" />
                 </button>
-                <button type="button" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Messages">
-                    <MessageSquare className="w-6 h-6" />
-                </button>
+                <ThemeToggle />
                 <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base">
                         <span className="header-user-initials">U</span>
