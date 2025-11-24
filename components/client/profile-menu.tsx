@@ -15,7 +15,7 @@ export function ProfileMenu() {
         <div className="w-8 h-8 rounded-full bg-sidebar-primary flex items-center justify-center">
           <User className="w-4 h-4 text-sidebar-primary-foreground" />
         </div>
-        <div className="text-left flex-1">
+        <div className="text-left flex-1 md:w-0 md:group-hover:w-auto md:opacity-0 md:group-hover:opacity-100 overflow-hidden transition-all duration-300 whitespace-nowrap">
           <p className="text-sm font-medium">Profile</p>
           <p className="text-xs opacity-75">client@domihive.com</p>
         </div>

@@ -1,17 +1,29 @@
+"use client"
+
+import React from 'react';
+import DashboardHeader from '@/components/client/dashboard/DashboardHeader';
+import WelcomeCard from '@/components/client/dashboard/WelcomeCard';
+import StatsCards from '@/components/client/dashboard/StatsCards';
+import MatchedProperties from '@/components/client/dashboard/MatchedProperties';
+import RequestsSection from '@/components/client/dashboard/RequestsSection';
+
 export default function ClientDashboard() {
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-      <p className="text-muted-foreground mb-8">Welcome to your dashboard</p>
+    <div
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-75 pointer-events-none z-0"
+        style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="p-6 bg-card border border-border rounded-lg">
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Metric {i}</h3>
-            <p className="text-2xl font-bold text-foreground">--</p>
-          </div>
-        ))}
-      </div>
+      <main className="relative z-10 p-10 h-full overflow-y-auto">
+        <DashboardHeader />
+        <WelcomeCard />
+        <StatsCards />
+        <MatchedProperties />
+        <RequestsSection />
+      </main>
     </div>
-  )
+  );
 }

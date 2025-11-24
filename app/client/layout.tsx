@@ -29,11 +29,12 @@ export default function ClientLayout({
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
       <aside
-        className={`hidden md:flex flex-col w-64 bg-sidebar border-r border-sidebar-border ${sidebarOpen ? "block" : "hidden"}`}
+        className={`hidden md:flex flex-col w-64 md:w-20 md:hover:w-64 transition-all duration-300 ease-in-out bg-sidebar border-r border-sidebar-border group overflow-hidden ${sidebarOpen ? "block" : "hidden"}`}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-sidebar-border">
-          <h1 className="text-xl font-bold text-sidebar-foreground">DomiHive</h1>
+        <div className="p-6 border-b border-sidebar-border flex items-center gap-3 whitespace-nowrap overflow-hidden">
+          <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8 flex-shrink-0" />
+          <h1 className="text-xl font-bold text-sidebar-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">DomiHive</h1>
         </div>
 
         {/* Navigation */}
@@ -44,14 +45,13 @@ export default function ClientLayout({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                  isActive(item.href)
+                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
                     ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
                     : "text-sidebar-foreground hover:bg-sidebar-accent"
-                }`}
+                  }`}
               >
-                <Icon className="h-5 w-5" />
-                {item.label}
+                <Icon className="h-5 w-5 flex-shrink-0" />
+                <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{item.label}</span>
               </Link>
             )
           })}
@@ -59,7 +59,7 @@ export default function ClientLayout({
 
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4 space-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:group-hover:flex-row items-center gap-2 transition-all duration-300">
             <ThemeToggle />
             <div className="relative">
               <button
@@ -70,7 +70,7 @@ export default function ClientLayout({
                 <User className="h-5 w-5" />
               </button>
             </div>
-            <div className="relative ml-auto">
+            <div className="relative md:ml-auto">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="rounded-lg p-2 hover:bg-sidebar-accent transition-colors relative"
