@@ -1,30 +1,16 @@
-# Agent Dashboard UI
+# Domihive
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Domihive is a smart real estate platform designed to streamline property matching and inspection bookings. It connects clients with verified agents to make finding a dream home easy and secure.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/muhammads-projects-03acf2d1/v0-domihive)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/d3R1ZobkeHj)
+## Features
 
-## Overview
+- **Smart Property Matching**: Tailored recommendations based on user preferences.
+- **Inspection Booking**: Seamless scheduling for property viewings.
+- **Client Dashboard**: Manage property requests and view responses.
+- **Verified Agents**: Connect with trusted real estate professionals.
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+## Tech Stack
 
-## Deployment
-
-Your project is live at:
-
-**[https://vercel.com/muhammads-projects-03acf2d1/v0-domihive](https://vercel.com/muhammads-projects-03acf2d1/v0-domihive)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.app/chat/d3R1ZobkeHj](https://v0.app/chat/d3R1ZobkeHj)**
-
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- **Framework**: Next.js
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
