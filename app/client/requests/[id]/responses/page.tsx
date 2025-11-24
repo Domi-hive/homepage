@@ -6,6 +6,7 @@ import Link from "next/link"
 import AgentTabBar from "@/components/client/responses/AgentTabBar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
+import PropertyModal from "@/components/client/responses/PropertyModal"
 
 interface Agent {
   id: string
@@ -304,7 +305,13 @@ export default function ResponsesPage() {
         </div>
       </main>
 
-      {/* Modals would go here (omitted for brevity as they weren't part of the visual port request, but logic remains) */}
-    </div>
+
+
+      <PropertyModal
+        property={selectedProperty}
+        isOpen={!!selectedProperty}
+        onClose={() => setSelectedProperty(null)}
+      />
+    </div >
   )
 }
