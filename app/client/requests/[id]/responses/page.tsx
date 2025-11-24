@@ -7,6 +7,7 @@ import AgentTabBar from "@/components/client/responses/AgentTabBar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
+import ScheduleInspectionModal from "@/components/client/responses/ScheduleInspectionModal"
 
 interface Agent {
   id: string
@@ -40,6 +41,7 @@ export default function ResponsesPage() {
   const [showAgentDropdown, setShowAgentDropdown] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showQADrawer, setShowQADrawer] = useState(false)
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
 
   const agents: Agent[] = [
     {
@@ -284,7 +286,7 @@ export default function ResponsesPage() {
           {selectedAgent && (
             <AgentInfoCard
               agent={selectedAgent}
-              onScheduleInspection={() => { }}
+              onScheduleInspection={() => setIsScheduleModalOpen(true)}
             />
           )}
 
@@ -312,6 +314,15 @@ export default function ResponsesPage() {
         isOpen={!!selectedProperty}
         onClose={() => setSelectedProperty(null)}
       />
+
+      {selectedAgent && (
+        <ScheduleInspectionModal
+          isOpen={isScheduleModalOpen}
+          onClose={() => setIsScheduleModalOpen(false)}
+          agent={selectedAgent}
+          properties={selectedProperties}
+        />
+      )}
     </div >
   )
 }
