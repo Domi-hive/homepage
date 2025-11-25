@@ -14,17 +14,34 @@ export default function WelcomeCard() {
 
     return (
         <>
-            <div className="bg-gradient-to-br from-purple-100/80 to-blue-100/80 border border-white/50 rounded-[32px] p-10 mb-10 flex items-center justify-between backdrop-blur-md">
+            <div className="bg-gradient-to-br from-purple-100/80 to-blue-100/80 border border-white/50 rounded-[32px] p-6 md:p-10 mb-10 flex flex-col md:flex-row md:items-center justify-between backdrop-blur-md gap-4 md:gap-0">
                 <div className="flex-1">
-                    <h2 className="text-3xl font-bold text-slate-900 leading-9 m-0 mb-2">
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight md:leading-9 m-0 mb-4 md:mb-2 text-center md:text-left">
                         {getGreeting()}, User! 👋
                     </h2>
-                    <p className="text-base text-slate-600 leading-6 m-0">Looking for anything new today?</p>
+
+                    {/* Mobile Layout: Question + Button Side-by-Side */}
+                    <div className="flex md:hidden items-center justify-between gap-3">
+                        <p className="text-sm text-slate-600 leading-tight m-0 max-w-[50%]">Looking for anything new today?</p>
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
+                            className="bg-[#1567c3] shadow-sm border-none rounded-2xl px-4 py-2.5 text-white text-sm font-semibold cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+                        >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Create Request</span>
+                        </button>
+                    </div>
+
+                    {/* Desktop Layout: Question Only */}
+                    <p className="hidden md:block text-base text-slate-600 leading-6 m-0">Looking for anything new today?</p>
                 </div>
+
+                {/* Desktop Button */}
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-[#1567c3] shadow-[0_20px_40px_rgba(21,103,195,0.35)] border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(21,103,195,0.45)]"
+                    className="hidden md:flex bg-[#1567c3] shadow-[0_20px_40px_rgba(21,103,195,0.35)] border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(21,103,195,0.45)]"
                 >
                     <Plus className="w-4 h-4" />
                     <span className="whitespace-nowrap">Create Property Request</span>

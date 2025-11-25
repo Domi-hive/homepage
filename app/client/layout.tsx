@@ -22,26 +22,69 @@ export default function ClientLayout({
   const isActive = (href: string) => pathname === href
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 z-30 flex items-center justify-between px-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 -ml-2 rounded-lg hover:bg-slate-100 text-slate-600"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <div className="flex items-center gap-2">
+            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
+            <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+          </div>
+        </div>
+        <div className="w-8" /> {/* Spacer for balance */}
+      </div>
+
+      {/* Sidebar Overlay (Mobile) */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`hidden md:flex flex-col w-64 md:w-20 md:hover:w-64 transition-all duration-300 ease-in-out bg-sidebar border-r border-sidebar-border group overflow-hidden ${sidebarOpen ? "block" : "hidden"}`}
+        className={`
+          fixed md:static inset-y-0 left-0 z-50
+          flex flex-col 
+          w-64 md:w-20 md:hover:w-64 
+          bg-sidebar border-r border-sidebar-border 
+          transition-all duration-300 ease-in-out 
+          group overflow-hidden
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}
       >
-        {/* Logo */}
-        <div className="p-6 border-b border-sidebar-border flex items-center gap-3 whitespace-nowrap overflow-hidden">
-          <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8 flex-shrink-0" />
-          <h1 className="text-xl font-bold text-sidebar-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">DomiHive</h1>
+        {/* Logo Area */}
+        <div className="h-16 md:h-auto p-6 border-b border-sidebar-border flex items-center justify-between md:justify-start gap-3 whitespace-nowrap overflow-hidden">
+          <div className="flex items-center gap-3">
+            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8 flex-shrink-0" />
+            <h1 className="text-xl font-bold text-sidebar-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">DomiHive</h1>
+          </div>
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden p-1 rounded-lg hover:bg-slate-100 text-slate-500"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 md:py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
                   ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
                   : "text-sidebar-foreground hover:bg-sidebar-accent"
                   }`}
@@ -65,23 +108,12 @@ export default function ClientLayout({
         </div>
       </aside>
 
-      {/* Mobile Sidebar Toggle */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg bg-sidebar border border-sidebar-border"
-        >
-          {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
-
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">{children}</main>
-
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
+      <main className="flex-1 flex flex-col h-full overflow-hidden pt-16 md:pt-0">
+        <div className="flex-1 overflow-y-auto">
+          {children}
+        </div>
+      </main>
     </div>
   )
 }
