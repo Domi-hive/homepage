@@ -7,10 +7,51 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle login logic here
-        console.log('Login attempt:', { email, password });
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await fetch('https://s-dev.domihive.com/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Store in localStorage for API calls
+                localStorage.setItem('authToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('userData', JSON.stringify(data.user));
+
+                // Set cookie for middleware
+                document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
+                document.cookie = `userRole=${data.user.role}; path=/; max-age=86400; SameSite=Strict`;
+
+                // Redirect based on role
+                if (data.user.role === 'agent') {
+                    window.location.href = '/agent/dashboard';
+                } else {
+                    window.location.href = '/client/dashboard';
+                }
+            } else {
+                setError(data.message || 'Login failed');
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+            console.error('Login error:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -35,6 +76,11 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="p-3 text-sm text-red-500 bg-red-50 rounded-lg border border-red-100">
+                                {error}
+                            </div>
+                        )}
                         <div>
                             <label className="text-sm font-semibold text-slate-500 mb-2 block" htmlFor="email">Email</label>
                             <input
@@ -44,6 +90,7 @@ export default function LoginPage() {
                                 placeholder="user@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </div>
                         <div>
@@ -55,14 +102,16 @@ export default function LoginPage() {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                         </div>
                         <div>
                             <button
-                                className="w-full bg-gradient-to-r from-blue-400 to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-blue-500/30 hover:opacity-90 transition-opacity"
+                                className="w-full bg-gradient-to-r from-blue-400 to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-blue-500/30 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                                 type="submit"
+                                disabled={loading}
                             >
-                                Login
+                                {loading ? 'Logging in...' : 'Login'}
                             </button>
                         </div>
                     </form>
