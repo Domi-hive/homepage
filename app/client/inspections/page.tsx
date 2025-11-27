@@ -21,9 +21,12 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import InspectionDetailsModal from './InspectionDetailsModal';
+import OutcomeSelectionModal from './OutcomeSelectionModal';
+import ClientHeader from '@/components/client/ClientHeader';
 
 export default function InspectionsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
     const [selectedInspection, setSelectedInspection] = useState<any>(null);
 
     const handleViewInspection = (inspection: any) => {
@@ -38,32 +41,10 @@ export default function InspectionsPage() {
             />
 
             <div className="relative z-10 p-4 md:p-10 h-full overflow-y-auto">
-                <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-slate-800">My Inspections</h1>
-                        <p className="text-slate-500 mt-1">Manage and track all your property inspections</p>
-                    </div>
-                    <div className="flex items-center gap-6 self-end md:self-auto">
-                        <button className="text-slate-500 hover:text-slate-700 transition-colors">
-                            <Bell className="w-6 h-6" />
-                        </button>
-                        <button className="text-slate-500 hover:text-slate-700 transition-colors">
-                            <MessageSquare className="w-6 h-6" />
-                        </button>
-                        <div className="flex items-center gap-3 bg-white/50 p-2 rounded-full md:bg-transparent md:p-0">
-                            <img
-                                alt="User avatar"
-                                className="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-white shadow-sm"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-                            />
-                            <div className="hidden md:block">
-                                <span className="font-semibold text-slate-800 block leading-tight">User</span>
-                                <p className="text-xs text-slate-500">Tenant</p>
-                            </div>
-                            <ChevronDown className="w-5 h-5 text-slate-500 hidden md:block" />
-                        </div>
-                    </div>
-                </header>
+                <ClientHeader
+                    title="My Inspections"
+                    subtitle="Manage and track all your property inspections"
+                />
 
                 <div className="space-y-8">
                     {/* Tabs */}
@@ -75,29 +56,12 @@ export default function InspectionsPage() {
                         <button className="font-semibold py-2 px-6 rounded-lg text-slate-500 hover:bg-white/50 transition-colors">Upcoming</button>
                     </div>
 
-                    {/* Warning Banner */}
-                    <div className="bg-orange-500 text-white p-6 rounded-2xl shadow-lg shadow-orange-500/20 flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-                        <div className="bg-white/20 p-2 rounded-full shrink-0">
-                            <AlertTriangle className="w-8 h-8 text-white" />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-xl">Previous Inspection Incomplete</h3>
-                            <p className="text-sm opacity-90 mt-1">You need to mark your 6:11 am inspection as complete before starting this one.</p>
-                        </div>
-                        <button className="w-full md:w-auto bg-white text-orange-600 font-bold py-2.5 px-5 rounded-xl hover:bg-orange-50 transition-colors shadow-sm whitespace-nowrap">
-                            Complete Previous Inspection
-                        </button>
-                    </div>
-
                     {/* Active Inspection Card */}
                     <div className="bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
                         <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                             <div>
                                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                                    <div className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">
-                                        <PlayCircle className="w-3.5 h-3.5" />
-                                        <span>Ready to Start</span>
-                                    </div>
+
                                     <p className="text-sm font-medium text-slate-500">Today, 7:56 am</p>
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -121,7 +85,7 @@ export default function InspectionsPage() {
                             </div>
                         </div>
 
-                        <div className="border-y border-slate-100 py-6 my-6">
+                        <div className="border-y border-slate-100 my-6">
                             <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-4">Properties</p>
                             <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                                 <img
@@ -149,25 +113,27 @@ export default function InspectionsPage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <button className="bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all shadow-sm border border-slate-200 flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <button
+                                onClick={() => setIsOutcomeModalOpen(true)}
+                                className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+                            >
+                                <CheckCircle className="w-5 h-5" />
+                                <span>Mark as Complete</span>
+                            </button>
+                            <button className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
                                 <Navigation className="w-5 h-5 text-blue-500" />
                                 <span>Directions</span>
                             </button>
-                            <button className="bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all shadow-sm border border-slate-200 flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                            <button className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
                                 <Phone className="w-5 h-5 text-green-500" />
                                 <span>Call</span>
                             </button>
-                            <button className="bg-white hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-4 rounded-xl transition-all shadow-sm border border-slate-200 flex items-center justify-center gap-2 hover:-translate-y-0.5">
+                            <button className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
                                 <MessageCircle className="w-5 h-5 text-green-600" />
                                 <span>WhatsApp</span>
                             </button>
                         </div>
-
-                        <button className="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors cursor-not-allowed">
-                            <Ban className="w-5 h-5" />
-                            <span>Confirm Arrival - Blocked</span>
-                        </button>
                     </div>
 
                     <div className="bg-blue-50 text-blue-800 p-4 rounded-xl flex items-start gap-3 border border-blue-100">
@@ -275,6 +241,16 @@ export default function InspectionsPage() {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 inspection={selectedInspection}
+            />
+
+            <OutcomeSelectionModal
+                isOpen={isOutcomeModalOpen}
+                onClose={() => setIsOutcomeModalOpen(false)}
+                onSubmit={(outcome, details) => {
+                    console.log('Outcome submitted:', outcome, details);
+                    setIsOutcomeModalOpen(false);
+                    // Here you would typically update the inspection status in your backend/state
+                }}
             />
         </div>
     );

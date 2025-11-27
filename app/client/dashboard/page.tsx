@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import DashboardHeader from '@/components/client/dashboard/DashboardHeader';
+import ClientHeader from '@/components/client/ClientHeader';
 import WelcomeCard from '@/components/client/dashboard/WelcomeCard';
 import StatsCards from '@/components/client/dashboard/StatsCards';
 import MatchedProperties from '@/components/client/dashboard/MatchedProperties';
@@ -18,7 +18,10 @@ export default function ClientDashboard() {
       />
 
       <main className="relative z-10 p-10 h-full overflow-y-auto">
-        <DashboardHeader />
+        <ClientHeader
+          title="Dashboard"
+          subtitle="Welcome back to your property hub"
+        />
         <WelcomeCard />
         <StatsCards />
         <MatchedProperties />

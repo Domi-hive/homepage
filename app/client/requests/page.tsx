@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import RequestsHeader from '@/components/client/requests/RequestsHeader';
+import ClientHeader from '@/components/client/ClientHeader';
 import ActiveRequestCard from '@/components/client/requests/ActiveRequestCard';
 import InfoBanner from '@/components/client/requests/InfoBanner';
 import RequestHistory from '@/components/client/requests/RequestHistory';
@@ -17,7 +17,10 @@ export default function ClientRequests() {
       />
 
       <main className="relative z-10 p-10 h-full overflow-y-auto">
-        <RequestsHeader />
+        <ClientHeader
+          title="Requests"
+          subtitle="Manage your property search requests"
+        />
         <div className="flex flex-col gap-8">
           <ActiveRequestCard />
           <InfoBanner />

@@ -12,6 +12,7 @@ import {
     CheckCircle,
     Circle
 } from 'lucide-react';
+import OutcomeSelectionModal from './OutcomeSelectionModal';
 
 interface InspectionDetailsModalProps {
     isOpen: boolean;
@@ -20,6 +21,8 @@ interface InspectionDetailsModalProps {
 }
 
 export default function InspectionDetailsModal({ isOpen, onClose, inspection }: InspectionDetailsModalProps) {
+    const [isOutcomeModalOpen, setIsOutcomeModalOpen] = React.useState(false);
+
     if (!isOpen) return null;
 
     return (
@@ -73,7 +76,10 @@ export default function InspectionDetailsModal({ isOpen, onClose, inspection }: 
 
                         {/* Action Buttons */}
                         {inspection?.status === 'pending' && (
-                            <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-green-600/20">
+                            <button
+                                onClick={() => setIsOutcomeModalOpen(true)}
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-green-600/20"
+                            >
                                 Mark as Complete
                             </button>
                         )}
@@ -184,21 +190,23 @@ export default function InspectionDetailsModal({ isOpen, onClose, inspection }: 
                                 <p className="text-xs text-slate-500 mt-0.5">21 Nov at 2:21 pm</p>
                             </div>
 
-                            <div className="relative">
-                                <div className="absolute -left-[18px] top-1.5 w-3.5 h-3.5 bg-slate-400 rounded-full border-2 border-white shadow-sm"></div>
-                                <p className="font-semibold text-slate-800">Agent confirmed arrival</p>
-                                <p className="text-xs text-slate-500 mt-0.5">26 Nov at 12:21 pm</p>
-                            </div>
 
-                            <div className="relative">
-                                <div className="absolute -left-[18px] top-1.5 w-3.5 h-3.5 bg-slate-400 rounded-full border-2 border-white shadow-sm"></div>
-                                <p className="font-semibold text-slate-800">You confirmed arrival</p>
-                                <p className="text-xs text-slate-500 mt-0.5">26 Nov at 12:21 pm</p>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+
+            <OutcomeSelectionModal
+                isOpen={isOutcomeModalOpen}
+                onClose={() => setIsOutcomeModalOpen(false)}
+                onSubmit={(outcome, details) => {
+                    console.log('Outcome submitted:', outcome, details);
+                    setIsOutcomeModalOpen(false);
+                    // Here you would typically update the inspection status in your backend/state
+                    onClose(); // Close the details modal as well if desired
+                }}
+            />
+        </div >
     );
 }
