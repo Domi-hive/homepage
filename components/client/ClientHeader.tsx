@@ -15,11 +15,13 @@ export default function ClientHeader({ title, subtitle }: ClientHeaderProps) {
                 <p className="text-base text-slate-600 leading-6 m-0 mt-1">{subtitle}</p>
             </div>
             <div className="flex items-center gap-6 self-end md:self-auto">
-                <button type="button" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
-                    <Bell className="w-6 h-6" />
-                </button>
-                <ThemeToggle />
-                <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-6">
+                    <button type="button" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+                        <Bell className="w-6 h-6" />
+                    </button>
+                    <ThemeToggle />
+                </div>
+                <div className="hidden md:flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base">
                         <span className="header-user-initials">U</span>
                     </div>

@@ -3,8 +3,9 @@
 import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye } from "lucide-react"
+import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye, Bell } from "lucide-react"
 import { useState } from "react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function ClientLayout({
   children,
@@ -38,7 +39,15 @@ export default function ClientLayout({
             <span className="font-bold text-slate-800 text-lg">DomiHive</span>
           </div>
         </div>
-        <div className="w-8" /> {/* Spacer for balance */}
+        <div className="flex items-center gap-4">
+          <button type="button" className="text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+            <Bell className="w-5 h-5" />
+          </button>
+          <ThemeToggle />
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+            <span>U</span>
+          </div>
+        </div>
       </div>
 
       {/* Sidebar Overlay (Mobile) */}

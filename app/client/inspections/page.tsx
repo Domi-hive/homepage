@@ -80,9 +80,7 @@ export default function InspectionsPage() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-sm font-bold bg-green-100 text-green-700 px-4 py-1.5 rounded-full border border-green-200 shadow-sm">
-                                Paid
-                            </div>
+
                         </div>
 
                         <div className="border-y border-slate-100 my-6">

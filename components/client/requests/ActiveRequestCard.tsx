@@ -29,12 +29,12 @@ export default function ActiveRequestCard() {
             <div className="grid grid-cols-4 gap-4 mb-8 p-4 bg-white/50 rounded-2xl border border-white/50">
                 {stats.map((stat, index) => (
                     <div key={index} className="flex flex-col gap-1">
-                        <p className="text-2xl font-bold text-slate-900 leading-8 m-0">{stat.value}</p>
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide m-0">{stat.label}</p>
+                        <p className="text-xl md:text-2xl font-bold text-slate-900 leading-8 m-0">{stat.value}</p>
+                        <p className="text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wide m-0 truncate">{stat.label}</p>
                     </div>
                 ))}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
                 <Link href="/client/requests/1/responses" className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30">
                     <span>View Responses</span>
                     <ArrowRight className="w-4 h-4" />
