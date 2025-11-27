@@ -32,7 +32,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Your command center for today.</p>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
           <div className="flex items-center gap-2 bg-white dark:bg-[#1A2233] p-2 pr-4 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
             <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
               <Wallet className="text-green-500 w-5 h-5" />
