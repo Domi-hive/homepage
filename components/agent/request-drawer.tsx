@@ -195,7 +195,7 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
       )}
 
       <div
-        className="fixed right-0 top-0 h-full w-full md:w-[900px] z-50 bg-[#F7F5FF] dark:bg-[#1a1829] shadow-2xl transition-transform duration-300 flex flex-col"
+        className="fixed right-0 top-0 h-full w-full md:w-[600px] z-50 bg-[#F7F5FF] dark:bg-[#1a1829] shadow-2xl transition-transform duration-300 flex flex-col"
         style={{
           transform: isAnimating ? "translateX(0)" : "translateX(100%)",
         }}
@@ -203,8 +203,8 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/50 backdrop-blur-lg z-10">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Request & Response</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Review request details and build your response</p>
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Response</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Select properties and send your response</p>
           </div>
           <button
             onClick={onClose}
@@ -215,79 +215,7 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
         </div>
 
         <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
-          {/* Left Column: Request Details */}
-          <div className="flex-1 overflow-y-auto p-6 border-b md:border-b-0 md:border-r border-slate-200/80 dark:border-slate-800/80">
-            {/* Client Info */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-white">{request.clientName}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Requested {request.timestamp}</p>
-              </div>
-              <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${request.priority === "high"
-                ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
-                : request.priority === "medium"
-                  ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300"
-                  : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-                }`}>
-                <div className={`w-2 h-2 rounded-full ${request.priority === "high"
-                  ? "bg-red-500"
-                  : request.priority === "medium"
-                    ? "bg-yellow-500"
-                    : "bg-green-500"
-                  }`}></div>
-                <span className="capitalize">{request.priority}</span>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {/* Property Specifications */}
-              <div>
-                <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Property Specifications</h4>
-                <div className="space-y-3">
-                  <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-3 rounded-xl shadow-[0_4px_16px_0_rgba(100,100,150,0.1)] border border-white/50 dark:border-white/10">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Location</p>
-                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                      <MapPin className="text-purple-500 h-4 w-4" />
-                      <span>{request.location}</span>
-                    </div>
-                  </div>
-                  <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-3 rounded-xl shadow-[0_4px_16px_0_rgba(100,100,150,0.1)] border border-white/50 dark:border-white/10">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Budget</p>
-                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                      <DollarSign className="text-purple-500 h-4 w-4" />
-                      <span>{request.budget}</span>
-                    </div>
-                  </div>
-                  <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-3 rounded-xl shadow-[0_4px_16px_0_rgba(100,100,150,0.1)] border border-white/50 dark:border-white/10">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Bedrooms</p>
-                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                      <Home className="text-purple-500 h-4 w-4" />
-                      <span>{request.bedrooms}</span>
-                    </div>
-                  </div>
-                  <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-3 rounded-xl shadow-[0_4px_16px_0_rgba(100,100,150,0.1)] border border-white/50 dark:border-white/10">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Timeline</p>
-                    <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                      <Clock className="text-purple-500 h-4 w-4" />
-                      <span>{request.timeline}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Client Preferences */}
-              <div>
-                <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Client Preferences</h4>
-                <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-4 rounded-xl shadow-[0_4px_16px_0_rgba(100,100,150,0.1)] border border-white/50 dark:border-white/10">
-                  <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-                    {request.preferences}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Build Response */}
+          {/* Response Form */}
           <div className="flex-1 overflow-y-auto p-6 bg-white/40 dark:bg-black/20">
             <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Select Properties</h3>
 

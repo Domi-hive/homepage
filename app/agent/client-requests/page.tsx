@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Bell, Search, MapPin, Filter, X, Zap, Flame, Trophy } from "lucide-react"
+import { Bell, Search, MapPin, Filter, X, Zap } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import RequestCard from "@/components/agent/request-card"
+import RequestRow from "@/components/agent/request-row"
 import RequestDrawer from "@/components/agent/request-drawer"
 import FilterSidebar from "@/components/agent/filter-sidebar"
 
@@ -95,7 +96,6 @@ const MOCK_REQUESTS: Request[] = [
 export default function ClientRequests() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedRequest, setSelectedRequest] = useState<(typeof MOCK_REQUESTS)[0] | null>(null)
-  const [viewMode, setViewMode] = useState<"card" | "list">("card")
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
   // Filter State
@@ -120,24 +120,7 @@ export default function ClientRequests() {
     setFilters(presetFilters)
   }
 
-  const applyQuickFilter = (type: "hot" | "easy") => {
-    if (type === "hot") {
-      setFilters({
-        priority: "high",
-        status: "incoming",
-        location: null,
-      })
-    } else if (type === "easy") {
-      setFilters({
-        priority: "all",
-        status: "incoming",
-        location: null,
-      })
-      // Note: In a real app, we might filter by respondentsCount here too,
-      // but our current filter structure is simple.
-      // For now, we'll just set it to incoming to reset other filters.
-    }
-  }
+
 
   const filteredRequests = useMemo(() => {
     return MOCK_REQUESTS.filter((request) => {
@@ -183,34 +166,22 @@ export default function ClientRequests() {
         {/* Header */}
         <header className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setIsFilterPanelOpen(true)}
-            >
-              <Filter className="w-5 h-5" />
-            </Button>
             <div>
               <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Client Requests</h1>
               <p className="text-slate-500 dark:text-slate-400 mt-1">Incoming requests from clients looking for properties</p>
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <button className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+          <div className="hidden md:flex items-center gap-6">
+            <ThemeToggle />
+            <button className="relative text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
               <Bell className="w-6 h-6" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <div className="flex items-center gap-3">
-              <img
-                alt="User avatar"
-                className="w-11 h-11 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-              />
-              <div>
-                <span className="font-semibold text-slate-800 dark:text-slate-100 block leading-tight">User</span>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Agent</p>
-              </div>
-            </div>
+            <img
+              alt="User avatar"
+              className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
+            />
           </div>
         </header>
 
@@ -269,49 +240,16 @@ export default function ClientRequests() {
 
               <div className="flex items-center gap-3 w-full md:w-auto">
                 {/* Quick Shortcuts */}
-                <div className="flex items-center gap-2 mr-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => applyQuickFilter("hot")}
-                    className="hidden md:flex gap-1.5 text-orange-600 border-orange-200 hover:bg-orange-50 dark:text-orange-400 dark:border-orange-500/30 dark:hover:bg-orange-500/10"
-                  >
-                    <Flame className="w-4 h-4" />
-                    Hot Requests
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => applyQuickFilter("easy")}
-                    className="hidden md:flex gap-1.5 text-green-600 border-green-200 hover:bg-green-50 dark:text-green-400 dark:border-green-500/30 dark:hover:bg-green-500/10"
-                  >
-                    <Trophy className="w-4 h-4" />
-                    Easy Wins
-                  </Button>
-                </div>
-
                 <Button
                   variant="outline"
                   onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
                 >
                   <Filter className="w-4 h-4 mr-2" />
                   Filters
                 </Button>
 
-                <div className="flex items-center gap-1 p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-lg">
-                  <button
-                    onClick={() => setViewMode("card")}
-                    className={`px-3 py-1.5 rounded-md font-semibold text-sm shadow-sm transition-all ${viewMode === "card" ? "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200" : "text-slate-500 dark:text-slate-400 hover:text-slate-700"}`}
-                  >
-                    Cards
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`px-3 py-1.5 rounded-md font-medium text-sm transition-all ${viewMode === "list" ? "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-sm" : "text-slate-500 dark:text-slate-400 hover:text-slate-700"}`}
-                  >
-                    List
-                  </button>
-                </div>
+
               </div>
             </div>
 
@@ -351,16 +289,14 @@ export default function ClientRequests() {
               )}
             </div>
 
-            {/* Requests Grid/List */}
+            {/* Requests List */}
             {filteredRequests.length > 0 ? (
-              <div className={viewMode === "card" ? "grid gap-8 md:grid-cols-2 lg:grid-cols-3" : "flex flex-col gap-4"}>
+              <div className="flex flex-col gap-4">
                 {filteredRequests.map((request) => (
-                  <RequestCard
+                  <RequestRow
                     key={request.id}
                     request={request}
-                    isSelected={selectedRequest?.id === request.id}
-                    onSelect={setSelectedRequest}
-                    viewMode={viewMode}
+                    onRespond={setSelectedRequest}
                   />
                 ))}
               </div>
