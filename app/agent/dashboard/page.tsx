@@ -36,15 +36,8 @@ export default function Dashboard() {
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">Your command center for today.</p>
           </div>
           <div className="hidden md:flex items-center gap-6">
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-2 pr-4 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20">
-              <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <Wallet className="text-green-500 w-5 h-5" />
-              </div>
-              <span className="font-semibold text-slate-700 dark:text-slate-200">₦2,150,000</span>
-            </div>
             <ThemeToggle />
             <button className="relative text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
               <Bell className="w-6 h-6" />

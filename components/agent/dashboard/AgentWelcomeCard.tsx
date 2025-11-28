@@ -15,7 +15,7 @@ export default function AgentWelcomeCard() {
                     {getGreeting()}, Jessica! 👋
                 </h2>
                 <p className="text-base text-slate-600 dark:text-slate-300 leading-6 m-0">
-                    Looking for anything new today?
+                    Your command center for today.
                 </p>
             </div>
         </div>
