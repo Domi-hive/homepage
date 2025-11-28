@@ -1,15 +1,17 @@
 "use client"
 
-import { X, MapPin, DollarSign, Home, Clock, Users, Search, Plus, Trash2, AlertCircle, MessageSquare } from "lucide-react"
+import { X, MapPin, DollarSign, Home, Clock, Users, Search, Plus, Trash2, AlertCircle, MessageSquare, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
+import MarketplaceOverlay from "./marketplace-overlay"
 
 interface RequestDrawerProps {
   request: {
     id: string
     clientName: string
     location: string
+    locationDetails?: string
     budget: string
     bedrooms: string
     preferences: string
@@ -27,8 +29,9 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
   const [selectedProperties, setSelectedProperties] = useState<any[]>([])
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [activeTab, setActiveTab] = useState<"my-listings" | "marketplace" | "selected">("my-listings")
+  const [activeTab, setActiveTab] = useState<"my-listings" | "selected">("my-listings")
   const [searchQuery, setSearchQuery] = useState("")
+  const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false)
 
   useEffect(() => {
     setIsAnimating(isOpen)
@@ -39,6 +42,7 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
         setMessage("")
         setActiveTab("my-listings")
         setSearchQuery("")
+        setIsMarketplaceOpen(false)
       }, 300)
     }
   }, [isOpen])
@@ -79,71 +83,16 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
     },
   ]
 
-  const marketplaceListings = [
-    {
-      id: 101,
-      title: "Garden Home",
-      location: "Suburban Heights",
-      price: "$750k",
-      image: "/garden-home.jpg",
-      matchScore: 91,
-      agent: "Sarah Chen",
-      isOwn: false,
-      referralEnabled: true,
-      timesReferred: 0,
-    },
-    {
-      id: 102,
-      title: "Heritage Manor",
-      location: "Heritage Village",
-      price: "$580k",
-      image: "/heritage-manor.jpg",
-      matchScore: 87,
-      agent: "Michael Rodriguez",
-      isOwn: false,
-      referralEnabled: true,
-      timesReferred: 1,
-    },
-    {
-      id: 103,
-      title: "Coastal Villa",
-      location: "Beachfront District",
-      price: "$920k",
-      image: "/coastal-villa-luxury-beachfront.jpg",
-      matchScore: 89,
-      agent: "Emma Thompson",
-      isOwn: false,
-      referralEnabled: true,
-      timesReferred: 0,
-    },
-    {
-      id: 104,
-      title: "Mountain Retreat",
-      location: "Alpine Heights",
-      price: "$680k",
-      image: "/secluded-mountain-cabin.png",
-      matchScore: 84,
-      agent: "James Wilson",
-      isOwn: false,
-      referralEnabled: false,
-      timesReferred: 0,
-    },
-  ]
-
-  const getFilteredProperties = (properties: any[], isMarketplace: boolean) => {
+  const getFilteredProperties = (properties: any[]) => {
     return properties.filter((p) => {
       const matchesSearch =
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.location.toLowerCase().includes(searchQuery.toLowerCase())
-      if (isMarketplace) {
-        return matchesSearch && p.referralEnabled && p.timesReferred < 2
-      }
       return matchesSearch
     })
   }
 
-  const filteredMyListings = getFilteredProperties(myListings, false)
-  const filteredMarketplace = getFilteredProperties(marketplaceListings, true)
+  const filteredMyListings = getFilteredProperties(myListings)
 
   const toggleProperty = (property: any) => {
     setSelectedProperties((prev) => {
@@ -159,6 +108,17 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
 
   const removeProperty = (propertyId: number) => {
     setSelectedProperties((prev) => prev.filter((p) => p.id !== propertyId))
+  }
+
+  const handleMarketplaceConfirm = (properties: any[]) => {
+    // Merge new properties with existing ones, avoiding duplicates, up to limit of 5
+    setSelectedProperties((prev) => {
+      const currentIds = new Set(prev.map(p => p.id))
+      const newProperties = properties.filter(p => !currentIds.has(p.id))
+      const combined = [...prev, ...newProperties]
+      return combined.slice(0, 5)
+    })
+    setActiveTab("selected")
   }
 
   const handleSubmit = async () => {
@@ -194,7 +154,7 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
           </p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">{property.matchScore}%</p>
+          {property.matchScore && <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">{property.matchScore}%</p>}
         </div>
         {canAdd && (
           <button
@@ -216,6 +176,14 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
 
   return (
     <>
+      <MarketplaceOverlay
+        isOpen={isMarketplaceOpen}
+        onClose={() => setIsMarketplaceOpen(false)}
+        onConfirmSelection={handleMarketplaceConfirm}
+        initialSelectedProperties={selectedProperties.filter(p => p.id > 100)} // Assuming marketplace IDs are > 100
+        myListings={myListings}
+      />
+
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity"
@@ -323,121 +291,64 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
           <div className="flex-1 overflow-y-auto p-6 bg-white/40 dark:bg-black/20">
             <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Select Properties</h3>
 
-            {/* Tab Navigation */}
-            <div className="flex gap-2 mb-4 border-b border-slate-200 dark:border-white/10 overflow-x-auto">
-              <button
-                onClick={() => {
-                  setActiveTab("my-listings")
-                  setSearchQuery("")
-                }}
-                className={`px-3 py-2 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap ${activeTab === "my-listings"
-                  ? "text-blue-600 border-blue-600 dark:text-blue-300 dark:border-blue-400"
-                  : "text-slate-500 border-transparent hover:text-slate-700 dark:text-blue-300/60 dark:hover:text-blue-300"
-                  }`}
-              >
-                My Listings
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("marketplace")
-                  setSearchQuery("")
-                }}
-                className={`px-3 py-2 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap ${activeTab === "marketplace"
-                  ? "text-blue-600 border-blue-600 dark:text-blue-300 dark:border-blue-400"
-                  : "text-slate-500 border-transparent hover:text-slate-700 dark:text-blue-300/60 dark:hover:text-blue-300"
-                  }`}
-              >
-                Marketplace
-              </button>
-              <button
-                onClick={() => setActiveTab("selected")}
-                className={`px-3 py-2 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap flex items-center gap-2 ${activeTab === "selected"
-                  ? "text-blue-600 border-blue-600 dark:text-blue-300 dark:border-blue-400"
-                  : "text-slate-500 border-transparent hover:text-slate-700 dark:text-blue-300/60 dark:hover:text-blue-300"
-                  }`}
-              >
-                Selected
-                <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-400/30 h-5 px-1.5 text-[10px]">
+            {/* Select Properties Header */}
+            <div className="flex justify-between items-center mb-4 border-b border-slate-200 dark:border-white/10 pb-2">
+              <h3 className="text-sm font-semibold text-slate-500 dark:text-blue-300 uppercase tracking-wide">
+                Selected Properties
+                <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-400/30 h-5 px-1.5 text-[10px]">
                   {selectedProperties.length}/5
                 </Badge>
-              </button>
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMarketplaceOpen(true)}
+                className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-purple-900/20 gap-1"
+              >
+                <Search className="h-4 w-4" />
+                Select Properties
+              </Button>
             </div>
-
-            {/* Search Bar */}
-            {(activeTab === "my-listings" || activeTab === "marketplace") && (
-              <div className="mb-4 relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-blue-300/50" />
-                <input
-                  type="text"
-                  placeholder={`Search ${activeTab === "my-listings" ? "your listings" : "marketplace"}...`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 text-sm rounded-lg bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors dark:bg-white/5 dark:border-white/10 dark:text-white dark:placeholder:text-blue-300/50 dark:focus:border-blue-400/50"
-                />
-              </div>
-            )}
 
             {/* Property List */}
             <div className="space-y-3 mb-6 min-h-[200px]">
-              {activeTab === "my-listings" && (
-                <>
-                  {filteredMyListings.length === 0 ? (
-                    <p className="text-center text-slate-500 dark:text-blue-300/60 py-8 text-sm">
-                      {searchQuery ? "No listings match your search" : "No listings available"}
-                    </p>
-                  ) : (
-                    filteredMyListings.map((property) => (
-                      <PropertyCard key={property.id} property={property} canAdd={true} />
-                    ))
-                  )}
-                </>
-              )}
-
-              {activeTab === "marketplace" && (
-                <>
-                  {filteredMarketplace.length === 0 ? (
-                    <p className="text-center text-slate-500 dark:text-blue-300/60 py-8 text-sm">
-                      {searchQuery ? "No listings match your search" : "No referral-enabled listings available"}
-                    </p>
-                  ) : (
-                    filteredMarketplace.map((property) => (
-                      <PropertyCard key={property.id} property={property} canAdd={true} />
-                    ))
-                  )}
-                </>
-              )}
-
-              {activeTab === "selected" && (
-                <>
-                  {selectedProperties.length === 0 ? (
-                    <p className="text-center text-slate-500 dark:text-blue-300/60 py-8 text-sm">No properties selected yet</p>
-                  ) : (
-                    selectedProperties.map((property) => (
-                      <div
-                        key={property.id}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200 group dark:bg-blue-500/10 dark:border-blue-400/30"
-                      >
-                        <img
-                          src={property.image || "/placeholder.svg"}
-                          alt={property.title}
-                          className="w-16 h-12 rounded-md object-cover"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-sm text-slate-900 dark:text-white truncate">{property.title}</h4>
-                          <p className="text-xs text-slate-500 dark:text-blue-300 truncate">
-                            {property.location} • {property.price}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => removeProperty(property.id)}
-                          className="p-1.5 hover:bg-red-100 rounded-md transition-colors opacity-0 group-hover:opacity-100 dark:hover:bg-red-500/20"
-                        >
-                          <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </>
+              {selectedProperties.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-slate-500 dark:text-blue-300/60 text-sm mb-3">No properties selected yet</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsMarketplaceOpen(true)}
+                    className="text-purple-600 border-purple-200 hover:bg-purple-50 dark:text-purple-400 dark:border-purple-500/30 dark:hover:bg-purple-500/10"
+                  >
+                    Select Properties
+                  </Button>
+                </div>
+              ) : (
+                selectedProperties.map((property) => (
+                  <div
+                    key={property.id}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200 group dark:bg-blue-500/10 dark:border-blue-400/30"
+                  >
+                    <img
+                      src={property.image || "/placeholder.svg"}
+                      alt={property.title}
+                      className="w-16 h-12 rounded-md object-cover"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm text-slate-900 dark:text-white truncate">{property.title}</h4>
+                      <p className="text-xs text-slate-500 dark:text-blue-300 truncate">
+                        {property.location} • {property.price}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => removeProperty(property.id)}
+                      className="p-1.5 hover:bg-red-100 rounded-md transition-colors opacity-0 group-hover:opacity-100 dark:hover:bg-red-500/20"
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
+                    </button>
+                  </div>
+                ))
               )}
             </div>
 
