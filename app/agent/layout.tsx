@@ -98,7 +98,7 @@ export default function AgentLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto dark:bg-black/20">
           {navItems.map((item) => {
             const Icon = item.icon
             return (

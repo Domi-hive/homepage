@@ -76,7 +76,7 @@ const MOCK_REQUESTS: Request[] = [
     timestamp: "2 hours ago",
     priority: "medium",
     respondentsCount: 2,
-    status: "incoming",
+    status: "responded",
   },
   {
     id: "5",
@@ -99,10 +99,12 @@ export default function ClientRequests() {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
   // Filter State
+  const [activeTab, setActiveTab] = useState<"incoming" | "responded">("incoming")
+
+  // Filter State
   const [filters, setFilters] = useState({
     priority: "all" as "all" | "high" | "medium" | "low",
     location: null as string | null,
-    status: "incoming" as "incoming" | "responded",
   })
 
   // Presets State
@@ -129,10 +131,10 @@ export default function ClientRequests() {
         request.location.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesPriority = filters.priority === "all" || request.priority === filters.priority
       const matchesLocation = !filters.location || request.location === filters.location
-      const matchesStatus = request.status === filters.status
+      const matchesStatus = request.status === activeTab
       return matchesSearch && matchesPriority && matchesLocation && matchesStatus
     })
-  }, [searchQuery, filters])
+  }, [searchQuery, filters, activeTab])
 
   // Calculate counts for sidebar
   const counts = useMemo(() => {
@@ -149,7 +151,7 @@ export default function ClientRequests() {
       statusCounts[req.status]++
     })
 
-    return { priority: priorityCounts, location: locationCounts, status: statusCounts }
+    return { priority: priorityCounts, location: locationCounts }
   }, [])
 
   const locations = Array.from(new Set(MOCK_REQUESTS.map((r) => r.location)))
@@ -188,8 +190,8 @@ export default function ClientRequests() {
         {/* Tabs */}
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-xl w-fit">
           <button
-            onClick={() => handleFilterChange("status", "incoming")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${filters.status === "incoming"
+            onClick={() => setActiveTab("incoming")}
+            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === "incoming"
               ? "bg-white dark:bg-slate-700 text-purple-600 dark:text-purple-300 shadow-sm"
               : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
               }`}
@@ -197,8 +199,8 @@ export default function ClientRequests() {
             Incoming Requests
           </button>
           <button
-            onClick={() => handleFilterChange("status", "responded")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${filters.status === "responded"
+            onClick={() => setActiveTab("responded")}
+            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === "responded"
               ? "bg-white dark:bg-slate-700 text-purple-600 dark:text-purple-300 shadow-sm"
               : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
               }`}
@@ -226,6 +228,18 @@ export default function ClientRequests() {
           <div className="px-10 pb-20 pt-2 space-y-6">
             {/* Controls Bar */}
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                {/* Quick Shortcuts */}
+                <Button
+                  variant="outline"
+                  onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
+
               {/* Search */}
               <div className="relative w-full md:w-96">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
@@ -237,32 +251,11 @@ export default function ClientRequests() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                {/* Quick Shortcuts */}
-                <Button
-                  variant="outline"
-                  onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters
-                </Button>
-
-
-              </div>
             </div>
 
             {/* Active Filters Chips */}
             <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-              {filters.status !== "incoming" && (
-                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-500/20 dark:text-purple-300">
-                  Status: {filters.status}
-                  <button onClick={() => handleFilterChange("status", "incoming")} className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              )}
+
               {filters.priority !== "all" && (
                 <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
                   Priority: {filters.priority}
@@ -279,9 +272,9 @@ export default function ClientRequests() {
                   </button>
                 </Badge>
               )}
-              {(filters.status !== "incoming" || filters.priority !== "all" || filters.location) && (
+              {(filters.priority !== "all" || filters.location) && (
                 <button
-                  onClick={() => setFilters({ priority: "all", location: null, status: "incoming" })}
+                  onClick={() => setFilters({ priority: "all", location: null })}
                   className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
                 >
                   Clear all
@@ -307,7 +300,7 @@ export default function ClientRequests() {
                 <p className="text-slate-500 dark:text-slate-400">Try adjusting your search or filters</p>
                 <Button
                   variant="link"
-                  onClick={() => setFilters({ priority: "all", location: null, status: "incoming" })}
+                  onClick={() => setFilters({ priority: "all", location: null })}
                   className="mt-2 text-purple-600 dark:text-purple-400"
                 >
                   Clear all filters

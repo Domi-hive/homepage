@@ -12,13 +12,11 @@ interface FilterSidebarProps {
     filters: {
         priority: "all" | "high" | "medium" | "low"
         location: string | null
-        status: "incoming" | "responded"
     }
     onFilterChange: (key: string, value: any) => void
     counts: {
         priority: Record<string, number>
         location: Record<string, number>
-        status: Record<string, number>
     }
     locations: string[]
     onSavePreset: (name: string) => void
@@ -38,7 +36,6 @@ export default function FilterSidebar({
     onApplyPreset,
 }: FilterSidebarProps) {
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-        status: true,
         priority: true,
         location: true,
         presets: true,
@@ -62,7 +59,6 @@ export default function FilterSidebar({
     const handleReset = () => {
         onFilterChange("priority", "all")
         onFilterChange("location", null)
-        onFilterChange("status", "incoming")
     }
 
     const filteredLocations = locations.filter(loc =>
@@ -156,38 +152,7 @@ export default function FilterSidebar({
                         <div className="h-px bg-slate-200 dark:bg-slate-800" />
 
                         {/* Status Section */}
-                        <div className="space-y-3">
-                            <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection("status")}>
-                                <label className="font-medium text-slate-600 dark:text-slate-300">Status</label>
-                                {expandedSections.status ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
-                            </div>
 
-                            {expandedSections.status && (
-                                <div className="grid grid-cols-2 gap-2">
-                                    {[
-                                        { value: "incoming", label: "Incoming" },
-                                        { value: "responded", label: "Responded" },
-                                    ].map((option) => (
-                                        <button
-                                            key={option.value}
-                                            onClick={() => onFilterChange("status", option.value)}
-                                            className={`py-2 px-3 rounded-lg text-sm font-medium transition-all flex items-center justify-between ${filters.status === option.value
-                                                ? "bg-purple-500 text-white shadow-md shadow-purple-500/30"
-                                                : "bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                                                }`}
-                                        >
-                                            {option.label}
-                                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${filters.status === option.value
-                                                ? "bg-white/20 text-white"
-                                                : "bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400"
-                                                }`}>
-                                                {counts.status[option.value] || 0}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
 
                         {/* Priority Section */}
                         <div className="space-y-3">

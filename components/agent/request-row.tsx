@@ -139,7 +139,11 @@ export default function RequestRow({ request, onRespond }: RequestRowProps) {
                             <Button
                                 onClick={(e) => {
                                     e.stopPropagation()
-                                    onRespond(request)
+                                    if (request.status === "responded") {
+                                        window.location.href = `/agent/client-requests/${request.id}/response`
+                                    } else {
+                                        onRespond(request)
+                                    }
                                 }}
                                 className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white shadow-lg shadow-purple-500/20"
                             >
