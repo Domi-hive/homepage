@@ -4,7 +4,7 @@ import { useState } from "react"
 import { ArrowLeft, ChevronDown, MessageCircle, X } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import AgentTabBar from "@/components/client/responses/AgentTabBar"
+import AgentSidebar from "@/components/client/responses/AgentSidebar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
@@ -259,10 +259,10 @@ export default function ResponsesPage() {
         </div>
 
         {activeTab === "responses" ? (
-          <>
-            {/* Desktop Agent Tabs */}
-            <div className="hidden md:block px-10 pb-6">
-              <AgentTabBar
+          <div className="flex flex-col md:flex-row gap-6 px-10 pb-10 h-full overflow-hidden">
+            {/* Desktop Agent Sidebar */}
+            <div className="hidden md:block h-full overflow-y-auto pr-2 custom-scrollbar">
+              <AgentSidebar
                 agents={agents}
                 selectedAgentId={selectedAgentId}
                 onSelectAgent={setSelectedAgentId}
@@ -270,7 +270,7 @@ export default function ResponsesPage() {
             </div>
 
             {/* Mobile Agent Dropdown */}
-            <div className="md:hidden px-6 pb-4">
+            <div className="md:hidden pb-4">
               <div className="relative">
                 <button
                   onClick={() => setShowAgentDropdown(!showAgentDropdown)}
@@ -326,7 +326,7 @@ export default function ResponsesPage() {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 overflow-y-auto px-10 pb-10">
+            <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
               {agents.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
                   <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center">
@@ -346,7 +346,7 @@ export default function ResponsesPage() {
                   </Button>
                 </div>
               ) : (
-                <>
+                <div className="space-y-6">
                   {selectedAgent && (
                     <AgentInfoCard
                       agent={selectedAgent}
@@ -354,7 +354,7 @@ export default function ResponsesPage() {
                     />
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {selectedProperties.map((property) => (
                       <PropertyCard
                         key={property.id}
@@ -368,10 +368,10 @@ export default function ResponsesPage() {
                       />
                     ))}
                   </div>
-                </>
+                </div>
               )}
             </div>
-          </>
+          </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-10 pb-10">
             <RecommendedPropertiesTab

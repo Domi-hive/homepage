@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { ArrowLeft, ChevronDown, MessageCircle, X } from "lucide-react"
 import Link from "next/link"
-import AgentTabBar from "@/components/client/responses/AgentTabBar"
+import AgentSidebar from "@/components/client/responses/AgentSidebar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
@@ -216,93 +216,97 @@ export default function ResponsesPage() {
                     </div>
                 </div>
 
-                {/* Desktop Agent Tabs */}
-                <div className="hidden md:block px-10 pb-6">
-                    <AgentTabBar
-                        agents={agents}
-                        selectedAgentId={selectedAgentId}
-                        onSelectAgent={setSelectedAgentId}
-                    />
-                </div>
+                <div className="flex flex-col md:flex-row gap-6 px-10 pb-10 h-full overflow-hidden">
+                    {/* Desktop Agent Sidebar */}
+                    <div className="hidden md:block h-full overflow-y-auto pr-2 custom-scrollbar">
+                        <AgentSidebar
+                            agents={agents}
+                            selectedAgentId={selectedAgentId}
+                            onSelectAgent={setSelectedAgentId}
+                        />
+                    </div>
 
-                {/* Mobile Agent Dropdown */}
-                <div className="md:hidden px-6 pb-4">
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowAgentDropdown(!showAgentDropdown)}
-                            className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
-                        >
-                            <div className="flex items-center gap-3">
-                                <img
-                                    src={selectedAgent?.photo || "/placeholder.svg"}
-                                    alt={selectedAgent?.name}
-                                    className="h-8 w-8 rounded-full object-cover"
-                                />
-                                <div className="text-left">
-                                    <div className="font-medium text-sm">{selectedAgent?.name}</div>
-                                    <div className="text-xs text-slate-500">⭐ {selectedAgent?.rating}</div>
+                    {/* Mobile Agent Dropdown */}
+                    <div className="md:hidden pb-4">
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowAgentDropdown(!showAgentDropdown)}
+                                className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <img
+                                        src={selectedAgent?.photo || "/placeholder.svg"}
+                                        alt={selectedAgent?.name}
+                                        className="h-8 w-8 rounded-full object-cover"
+                                    />
+                                    <div className="text-left">
+                                        <div className="font-medium text-sm">{selectedAgent?.name}</div>
+                                        <div className="text-xs text-slate-500">⭐ {selectedAgent?.rating}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <ChevronDown className="h-5 w-5 text-slate-500" />
-                        </button>
+                                <ChevronDown className="h-5 w-5 text-slate-500" />
+                            </button>
 
-                        {showAgentDropdown && (
-                            <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
-                                {agents.map((agent) => (
-                                    <button
-                                        key={agent.id}
-                                        onClick={() => {
-                                            setSelectedAgentId(agent.id)
-                                            setShowAgentDropdown(false)
-                                        }}
-                                        className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${selectedAgentId === agent.id ? "bg-purple-50 text-purple-700" : "text-slate-800 hover:bg-slate-50"
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <img
-                                                src={agent.photo || "/placeholder.svg"}
-                                                alt={agent.name}
-                                                className="h-8 w-8 rounded-full object-cover"
-                                            />
-                                            <div className="text-left">
-                                                <div className="font-medium text-sm">{agent.name}</div>
-                                                <div className="text-xs text-slate-500">
-                                                    ⭐ {agent.rating} ({agent.reviews})
+                            {showAgentDropdown && (
+                                <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
+                                    {agents.map((agent) => (
+                                        <button
+                                            key={agent.id}
+                                            onClick={() => {
+                                                setSelectedAgentId(agent.id)
+                                                setShowAgentDropdown(false)
+                                            }}
+                                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${selectedAgentId === agent.id ? "bg-purple-50 text-purple-700" : "text-slate-800 hover:bg-slate-50"
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <img
+                                                    src={agent.photo || "/placeholder.svg"}
+                                                    alt={agent.name}
+                                                    className="h-8 w-8 rounded-full object-cover"
+                                                />
+                                                <div className="text-left">
+                                                    <div className="font-medium text-sm">{agent.name}</div>
+                                                    <div className="text-xs text-slate-500">
+                                                        ⭐ {agent.rating} ({agent.reviews})
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        {selectedAgentId === agent.id && (
-                                            <div className="h-2 w-2 rounded-full bg-purple-600" />
-                                        )}
-                                    </button>
+                                            {selectedAgentId === agent.id && (
+                                                <div className="h-2 w-2 rounded-full bg-purple-600" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Main Content Area */}
+                    <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
+                        <div className="space-y-6">
+                            {selectedAgent && (
+                                <AgentInfoCard
+                                    agent={selectedAgent}
+                                    onScheduleInspection={() => setIsScheduleModalOpen(true)}
+                                />
+                            )}
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {selectedProperties.map((property) => (
+                                    <PropertyCard
+                                        key={property.id}
+                                        property={property}
+                                        isFavorite={favorites.has(property.id)}
+                                        onToggleFavorite={toggleFavorite}
+                                        onClick={() => {
+                                            setSelectedProperty(property)
+                                            setShowQADrawer(false)
+                                        }}
+                                    />
                                 ))}
                             </div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Main Content Area */}
-                <div className="flex-1 overflow-y-auto px-10 pb-10">
-                    {selectedAgent && (
-                        <AgentInfoCard
-                            agent={selectedAgent}
-                            onScheduleInspection={() => setIsScheduleModalOpen(true)}
-                        />
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {selectedProperties.map((property) => (
-                            <PropertyCard
-                                key={property.id}
-                                property={property}
-                                isFavorite={favorites.has(property.id)}
-                                onToggleFavorite={toggleFavorite}
-                                onClick={() => {
-                                    setSelectedProperty(property)
-                                    setShowQADrawer(false)
-                                }}
-                            />
-                        ))}
+                        </div>
                     </div>
                 </div>
             </main>
