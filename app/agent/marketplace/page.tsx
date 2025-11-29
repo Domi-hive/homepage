@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History } from "lucide-react"
+import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Listing {
@@ -155,6 +155,27 @@ export default function MarketplacePage() {
         style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
       />
 
+      {/* Mobile Secondary Header */}
+      <div className="md:hidden sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 text-slate-600 dark:text-slate-400"
+        >
+          <Filter className="w-5 h-5" />
+        </Button>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+          <input
+            className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white placeholder:text-slate-400"
+            placeholder="Search..."
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
       <main className="flex-1 p-10 overflow-y-auto relative z-10">
         <header className="flex justify-between items-center mb-10">
           <div>
@@ -162,55 +183,45 @@ export default function MarketplacePage() {
 
           </div>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <img
-                alt="User avatar"
-                className="w-11 h-11 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-              />
-              <div>
-                <span className="font-semibold text-slate-800 dark:text-slate-100 block leading-tight">User</span>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Agent</p>
-              </div>
-            </div>
+            {/* User profile removed as requested */}
           </div>
         </header>
 
         <div className="space-y-8">
-          <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] border border-white/50 dark:border-white/10">
-            <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+
+          <div className="relative mb-6">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              className="w-full bg-slate-100/50 dark:bg-slate-800/50 border-none rounded-xl pl-12 pr-4 py-3.5 text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-purple-500 outline-none"
+              placeholder="Search by property name or location..."
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
               <input
-                className="w-full bg-slate-100/50 dark:bg-slate-800/50 border-none rounded-xl pl-12 pr-4 py-3.5 text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-purple-500 outline-none"
-                placeholder="Search by property name or location..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                id="updated-24h"
+                type="checkbox"
+                checked={filters.updatedIn24h}
+                onChange={(e) => setFilters({ ...filters, updatedIn24h: e.target.checked })}
               />
+              <label className="font-medium cursor-pointer" htmlFor="updated-24h">Updated in 24 hours</label>
             </div>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                <input
-                  className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                  id="updated-24h"
-                  type="checkbox"
-                  checked={filters.updatedIn24h}
-                  onChange={(e) => setFilters({ ...filters, updatedIn24h: e.target.checked })}
-                />
-                <label className="font-medium cursor-pointer" htmlFor="updated-24h">Updated in 24 hours</label>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                <input
-                  className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                  id="referral-only"
-                  type="checkbox"
-                  checked={filters.referralOnly}
-                  onChange={(e) => setFilters({ ...filters, referralOnly: e.target.checked })}
-                />
-                <label className="font-medium cursor-pointer" htmlFor="referral-only">Referral Only</label>
-              </div>
+            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+              <input
+                className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                id="referral-only"
+                type="checkbox"
+                checked={filters.referralOnly}
+                onChange={(e) => setFilters({ ...filters, referralOnly: e.target.checked })}
+              />
+              <label className="font-medium cursor-pointer" htmlFor="referral-only">Referral Only</label>
             </div>
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredListings.map((listing) => (
@@ -277,7 +288,7 @@ export default function MarketplacePage() {
             <span>More listings coming soon...</span>
           </div>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
