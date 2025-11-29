@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react"
 import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import FilterSidebar from "@/components/agent/filter-sidebar"
 
 interface Listing {
   id: string
@@ -107,6 +108,33 @@ export default function MarketplacePage() {
     referralOnly: false,
   })
 
+  // Filter Sidebar State
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+  const [sidebarFilters, setSidebarFilters] = useState({
+    priority: "all" as "all" | "high" | "medium" | "low",
+    location: null as string | null,
+  })
+  const [presets, setPresets] = useState<{ name: string; filters: any }[]>([])
+
+  const handleSidebarFilterChange = (key: string, value: any) => {
+    setSidebarFilters((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const handleSavePreset = (name: string) => {
+    setPresets((prev) => [...prev, { name, filters: sidebarFilters }])
+  }
+
+  const handleApplyPreset = (presetFilters: any) => {
+    setSidebarFilters(presetFilters)
+  }
+
+  // Mock counts and locations for sidebar
+  const counts = {
+    priority: { all: 5, high: 2, medium: 2, low: 1 },
+    location: { "Downtown": 1, "Riverside": 1, "Central Park": 1, "Suburbs": 1, "Historic District": 1 }
+  }
+  const locations = ["Downtown", "Riverside", "Central Park", "Suburbs", "Historic District"]
+
   const toggleFavorite = (id: string) => {
     const newFavorites = new Set(favorites)
     if (newFavorites.has(id)) {
@@ -160,6 +188,7 @@ export default function MarketplacePage() {
         <Button
           variant="ghost"
           size="icon"
+          onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
           className="shrink-0 text-slate-600 dark:text-slate-400"
         >
           <Filter className="w-5 h-5" />
@@ -175,6 +204,18 @@ export default function MarketplacePage() {
           />
         </div>
       </div>
+
+      <FilterSidebar
+        isOpen={isFilterPanelOpen}
+        onClose={() => setIsFilterPanelOpen(false)}
+        filters={sidebarFilters}
+        onFilterChange={handleSidebarFilterChange}
+        counts={counts}
+        locations={locations}
+        onSavePreset={handleSavePreset}
+        presets={presets}
+        onApplyPreset={handleApplyPreset}
+      />
 
       <main className="flex-1 p-10 overflow-y-auto relative z-10">
         <header className="flex justify-between items-center mb-10">

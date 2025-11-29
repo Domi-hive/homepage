@@ -3,11 +3,15 @@
 import { useState } from "react"
 import { ArrowLeft, ChevronDown, MessageCircle, X } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import AgentTabBar from "@/components/client/responses/AgentTabBar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
 import ScheduleInspectionModal from "@/components/client/responses/ScheduleInspectionModal"
+import RecommendedPropertiesTab from "@/components/client/responses/RecommendedPropertiesTab"
+
+// ... (imports)
 
 interface Agent {
   id: string
@@ -36,8 +40,10 @@ interface Property {
 }
 
 export default function ResponsesPage() {
+  const [activeTab, setActiveTab] = useState<"responses" | "recommendations">("responses")
   const [selectedAgentId, setSelectedAgentId] = useState("1")
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [recommendationFavorites, setRecommendationFavorites] = useState<Set<number>>(new Set())
   const [showAgentDropdown, setShowAgentDropdown] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showQADrawer, setShowQADrawer] = useState(false)
@@ -165,6 +171,20 @@ export default function ResponsesPage() {
     setFavorites(newFavorites)
   }
 
+  const toggleRecommendationFavorite = (id: number) => {
+    const newFavorites = new Set(recommendationFavorites)
+    if (newFavorites.has(id)) {
+      newFavorites.delete(id)
+    } else {
+      newFavorites.add(id)
+    }
+    setRecommendationFavorites(newFavorites)
+  }
+
+  const handleExpressInterest = (propertyTitle: string) => {
+    console.log(`Expressed interest in: ${propertyTitle}`)
+  }
+
   return (
     <div
       className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]"
@@ -216,98 +236,152 @@ export default function ResponsesPage() {
           </div>
         </div>
 
-        {/* Desktop Agent Tabs */}
-        <div className="hidden md:block px-10 pb-6">
-          <AgentTabBar
-            agents={agents}
-            selectedAgentId={selectedAgentId}
-            onSelectAgent={setSelectedAgentId}
-          />
+        {/* Tabs */}
+        <div className="px-10 pb-6 flex gap-4">
+          <button
+            onClick={() => setActiveTab("responses")}
+            className={`px-6 py-2 rounded-full font-medium transition-colors ${activeTab === "responses"
+              ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
+              : "bg-white/40 text-slate-600 hover:bg-white/60"
+              }`}
+          >
+            Responses
+          </button>
+          <button
+            onClick={() => setActiveTab("recommendations")}
+            className={`px-6 py-2 rounded-full font-medium transition-colors ${activeTab === "recommendations"
+              ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
+              : "bg-white/40 text-slate-600 hover:bg-white/60"
+              }`}
+          >
+            Recommendations
+          </button>
         </div>
 
-        {/* Mobile Agent Dropdown */}
-        <div className="md:hidden px-6 pb-4">
-          <div className="relative">
-            <button
-              onClick={() => setShowAgentDropdown(!showAgentDropdown)}
-              className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
-            >
-              <div className="flex items-center gap-3">
-                <img
-                  src={selectedAgent?.photo || "/placeholder.svg"}
-                  alt={selectedAgent?.name}
-                  className="h-8 w-8 rounded-full object-cover"
-                />
-                <div className="text-left">
-                  <div className="font-medium text-sm">{selectedAgent?.name}</div>
-                  <div className="text-xs text-slate-500">⭐ {selectedAgent?.rating}</div>
-                </div>
-              </div>
-              <ChevronDown className="h-5 w-5 text-slate-500" />
-            </button>
-
-            {showAgentDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
-                {agents.map((agent) => (
-                  <button
-                    key={agent.id}
-                    onClick={() => {
-                      setSelectedAgentId(agent.id)
-                      setShowAgentDropdown(false)
-                    }}
-                    className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${selectedAgentId === agent.id ? "bg-purple-50 text-purple-700" : "text-slate-800 hover:bg-slate-50"
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={agent.photo || "/placeholder.svg"}
-                        alt={agent.name}
-                        className="h-8 w-8 rounded-full object-cover"
-                      />
-                      <div className="text-left">
-                        <div className="font-medium text-sm">{agent.name}</div>
-                        <div className="text-xs text-slate-500">
-                          ⭐ {agent.rating} ({agent.reviews})
-                        </div>
-                      </div>
-                    </div>
-                    {selectedAgentId === agent.id && (
-                      <div className="h-2 w-2 rounded-full bg-purple-600" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto px-10 pb-10">
-          {selectedAgent && (
-            <AgentInfoCard
-              agent={selectedAgent}
-              onScheduleInspection={() => setIsScheduleModalOpen(true)}
-            />
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {selectedProperties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                property={property}
-                isFavorite={favorites.has(property.id)}
-                onToggleFavorite={toggleFavorite}
-                onClick={() => {
-                  setSelectedProperty(property)
-                  setShowQADrawer(false)
-                }}
+        {activeTab === "responses" ? (
+          <>
+            {/* Desktop Agent Tabs */}
+            <div className="hidden md:block px-10 pb-6">
+              <AgentTabBar
+                agents={agents}
+                selectedAgentId={selectedAgentId}
+                onSelectAgent={setSelectedAgentId}
               />
-            ))}
+            </div>
+
+            {/* Mobile Agent Dropdown */}
+            <div className="md:hidden px-6 pb-4">
+              <div className="relative">
+                <button
+                  onClick={() => setShowAgentDropdown(!showAgentDropdown)}
+                  className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={selectedAgent?.photo || "/placeholder.svg"}
+                      alt={selectedAgent?.name}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                    <div className="text-left">
+                      <div className="font-medium text-sm">{selectedAgent?.name}</div>
+                      <div className="text-xs text-slate-500">⭐ {selectedAgent?.rating}</div>
+                    </div>
+                  </div>
+                  <ChevronDown className="h-5 w-5 text-slate-500" />
+                </button>
+
+                {showAgentDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
+                    {agents.map((agent) => (
+                      <button
+                        key={agent.id}
+                        onClick={() => {
+                          setSelectedAgentId(agent.id)
+                          setShowAgentDropdown(false)
+                        }}
+                        className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${selectedAgentId === agent.id ? "bg-purple-50 text-purple-700" : "text-slate-800 hover:bg-slate-50"
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={agent.photo || "/placeholder.svg"}
+                            alt={agent.name}
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                          <div className="text-left">
+                            <div className="font-medium text-sm">{agent.name}</div>
+                            <div className="text-xs text-slate-500">
+                              ⭐ {agent.rating} ({agent.reviews})
+                            </div>
+                          </div>
+                        </div>
+                        {selectedAgentId === agent.id && (
+                          <div className="h-2 w-2 rounded-full bg-purple-600" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-y-auto px-10 pb-10">
+              {agents.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                  <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-8 h-8 text-slate-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-800">No responses yet</h3>
+                    <p className="text-slate-500 max-w-sm mx-auto mt-1">
+                      Agents haven't responded to your request yet. Check out our recommended properties in the meantime!
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setActiveTab("recommendations")}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    View Recommendations
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  {selectedAgent && (
+                    <AgentInfoCard
+                      agent={selectedAgent}
+                      onScheduleInspection={() => setIsScheduleModalOpen(true)}
+                    />
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {selectedProperties.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        isFavorite={favorites.has(property.id)}
+                        onToggleFavorite={toggleFavorite}
+                        onClick={() => {
+                          setSelectedProperty(property)
+                          setShowQADrawer(false)
+                        }}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 overflow-y-auto px-10 pb-10">
+            <RecommendedPropertiesTab
+              favorites={recommendationFavorites}
+              toggleFavorite={toggleRecommendationFavorite}
+              onExpressInterest={handleExpressInterest}
+            />
           </div>
-        </div>
+        )}
       </main>
-
-
 
       <PropertyModal
         property={selectedProperty}
