@@ -35,8 +35,27 @@ export default function ClientLayout({
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex items-center gap-2">
-            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
-            <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+            {/* Show Logo only if no specific page title match or if sidebar is open (though sidebar covers this) */}
+            {(() => {
+              const getTitle = () => {
+                if (pathname === '/client/dashboard') return 'Dashboard'
+                if (pathname === '/client/requests') return 'Requests'
+                if (pathname === '/client/inspections') return 'My Inspections'
+                return null
+              }
+              const title = getTitle()
+
+              if (title) {
+                return <span className="font-bold text-slate-800 text-xl">{title}</span>
+              }
+
+              return (
+                <>
+                  <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
+                  <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+                </>
+              )
+            })()}
           </div>
         </div>
         <div className="flex items-center gap-4">

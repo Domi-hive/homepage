@@ -47,8 +47,30 @@ export default function AgentLayout({
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex items-center gap-2">
-            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
-            <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+            {/* Show Logo only if no specific page title match or if sidebar is open (though sidebar covers this) */}
+            {/* Actually user wants Title to replace Logo when menu is closed. */}
+            {(() => {
+              const getTitle = () => {
+                if (pathname === '/agent/dashboard') return 'Dashboard'
+                if (pathname === '/agent/client-requests') return 'Client Requests'
+                if (pathname === '/agent/marketplace') return 'Listings Marketplace'
+                // Check for sub-routes if necessary, or default
+                if (pathname?.startsWith('/agent/client-requests/')) return 'Response'
+                return null
+              }
+              const title = getTitle()
+
+              if (title) {
+                return <span className="font-bold text-slate-800 text-xl">{title}</span>
+              }
+
+              return (
+                <>
+                  <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
+                  <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+                </>
+              )
+            })()}
           </div>
         </div>
         <div className="flex items-center gap-4">

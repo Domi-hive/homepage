@@ -169,8 +169,8 @@ export default function ClientRequests() {
         <header className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Client Requests</h1>
-              <p className="text-slate-500 dark:text-slate-400 mt-1">Incoming requests from clients looking for properties</p>
+              <h1 className="text-4xl font-bold text-slate-800 dark:text-white hidden md:block">Client Requests</h1>
+
             </div>
           </div>
           <div className="hidden md:flex items-center gap-6">

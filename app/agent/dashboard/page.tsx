@@ -35,7 +35,7 @@ export default function Dashboard() {
       <div className="relative z-10 p-8 h-full overflow-y-auto">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Dashboard</h1>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <ThemeToggle />

@@ -11,8 +11,8 @@ export default function ClientHeader({ title, subtitle }: ClientHeaderProps) {
     return (
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
             <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 leading-8 m-0">{title}</h1>
-                <p className="text-base text-slate-600 leading-6 m-0 mt-1">{subtitle}</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 leading-8 m-0 hidden md:block">{title}</h1>
+
             </div>
             <div className="flex items-center gap-6 self-end md:self-auto">
                 <div className="hidden md:flex items-center gap-6">

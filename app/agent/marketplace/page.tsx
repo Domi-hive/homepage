@@ -158,8 +158,8 @@ export default function MarketplacePage() {
       <main className="flex-1 p-10 overflow-y-auto relative z-10">
         <header className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Listings Marketplace</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">Explore available properties from various agents</p>
+            <h1 className="text-4xl font-bold text-slate-800 dark:text-white hidden md:block">Listings Marketplace</h1>
+
           </div>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
@@ -225,8 +225,8 @@ export default function MarketplacePage() {
                     src={listing.image}
                   />
                   <div className={`absolute top-4 left-4 text-white text-sm font-bold px-3 py-1 rounded-full backdrop-blur-sm ${listing.matchPercentage >= 90 ? 'bg-green-500/80' :
-                      listing.matchPercentage >= 80 ? 'bg-green-500/80' :
-                        'bg-yellow-500/80'
+                    listing.matchPercentage >= 80 ? 'bg-green-500/80' :
+                      'bg-yellow-500/80'
                     }`}>
                     {listing.matchPercentage}% match
                   </div>
