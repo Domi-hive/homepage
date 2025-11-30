@@ -1,0 +1,326 @@
+"use client"
+
+import React, { useState, useMemo } from 'react';
+import { Bell, PlusCircle, ChevronLeft, ChevronRight, Filter, Search, X, ToggleRight, ToggleLeft, RefreshCw } from 'lucide-react';
+import StatsBanner from '@/components/agent/my-listings/StatsBanner';
+import ListingCard from '@/components/agent/my-listings/ListingCard';
+import MyListingsFilterSidebar from '@/components/agent/my-listings/MyListingsFilterSidebar';
+import AddPropertyDrawer from '@/components/agent/my-listings/AddPropertyDrawer';
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+
+export default function MyListingsPage() {
+    const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+    const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [filters, setFilters] = useState({
+        referralStatus: "all" as "all" | "on" | "off",
+        updateStatus: "all" as "all" | "up-to-date" | "stale",
+        availability: "all" as "all" | "available" | "unavailable",
+        location: null as string | null,
+        sortBy: "last-updated" as "last-updated" | "price-high-low" | "price-low-high",
+    })
+    const [presets, setPresets] = useState<{ name: string; filters: any }[]>([])
+
+    const listings = [
+        {
+            id: '1',
+            title: '3-Bedroom Duplex in Maitama',
+            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjY0TlcynzUAUN3sNYA4umxtnJloi4Hp8qnv8icv_07pvR2UQf9Tjmrn76TlGf74Uk_FL0FxwjOX2cgeCdknGoqDsXX1zM56B3gzp6F18Aq6RIIu3tYL7OPaMEyQ88T8J_yRCgEPK_BD2qyE7oJRsNxcBKP6C_c9lIiZN9CkOSlo1wkgj8McE3srVf0k8DPPCmdawXFWvZzKjgtfGIKq6Uung2Q9hkCJ88C4M6ioEkPDLXSh2RT6CMtwsEhRwHnzbat70fislUAg',
+            location: 'Maitama, Abuja',
+            price: '₦3.5M',
+            beds: 3,
+            baths: 2,
+            sqft: 150,
+            lastUpdated: '45 days ago',
+            isStale: true,
+            isAvailable: true,
+            referralsOn: true,
+        },
+        {
+            id: '2',
+            title: 'Luxury Penthouse',
+            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBU-kpzbTcKSUdziXUX4RcNGoS1S-ZUuzTwJVrIXs26xnGYGOON1EbW6vQ0F8Ve7wjOhHrLeybm62rDqFZIYebrOqbN_iTH455ix-dsrsBWtvtnNiMVaAIIz5FNF_x7y8q3o9lRMWNZ0on06H4AaL9xhzj04Ywxy4bbTT141VFuZ38uPeEvczwzV8ieJedKTEyiBfIaXJhZOgbstqtX63STn8n_kMqueqAYKSFyyQk_5pCYuAr5ZstMvNMGpqCSkTxcHULPX-RREA',
+            location: 'Victoria Island, Lagos',
+            price: '₦5.5M',
+            beds: 4,
+            baths: 3,
+            sqft: 220,
+            lastUpdated: '2 days ago',
+            isStale: false,
+            isAvailable: false,
+            referralsOn: false,
+        },
+        {
+            id: '3',
+            title: 'Cozy Apartment',
+            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDT-NOSkrt7wACdcbB2hOQhcFoq0KpuWqXa8kkBeLgBSdTi4WUerLmipv12Evf_YQZI5bL-2X5fbQU0Dk1Hskhpj0Xr9JSywsNFUMbbRCSkIBrcOU2iGc1pJCKXojogPhObrQxypdqXZHMxRaLNhDPTiaaXe37wzp7zRUTXwLVB_scAfFAa3eTHEJg_DRWjl0PdI9_7ITBA80X11dwHJyh06AW9u64LbvVXkeeSHxPnjEP8gJ3lgs58GTtuMHQfLNZlL-7hXIwrdQ',
+            location: 'Ikoyi, Lagos',
+            price: '₦2.8M',
+            beds: 2,
+            baths: 2,
+            sqft: 110,
+            lastUpdated: '10 days ago',
+            isStale: false,
+            isAvailable: true,
+            referralsOn: true,
+            activeResponses: 2,
+        },
+    ];
+
+    const handleFilterChange = (key: string, value: any) => {
+        setFilters((prev) => ({ ...prev, [key]: value }))
+    }
+
+    const handleSavePreset = (name: string) => {
+        setPresets((prev) => [...prev, { name, filters }])
+    }
+
+    const handleApplyPreset = (presetFilters: any) => {
+        setFilters(presetFilters)
+    }
+
+    const filteredListings = useMemo(() => {
+        return listings.filter((listing) => {
+            const matchesSearch =
+                listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                listing.location.toLowerCase().includes(searchQuery.toLowerCase())
+            const matchesReferral = filters.referralStatus === "all" || (filters.referralStatus === "on" ? listing.referralsOn : !listing.referralsOn)
+            const matchesUpdate = filters.updateStatus === "all" || (filters.updateStatus === "up-to-date" ? !listing.isStale : listing.isStale)
+            const matchesAvailability = filters.availability === "all" || (filters.availability === "available" ? listing.isAvailable : !listing.isAvailable)
+            const matchesLocation = !filters.location || listing.location.includes(filters.location)
+
+            return matchesSearch && matchesReferral && matchesUpdate && matchesAvailability && matchesLocation
+        })
+    }, [searchQuery, filters, listings])
+
+    const counts = useMemo(() => {
+        const referralCounts: Record<string, number> = { all: 0, on: 0, off: 0 }
+        const updateCounts: Record<string, number> = { all: 0, "up-to-date": 0, stale: 0 }
+        const availabilityCounts: Record<string, number> = { all: 0, available: 0, unavailable: 0 }
+        const locationCounts: Record<string, number> = {}
+
+        listings.forEach((listing) => {
+            referralCounts.all++
+            referralCounts[listing.referralsOn ? "on" : "off"]++
+
+            updateCounts.all++
+            updateCounts[listing.isStale ? "stale" : "up-to-date"]++
+
+            availabilityCounts.all++
+            availabilityCounts[listing.isAvailable ? "available" : "unavailable"]++
+
+            const loc = listing.location.split(',')[0].trim()
+            locationCounts[loc] = (locationCounts[loc] || 0) + 1
+        })
+
+        return { referralStatus: referralCounts, updateStatus: updateCounts, availability: availabilityCounts, location: locationCounts }
+    }, [listings])
+
+    const locations = Array.from(new Set(listings.map((l) => l.location.split(',')[0].trim())))
+
+    return (
+        <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
+            <div
+                className="absolute inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
+                style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
+            />
+
+            {/* Mobile Secondary Header */}
+            <div className="md:hidden sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                    className="shrink-0 text-slate-600 dark:text-slate-400"
+                >
+                    <Filter className="w-5 h-5" />
+                </Button>
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+                    <input
+                        className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white placeholder:text-slate-400"
+                        placeholder="Search..."
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            {/* Top Section: Header */}
+            <div className="relative z-10 px-10 pt-10 pb-6">
+                <header className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-4xl font-bold text-slate-800 dark:text-white">My Listings</h1>
+                        <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your properties and their availability.</p>
+                    </div>
+                    <div className="hidden md:flex items-center gap-6">
+                        <button className="relative text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+                            <Bell className="w-6 h-6" />
+                            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <img
+                                alt="User avatar"
+                                className="w-11 h-11 rounded-full"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
+                            />
+                            <div>
+                                <span className="font-semibold text-slate-800 dark:text-slate-100">Jane Doe</span>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Agent</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </header>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex flex-1 overflow-hidden relative z-10">
+                <MyListingsFilterSidebar
+                    isOpen={isFilterPanelOpen}
+                    onClose={() => setIsFilterPanelOpen(false)}
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    counts={counts}
+                    locations={locations}
+                    onSavePreset={handleSavePreset}
+                    presets={presets}
+                    onApplyPreset={handleApplyPreset}
+                />
+
+                <AddPropertyDrawer
+                    isOpen={isAddPropertyOpen}
+                    onClose={() => setIsAddPropertyOpen(false)}
+                />
+
+                <main className="flex-1 h-full overflow-y-auto flex flex-col">
+                    <div className="px-10 pb-20 pt-2 space-y-6">
+                        <StatsBanner />
+
+                        {/* Controls Bar */}
+                        <div className="hidden md:flex flex-row gap-4 justify-between items-center">
+                            <div className="flex items-center gap-3 w-full md:w-auto">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                                    className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                                >
+                                    <Filter className="w-4 h-4 mr-2" />
+                                    Filters
+                                </Button>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                                <div className="relative w-full md:w-96">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                                    <input
+                                        className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
+                                        placeholder="Search by title or address..."
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+                                <button
+                                    onClick={() => setIsAddPropertyOpen(true)}
+                                    className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-opacity shadow-lg shadow-purple-500/30 shrink-0"
+                                >
+                                    <PlusCircle className="w-5 h-5" />
+                                    <span>Add New Property</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Active Filters Chips */}
+                        <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+                            {filters.referralStatus !== "all" && (
+                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
+                                    Referrals: {filters.referralStatus}
+                                    <button onClick={() => handleFilterChange("referralStatus", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </Badge>
+                            )}
+                            {filters.updateStatus !== "all" && (
+                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-500/20 dark:text-orange-300">
+                                    Status: {filters.updateStatus}
+                                    <button onClick={() => handleFilterChange("updateStatus", "all")} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </Badge>
+                            )}
+                            {filters.availability !== "all" && (
+                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-500/20 dark:text-green-300">
+                                    Availability: {filters.availability}
+                                    <button onClick={() => handleFilterChange("availability", "all")} className="hover:bg-green-200 dark:hover:bg-green-500/30 rounded-full p-0.5">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </Badge>
+                            )}
+                            {filters.location && (
+                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
+                                    Location: {filters.location}
+                                    <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                </Badge>
+                            )}
+                            {(filters.referralStatus !== "all" || filters.updateStatus !== "all" || filters.availability !== "all" || filters.location) && (
+                                <button
+                                    onClick={() => setFilters({ referralStatus: "all", updateStatus: "all", availability: "all", location: null, sortBy: "last-updated" })}
+                                    className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                                >
+                                    Clear all
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Bulk Actions (from original design) */}
+                        <div className="flex flex-wrap items-center gap-4">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                                <input className="h-5 w-5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" type="checkbox" />
+                                <span className="font-semibold text-slate-600 dark:text-slate-300">Select All</span>
+                            </label>
+                            <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
+                                <ToggleRight className="w-5 h-5 text-green-500" /> Enable Referrals
+                            </button>
+                            <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
+                                <ToggleLeft className="w-5 h-5 text-red-500" /> Disable Referrals
+                            </button>
+                            <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
+                                <RefreshCw className="w-5 h-5" /> Update Selected
+                            </button>
+                            <p className="ml-auto text-sm font-semibold text-slate-500 dark:text-slate-400">
+                                Showing {filteredListings.length} of {listings.length} properties
+                            </p>
+                        </div>
+
+                        {/* Listings Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredListings.map((listing) => (
+                                <ListingCard key={listing.id} listing={listing} />
+                            ))}
+                        </div>
+
+                        {/* Pagination */}
+                        <div className="mt-8 flex justify-center items-center gap-2">
+                            <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
+                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
+                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
+                            <span className="text-slate-500 dark:text-slate-400">...</span>
+                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
+                            <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+}

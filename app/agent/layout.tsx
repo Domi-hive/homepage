@@ -22,6 +22,11 @@ export default function AgentLayout({
       icon: LayoutDashboard,
     },
     {
+      name: "My Listings",
+      href: "/agent/my-listings",
+      icon: FolderOpen,
+    },
+    {
       name: "Client Requests",
       href: "/agent/client-requests",
       icon: FolderOpen,
