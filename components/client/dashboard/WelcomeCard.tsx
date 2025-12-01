@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import RequestFormModal from './RequestFormModal';
+import RequestFormDrawer from './RequestFormDrawer';
 
 export default function WelcomeCard() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -25,7 +25,7 @@ export default function WelcomeCard() {
                         <p className="text-sm text-slate-600 leading-tight m-0 max-w-[50%]">Looking for anything new today?</p>
                         <button
                             type="button"
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => setIsDrawerOpen(true)}
                             className="bg-[#1567c3] shadow-sm border-none rounded-2xl px-4 py-2.5 text-white text-sm font-semibold cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
                         >
                             <Plus className="w-3.5 h-3.5" />
@@ -40,7 +40,7 @@ export default function WelcomeCard() {
                 {/* Desktop Button */}
                 <button
                     type="button"
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => setIsDrawerOpen(true)}
                     className="hidden md:flex bg-[#1567c3] shadow-[0_20px_40px_rgba(21,103,195,0.35)] border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(21,103,195,0.45)]"
                 >
                     <Plus className="w-4 h-4" />
@@ -48,7 +48,7 @@ export default function WelcomeCard() {
                 </button>
             </div>
 
-            <RequestFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <RequestFormDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
         </>
     );
 }
