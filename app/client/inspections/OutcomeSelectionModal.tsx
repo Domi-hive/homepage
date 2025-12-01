@@ -5,15 +5,22 @@ interface OutcomeSelectionModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (outcome: 'satisfied' | 'issues' | 'did_not_happen', details?: any) => void;
+    initialStep?: Step;
 }
 
 type Step = 'selection' | 'satisfied' | 'issues' | 'did_not_happen';
 
-export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit }: OutcomeSelectionModalProps) {
-    const [step, setStep] = useState<Step>('selection');
+export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit, initialStep = 'selection' }: OutcomeSelectionModalProps) {
+    const [step, setStep] = useState<Step>(initialStep);
     const [rating, setRating] = useState(0);
     const [issueDetails, setIssueDetails] = useState('');
     const [noShowReason, setNoShowReason] = useState('');
+
+    React.useEffect(() => {
+        if (isOpen) {
+            setStep(initialStep);
+        }
+    }, [isOpen, initialStep]);
 
     if (!isOpen) return null;
 
@@ -52,20 +59,6 @@ export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit }: Out
                     <p className="text-sm text-slate-500">Property not as described, etc.</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-amber-500" />
-            </button>
-
-            <button
-                onClick={() => setStep('did_not_happen')}
-                className="w-full bg-white hover:bg-red-50 border-2 border-slate-100 hover:border-red-200 p-4 rounded-2xl flex items-center gap-4 transition-all group text-left"
-            >
-                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <XCircle className="w-6 h-6 text-red-600" />
-                </div>
-                <div className="flex-1">
-                    <p className="font-bold text-slate-800 text-lg">Didn't Happen</p>
-                    <p className="text-sm text-slate-500">Agent didn't show, cancelled, etc.</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-red-500" />
             </button>
         </div>
     );

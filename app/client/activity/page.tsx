@@ -1,8 +1,8 @@
 'use client';
 
+import { useState } from 'react';
+import ClientHeader from '@/components/client/ClientHeader';
 import {
-    Calendar,
-    Building,
     Settings,
     ChevronDown,
     Bell,
@@ -15,6 +15,11 @@ import {
 } from 'lucide-react';
 
 export default function ClientActivityPage() {
+    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('All Categories');
+
+    const categories = ['All Categories', 'Q&A', 'Inspections', 'Request responses'];
+
     return (
         <div
             className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]"
@@ -24,29 +29,10 @@ export default function ClientActivityPage() {
                 style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
             />
             <div className="relative z-10 flex-1 p-10 overflow-y-auto h-full">
-                <header className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Activity</h1>
-                        <p className="text-slate-500 dark:text-slate-400 mt-1">Review all notifications and updates on your journey.</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center bg-white/60 dark:bg-slate-800/40 p-1 rounded-xl shadow-sm border border-white/50 dark:border-white/10">
-                            <button className="px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                <Calendar className="w-4 h-4" />
-                                Timeline View
-                            </button>
-                            <button className="px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 shadow">
-                                <Building className="w-4 h-4" />
-                                Property View
-                            </button>
-                        </div>
-                        <img
-                            alt="User avatar"
-                            className="w-11 h-11 rounded-full"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-                        />
-                    </div>
-                </header>
+                <ClientHeader
+                    title="Activity"
+                    subtitle="Review all notifications and updates on your journey."
+                />
 
                 <div className="mb-6">
                     <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-700/80">
@@ -62,12 +48,30 @@ export default function ClientActivityPage() {
                         </a>
                     </div>
                     <div className="py-4 flex items-center gap-3">
-                        <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
-                            All Categories <ChevronDown className="w-4 h-4" />
-                        </button>
-                        <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
-                            All Properties <ChevronDown className="w-4 h-4" />
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                                className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm transition-colors"
+                            >
+                                {selectedCategory} <ChevronDown className={`w-4 h-4 transition-transform ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                            {isCategoryDropdownOpen && (
+                                <div className="absolute top-full left-0 mt-2 w-48 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl shadow-lg border border-white/20 dark:border-white/10 overflow-hidden z-50">
+                                    {categories.map((category) => (
+                                        <button
+                                            key={category}
+                                            onClick={() => {
+                                                setSelectedCategory(category);
+                                                setIsCategoryDropdownOpen(false);
+                                            }}
+                                            className={`w-full text-left px-4 py-2 text-sm hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors ${selectedCategory === category ? 'text-purple-600 dark:text-purple-400 font-medium' : 'text-slate-600 dark:text-slate-300'}`}
+                                        >
+                                            {category}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
                             Last 7 days <ChevronDown className="w-4 h-4" />
                         </button>

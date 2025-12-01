@@ -28,6 +28,7 @@ import UpcomingInspectionCard from '@/components/client/inspections/UpcomingInsp
 export default function InspectionsPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
+    const [outcomeModalStep, setOutcomeModalStep] = useState<'selection' | 'did_not_happen'>('selection');
     const [selectedInspection, setSelectedInspection] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<'active' | 'upcoming'>('active');
 
@@ -131,11 +132,24 @@ export default function InspectionsPage() {
 
                                 <div className="flex flex-wrap items-center gap-3">
                                     <button
-                                        onClick={() => setIsOutcomeModalOpen(true)}
+                                        onClick={() => {
+                                            setOutcomeModalStep('selection');
+                                            setIsOutcomeModalOpen(true);
+                                        }}
                                         className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
                                     >
                                         <CheckCircle className="w-5 h-5" />
                                         <span>Mark as Complete</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setOutcomeModalStep('did_not_happen');
+                                            setIsOutcomeModalOpen(true);
+                                        }}
+                                        className="bg-red-50 border border-red-200 rounded-xl px-6 py-3 text-red-600 text-base font-medium cursor-pointer transition-colors hover:bg-red-100 flex items-center gap-2"
+                                    >
+                                        <XCircle className="w-5 h-5" />
+                                        <span>Didn't Happen</span>
                                     </button>
                                     <button className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
                                         <Navigation className="w-5 h-5 text-blue-500" />
@@ -299,6 +313,7 @@ export default function InspectionsPage() {
             <OutcomeSelectionModal
                 isOpen={isOutcomeModalOpen}
                 onClose={() => setIsOutcomeModalOpen(false)}
+                initialStep={outcomeModalStep}
                 onSubmit={(outcome, details) => {
                     console.log('Outcome submitted:', outcome, details);
                     setIsOutcomeModalOpen(false);
