@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Briefcase
 } from "lucide-react"
+import Link from "next/link"
 
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -43,11 +44,13 @@ export default function Dashboard() {
               <Bell className="w-6 h-6" />
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <img
-              alt="Jessica's avatar"
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-            />
+            <Link href="/agent/profile" className="hover:opacity-80 transition-opacity">
+              <img
+                alt="Jessica's avatar"
+                className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
+              />
+            </Link>
           </div>
         </header>
 

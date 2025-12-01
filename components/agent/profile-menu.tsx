@@ -46,14 +46,12 @@ export default function ProfileMenu({ onClose }: ProfileMenuProps) {
           </div>
           <button
             onClick={() => handleToggleReferrals(!referralsEnabled)}
-            className={`ml-2 relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              referralsEnabled ? "bg-green-500" : "bg-muted"
-            }`}
+            className={`ml-2 relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${referralsEnabled ? "bg-green-500" : "bg-muted"
+              }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                referralsEnabled ? "translate-x-6" : "translate-x-1"
-              }`}
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${referralsEnabled ? "translate-x-6" : "translate-x-1"
+                }`}
             />
           </button>
         </div>
@@ -71,10 +69,10 @@ export default function ProfileMenu({ onClose }: ProfileMenuProps) {
 
       {/* Menu Items */}
       <div className="space-y-2">
-        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-foreground">
+        <Link href="/agent/profile" className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-foreground">
           <Settings className="h-4 w-4" />
           <span className="text-sm">Account Settings</span>
-        </button>
+        </Link>
         <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted transition-colors text-destructive">
           <LogOut className="h-4 w-4" />
           <span className="text-sm">Logout</span>

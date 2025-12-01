@@ -3,7 +3,7 @@
 import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, FolderOpen, ShoppingBag, Menu, X, LogOut, Bell } from "lucide-react"
+import { LayoutDashboard, FolderOpen, ShoppingBag, Menu, X, LogOut, Bell, MessageSquare, Eye } from "lucide-react"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -17,22 +17,28 @@ export default function AgentLayout({
 
   const navItems = [
     {
-      name: "Dashboard",
+      label: "Dashboard",
       href: "/agent/dashboard",
       icon: LayoutDashboard,
     },
     {
-      name: "My Listings",
+      label: "My Listings",
       href: "/agent/my-listings",
       icon: FolderOpen,
     },
     {
-      name: "Client Requests",
+      label: "Client Requests",
       href: "/agent/client-requests",
       icon: FolderOpen,
     },
+
     {
-      name: "Listing Marketplace",
+      label: "Inspections",
+      href: "/agent/inspections",
+      icon: Eye,
+    },
+    {
+      label: "Listing Marketplace",
       href: "/agent/marketplace",
       icon: ShoppingBag,
     },
@@ -79,13 +85,15 @@ export default function AgentLayout({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <button type="button" className="text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+          <Link href="/agent/activity" className="text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
             <Bell className="w-5 h-5" />
-          </button>
+          </Link>
           <ThemeToggle />
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-            <span>JD</span>
-          </div>
+          <Link href="/agent/profile">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+              <span>JD</span>
+            </div>
+          </Link>
         </div>
       </div>
 
@@ -139,7 +147,7 @@ export default function AgentLayout({
                   }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
-                <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{item.name}</span>
+                <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{item.label}</span>
               </Link>
             )
           })}

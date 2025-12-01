@@ -3,7 +3,7 @@
 import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye, Bell } from "lucide-react"
+import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye, Bell, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -18,6 +18,7 @@ export default function ClientLayout({
   const navItems = [
     { href: "/client/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/client/requests", label: "Requests", icon: FolderOpen },
+
     { href: "/client/inspections", label: "Inspections", icon: Eye },
   ]
 
