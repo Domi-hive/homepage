@@ -5,7 +5,7 @@ import ClientHeader from '@/components/client/ClientHeader';
 import WelcomeCard from '@/components/client/dashboard/WelcomeCard';
 import StatsCards from '@/components/client/dashboard/StatsCards';
 import MatchedProperties from '@/components/client/dashboard/MatchedProperties';
-import RequestsSection from '@/components/client/dashboard/RequestsSection';
+
 
 export default function ClientDashboard() {
   return (
@@ -30,7 +30,7 @@ export default function ClientDashboard() {
             <WelcomeCard />
             <StatsCards />
             <MatchedProperties />
-            <RequestsSection />
+
           </div>
         </main>
       </div>

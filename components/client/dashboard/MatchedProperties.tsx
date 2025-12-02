@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Heart, ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
 const properties = [
@@ -44,6 +44,8 @@ const properties = [
 ];
 
 export default function MatchedProperties() {
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('en-NG', {
             style: 'currency',
@@ -52,28 +54,60 @@ export default function MatchedProperties() {
         }).format(price);
     };
 
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const container = scrollContainerRef.current;
+            const scrollAmount = container.clientWidth;
+            const newScrollLeft = direction === 'left'
+                ? container.scrollLeft - scrollAmount
+                : container.scrollLeft + scrollAmount;
+
+            container.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    };
+
     return (
         <div className="mb-10">
             <div className="flex items-start justify-between mb-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900 leading-8 m-0 mb-1">Matched Properties</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 leading-8 m-0 mb-1">Featured Properties</h2>
                     <p className="text-base text-slate-600 leading-6 m-0">
-                        Properties that meet your request preferences
+                        Handpicked properties for you
                     </p>
                 </div>
                 <div className="flex gap-3">
-                    <button type="button" className="w-10 h-10 border-none bg-white/80 rounded-full cursor-pointer flex items-center justify-center text-xl transition-colors hover:bg-white" aria-label="Previous">
+                    <button
+                        type="button"
+                        onClick={() => scroll('left')}
+                        className="w-10 h-10 border-none bg-white/80 rounded-full cursor-pointer flex items-center justify-center text-xl transition-colors hover:bg-white text-slate-700"
+                        aria-label="Previous"
+                    >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <button type="button" className="w-10 h-10 border-none bg-white/80 rounded-full cursor-pointer flex items-center justify-center text-xl transition-colors hover:bg-white" aria-label="Next">
+                    <button
+                        type="button"
+                        onClick={() => scroll('right')}
+                        className="w-10 h-10 border-none bg-white/80 rounded-full cursor-pointer flex items-center justify-center text-xl transition-colors hover:bg-white text-slate-700"
+                        aria-label="Next"
+                    >
                         <ArrowRight className="w-5 h-5" />
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-5">
+            <div
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto snap-x snap-mandatory gap-5 pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0 scrollbar-hide"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
                 {properties.map((property) => (
-                    <div key={property.id} className="bg-white/60 border border-white/50 rounded-[32px] overflow-hidden backdrop-blur-md">
+                    <div
+                        key={property.id}
+                        className="bg-white/60 border border-white/50 rounded-[32px] overflow-hidden backdrop-blur-md min-w-full md:min-w-[calc(33.333%-14px)] snap-center"
+                    >
                         <div className="relative w-full h-48 overflow-hidden">
                             <img
                                 src={property.image}
@@ -94,8 +128,8 @@ export default function MatchedProperties() {
                             <div className="mb-4">
                                 <span
                                     className={`inline-block px-3 py-1.5 rounded-full text-xs font-medium leading-4 ${property.status === 'available'
-                                            ? 'bg-green-100 text-green-700'
-                                            : 'bg-orange-100 text-orange-700'
+                                        ? 'bg-green-100 text-green-700'
+                                        : 'bg-orange-100 text-orange-700'
                                         }`}
                                 >
                                     {property.status === 'available'
