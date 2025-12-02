@@ -10,7 +10,7 @@ import {
     MapPin,
     Navigation,
     Phone,
-    MessageCircle,
+
     Ban,
     Info,
     Hourglass,
@@ -29,13 +29,16 @@ import { useSearchParams } from 'next/navigation';
 
 export default function InspectionsPage() {
     const searchParams = useSearchParams();
-    const initialTab = searchParams.get('tab') === 'upcoming' ? 'upcoming' : 'active';
+    const tabParam = searchParams.get('tab');
+    let initialTab: 'active' | 'upcoming' | 'history' = 'active';
+    if (tabParam === 'upcoming') initialTab = 'upcoming';
+    if (tabParam === 'history') initialTab = 'history';
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
     const [outcomeModalStep, setOutcomeModalStep] = useState<'selection' | 'did_not_happen'>('selection');
     const [selectedInspection, setSelectedInspection] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<'active' | 'upcoming'>(initialTab);
+    const [activeTab, setActiveTab] = useState<'active' | 'upcoming' | 'history'>(initialTab);
 
     const handleViewInspection = (inspection: any) => {
         setSelectedInspection(inspection);
@@ -76,9 +79,18 @@ export default function InspectionsPage() {
                         >
                             Upcoming (2)
                         </button>
+                        <button
+                            onClick={() => setActiveTab('history')}
+                            className={`px-4 py-3 font-medium transition-colors ${activeTab === 'history'
+                                ? 'text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                                }`}
+                        >
+                            History
+                        </button>
                     </div>
 
-                    {activeTab === 'active' ? (
+                    {activeTab === 'active' && (
                         <>
                             {/* Active Inspection Card */}
                             <div className="bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
@@ -164,10 +176,7 @@ export default function InspectionsPage() {
                                         <Phone className="w-5 h-5 text-green-500" />
                                         <span>Call</span>
                                     </button>
-                                    <button className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900 flex items-center gap-2">
-                                        <MessageCircle className="w-5 h-5 text-green-600" />
-                                        <span>WhatsApp</span>
-                                    </button>
+
                                 </div>
                             </div>
 
@@ -175,102 +184,106 @@ export default function InspectionsPage() {
                                 <Info className="w-5 h-5 shrink-0 mt-0.5" />
                                 <p className="text-sm font-medium leading-relaxed">You can only have one active inspection at a time. Complete your current inspection to start a new one.</p>
                             </div>
+                        </>
+                    )}
 
-                            {/* History */}
-                            <div>
-                                <h3 className="text-2xl font-bold text-slate-800 mb-6 px-2">Inspection History (4)</h3>
-                                <div className="space-y-4">
-                                    {[
-                                        {
-                                            id: 1,
-                                            icon: Hourglass,
-                                            iconColor: "text-orange-600",
-                                            iconBg: "bg-orange-100",
-                                            title: "2 properties in Ajah",
-                                            subtitle: "Pending completion on 26 Nov 2025 • Sarah Smith",
-                                            status: 'pending',
-                                            isRated: false
-                                        },
-                                        {
-                                            id: 2,
-                                            icon: CheckCircle,
-                                            iconColor: "text-green-600",
-                                            iconBg: "bg-green-100",
-                                            title: "1 property in Victoria Island",
-                                            subtitle: "Completed on 23 Nov 2025 • Tunde Bakare",
-                                            status: 'completed',
-                                            isRated: false
-                                        },
-                                        {
-                                            id: 3,
-                                            icon: MinusCircle,
-                                            iconColor: "text-red-600",
-                                            iconBg: "bg-red-100",
-                                            title: "1 property in Magodo",
-                                            subtitle: "No-show on 21 Nov 2025 • Grace Obi",
-                                            status: 'no-show',
-                                            isRated: false
-                                        },
-                                        {
-                                            id: 4,
-                                            icon: XCircle,
-                                            iconColor: "text-slate-600",
-                                            iconBg: "bg-slate-200",
-                                            title: "1 property in Lekki Phase 1",
-                                            subtitle: "Cancelled on 19 Nov 2025 • David Eze",
-                                            status: 'cancelled',
-                                            isRated: false
-                                        }
-                                    ].map((item, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={() => handleViewInspection(item)}
-                                            className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl shadow-sm border border-white/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/80 transition-colors cursor-pointer group"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className={`w-12 h-12 rounded-full ${item.iconBg} flex items-center justify-center shrink-0`}>
-                                                    <item.icon className={`w-6 h-6 ${item.iconColor}`} />
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-slate-800 text-lg">{item.title}</p>
-                                                    <p className="text-sm text-slate-500 font-medium">{item.subtitle}</p>
-                                                </div>
+                    {activeTab === 'history' && (
+                        /* History */
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-800 mb-6 px-2">Inspection History (4)</h3>
+                            <div className="space-y-4">
+                                {[
+                                    {
+                                        id: 1,
+                                        icon: Hourglass,
+                                        iconColor: "text-orange-600",
+                                        iconBg: "bg-orange-100",
+                                        title: "2 properties in Ajah",
+                                        subtitle: "Pending completion on 26 Nov 2025 • Sarah Smith",
+                                        status: 'pending',
+                                        isRated: false
+                                    },
+                                    {
+                                        id: 2,
+                                        icon: CheckCircle,
+                                        iconColor: "text-green-600",
+                                        iconBg: "bg-green-100",
+                                        title: "1 property in Victoria Island",
+                                        subtitle: "Completed on 23 Nov 2025 • Tunde Bakare",
+                                        status: 'completed',
+                                        isRated: false
+                                    },
+                                    {
+                                        id: 3,
+                                        icon: MinusCircle,
+                                        iconColor: "text-red-600",
+                                        iconBg: "bg-red-100",
+                                        title: "1 property in Magodo",
+                                        subtitle: "No-show on 21 Nov 2025 • Grace Obi",
+                                        status: 'no-show',
+                                        isRated: false
+                                    },
+                                    {
+                                        id: 4,
+                                        icon: XCircle,
+                                        iconColor: "text-slate-600",
+                                        iconBg: "bg-slate-200",
+                                        title: "1 property in Lekki Phase 1",
+                                        subtitle: "Cancelled on 19 Nov 2025 • David Eze",
+                                        status: 'cancelled',
+                                        isRated: false
+                                    }
+                                ].map((item, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => handleViewInspection(item)}
+                                        className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl shadow-sm border border-white/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/80 transition-colors cursor-pointer group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-12 h-12 rounded-full ${item.iconBg} flex items-center justify-center shrink-0`}>
+                                                <item.icon className={`w-6 h-6 ${item.iconColor}`} />
                                             </div>
-                                            <div className="flex items-center gap-3 self-end md:self-auto">
-                                                {item.status === 'pending' && (
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            // Handle mark as complete
-                                                        }}
-                                                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
-                                                    >
-                                                        Mark as Complete
-                                                    </button>
-                                                )}
-                                                {item.status === 'completed' && !item.isRated && (
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            // Handle rate agent
-                                                        }}
-                                                        className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-1"
-                                                    >
-                                                        <Star className="w-4 h-4 fill-current" />
-                                                        <span>Rate Agent</span>
-                                                    </button>
-                                                )}
-                                                <div className="flex items-center gap-1 font-bold text-purple-600 transition-opacity">
-                                                    <span>View</span>
-                                                    <ChevronRight className="w-5 h-5" />
-                                                </div>
+                                            <div>
+                                                <p className="font-bold text-slate-800 text-lg">{item.title}</p>
+                                                <p className="text-sm text-slate-500 font-medium">{item.subtitle}</p>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="flex items-center gap-3 self-end md:self-auto">
+                                            {item.status === 'pending' && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        // Handle mark as complete
+                                                    }}
+                                                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+                                                >
+                                                    Mark as Complete
+                                                </button>
+                                            )}
+                                            {item.status === 'completed' && !item.isRated && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        // Handle rate agent
+                                                    }}
+                                                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-1"
+                                                >
+                                                    <Star className="w-4 h-4 fill-current" />
+                                                    <span>Rate Agent</span>
+                                                </button>
+                                            )}
+                                            <div className="flex items-center gap-1 font-bold text-purple-600 transition-opacity">
+                                                <span>View</span>
+                                                <ChevronRight className="w-5 h-5" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        </>
-                    ) : (
+                        </div>
+                    )}
+
+                    {activeTab === 'upcoming' && (
                         <div className="space-y-6">
                             <UpcomingInspectionCard
                                 date={{
