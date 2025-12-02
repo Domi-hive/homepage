@@ -53,7 +53,7 @@ export default function ClientRequests() {
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                     }`}
                 >
-                  History
+                  Archive
                 </button>
               </div>
 
