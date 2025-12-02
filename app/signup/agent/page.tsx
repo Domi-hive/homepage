@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
+
 import { useState } from 'react';
 
 export default function AgentSignupPage() {
@@ -22,14 +22,6 @@ export default function AgentSignupPage() {
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-violet-200 to-blue-200 dark:from-violet-900 dark:to-blue-900">
             <div className="w-full max-w-6xl mx-auto">
-                <header className="mb-8">
-                    <div className="flex items-center space-x-3">
-                        <div className="bg-blue-500 p-2 rounded-lg shadow-md">
-                            <span className="material-icons text-white text-2xl">home</span>
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">DomiHive</h1>
-                    </div>
-                </header>
                 <main className="grid lg:grid-cols-2 gap-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden">
                     <div className="relative hidden lg:block rounded-l-2xl overflow-hidden">
                         <img
@@ -43,129 +35,111 @@ export default function AgentSignupPage() {
                             <p className="text-lg text-gray-200">Connect with clients, manage your listings, and grow your real estate business with our powerful tools.</p>
                         </div>
                     </div>
-                    <div className="p-8 md:p-12 flex flex-col justify-center">
-                        <div className="max-w-md mx-auto w-full">
-                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create your Agent Account</h2>
-                            <p className="text-gray-600 dark:text-gray-400 mb-8">Let's get you started on growing your business.</p>
-                            <form action="#" className="space-y-6" method="POST">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300" htmlFor="full-name">Full Name</label>
-                                    <div className="mt-1">
-                                        <input
-                                            autoComplete="name"
-                                            className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-[#A78BFA] focus:border-[#A78BFA] py-3 px-4"
-                                            id="full-name"
-                                            name="full-name"
-                                            placeholder="John Doe"
-                                            type="text"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300" htmlFor="email">Email</label>
-                                    <div className="mt-1">
-                                        <input
-                                            autoComplete="email"
-                                            className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-[#A78BFA] focus:border-[#A78BFA] py-3 px-4"
-                                            id="email"
-                                            name="email"
-                                            placeholder="you@example.com"
-                                            type="email"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300" htmlFor="phone-number">Phone Number</label>
-                                    <div className="mt-1 flex rounded-lg shadow-sm">
-                                        <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <img
-                                                    alt="Nigerian flag"
-                                                    className="h-5 w-5 rounded-sm"
-                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuABfxbwUqBO9wr257CA0QYZUYKLsycph6UEF9TaH5lkhMwjdhUmXj2tLiXrwqMrB8w6K1rYQa-w7xK0vJrG4Sr3q9rB-u9gf0tHKgkB0eyOsorZRaqWza91Gkea5K-k8pOHx5Tu1FMNcfcCFNYyd-Maem-DueVmQNDNknVOHA1PxfjXoXSFy1_S9t29lsJJ_OZSwwN1dGJx7h-txliCU2scpO0r00kYhObRN6CrqkKTRxmOe66AfkeVSpMclRt1AGuhHDQji8WulA"
-                                                />
-                                            </div>
-                                            <select
-                                                className="pl-10 pr-8 block w-full rounded-none rounded-l-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-[#A78BFA] focus:border-[#A78BFA] py-3"
-                                                id="country-code"
-                                                name="country-code"
-                                            >
-                                                <option>+234</option>
-                                                <option>+1</option>
-                                                <option>+44</option>
-                                            </select>
-                                        </div>
-                                        <input
-                                            autoComplete="tel"
-                                            className="block w-full rounded-none rounded-r-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-[#A78BFA] focus:border-[#A78BFA] py-3 px-4"
-                                            id="phone-number"
-                                            name="phone-number"
-                                            placeholder="801 234 5678"
-                                            type="tel"
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300" htmlFor="password">Password</label>
-                                    <div className="mt-1">
-                                        <input
-                                            autoComplete="new-password"
-                                            className="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-[#A78BFA] focus:border-[#A78BFA] py-3 px-4"
-                                            id="password"
-                                            name="password"
-                                            placeholder="••••••••"
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-between mt-2">
-                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                            {strength > 3 ? 'Strong' : strength > 1 ? 'Medium' : 'Weak'}
-                                        </span>
-                                        <div className="flex items-center space-x-1">
-                                            {[1, 2, 3, 4].map((i) => (
-                                                <div
-                                                    key={i}
-                                                    className={`h-1 w-8 rounded-full transition-colors ${strength >= i
-                                                            ? 'bg-red-300' // Using red as per reference HTML "filled" class color #fca5a5
-                                                            : 'bg-gray-200 dark:bg-gray-600'
-                                                        }`}
-                                                    style={{
-                                                        backgroundColor: strength >= i ? '#fca5a5' : undefined
-                                                    }}
-                                                ></div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center">
-                                    <input
-                                        className="h-4 w-4 text-[#A78BFA] focus:ring-[#A78BFA] border-gray-300 dark:border-gray-600 rounded"
-                                        id="terms"
-                                        name="terms"
-                                        type="checkbox"
-                                    />
-                                    <label className="ml-2 block text-sm text-gray-900 dark:text-gray-300" htmlFor="terms">
-                                        I agree to the <a className="font-medium text-[#A78BFA] hover:text-violet-500" href="#">Terms & Privacy</a>
-                                    </label>
-                                </div>
-                                <div>
-                                    <button
-                                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-[#A78BFA] hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A78BFA] transition-colors"
-                                        type="submit"
-                                    >
-                                        Create Account & Verify
-                                    </button>
-                                </div>
-                            </form>
-                            <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                                Already have an account?
-                                <Link className="font-medium text-[#A78BFA] hover:text-violet-500 ml-1" href="/login">
-                                    Log in
-                                </Link>
-                            </p>
+                    <div className="w-full p-6 sm:p-8 flex flex-col justify-center bg-white h-full overflow-y-auto">
+                        <div className="flex items-center justify-center gap-3 mb-8">
+                            <img
+                                alt="DomiHive Logo"
+                                className="w-10 h-10 rounded-lg"
+                                src="/landing/logo.png"
+                            />
+                            <span className="text-2xl font-bold text-slate-900">DomiHive</span>
                         </div>
+                        <div className="text-center mb-6">
+                            <h1 className="text-2xl font-bold text-slate-900">Create your Agent Account</h1>
+                            <p className="text-slate-500 text-sm mt-1">Let's get you started on growing your business.</p>
+                        </div>
+
+                        <form className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="first-name">First Name</label>
+                                    <input
+                                        className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                                        id="first-name"
+                                        name="first-name"
+                                        placeholder="John"
+                                        type="text"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="last-name">Last Name</label>
+                                    <input
+                                        className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                                        id="last-name"
+                                        name="last-name"
+                                        placeholder="Doe"
+                                        type="text"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="email">Email</label>
+                                <input
+                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                                    id="email"
+                                    name="email"
+                                    placeholder="you@example.com"
+                                    type="email"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="phone-number">Phone Number</label>
+                                <input
+                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                                    id="phone-number"
+                                    name="phone-number"
+                                    placeholder="0801 234 5678"
+                                    type="tel"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="password">Password</label>
+                                <input
+                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <div className="flex items-center justify-between mt-1.5">
+                                    <span className={`text-xs font-medium ${strength > 2 ? 'text-green-500' : strength > 1 ? 'text-yellow-500' : 'text-slate-400'}`}>
+                                        {strength > 3 ? 'Strong' : strength > 1 ? 'Medium' : 'Weak'}
+                                    </span>
+                                    <div className="flex items-center space-x-1">
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <div
+                                                key={i}
+                                                className={`w-8 h-1 rounded-full transition-colors ${strength >= i ? (strength > 2 ? 'bg-green-500' : 'bg-yellow-500') : 'bg-slate-200'}`}
+                                            ></div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                                    id="terms"
+                                    name="terms"
+                                    type="checkbox"
+                                />
+                                <label className="ml-2 block text-xs text-slate-500" htmlFor="terms">
+                                    I agree to the <a className="font-medium text-purple-600 hover:text-purple-700" href="#">Terms & Privacy</a>
+                                </label>
+                            </div>
+                            <div>
+                                <button
+                                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-[#C084FC] to-[#8B5CF6] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 transition-all duration-200"
+                                    type="submit"
+                                >
+                                    Create Account & Verify
+                                </button>
+                            </div>
+                            <p className="text-center text-xs text-slate-500">
+                                Already have an account? <Link className="font-medium text-purple-600 hover:text-purple-700" href="/login">Log in</Link>
+                            </p>
+                        </form>
                     </div>
                 </main>
             </div>

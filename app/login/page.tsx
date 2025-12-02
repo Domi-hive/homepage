@@ -68,12 +68,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="bg-white/60 backdrop-blur-lg rounded-3xl p-8 shadow-[0_10px_35px_0_rgba(100,100,150,0.15)] border border-white/50">
-                    <div className="bg-blue-100/50 rounded-full p-1.5 flex gap-2 text-sm font-semibold text-slate-600 mb-8 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.05)]">
-                        <button className="flex-1 text-center py-2.5 rounded-full bg-white shadow-md text-blue-600">Login</button>
-                        <Link href="/signup" className="flex-1 text-center py-2.5 rounded-full hover:bg-white/50 flex items-center justify-center">
-                            Sign Up
-                        </Link>
-                    </div>
+
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {error && (
