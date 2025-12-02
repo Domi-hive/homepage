@@ -358,8 +358,8 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                             type="button"
                                             onClick={() => togglePropertyType(option.id)}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-colors ${selectedTypes.has(option.id)
-                                                    ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-semibold border-2 border-purple-500'
-                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-200 dark:hover:bg-slate-700'
+                                                ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-semibold border-2 border-purple-500'
+                                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-200 dark:hover:bg-slate-700'
                                                 }`}
                                         >
                                             <span className="material-symbols-outlined text-base">{option.icon}</span>
@@ -394,7 +394,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                             type="submit"
                             form="request-form"
                             disabled={isLoading}
-                            className="w-full px-5 py-3 text-base font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center gap-2"
+                            className="w-full px-5 py-3 text-base font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center gap-2"
                         >
                             {isLoading ? (
                                 <>

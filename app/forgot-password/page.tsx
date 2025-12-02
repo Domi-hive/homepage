@@ -40,9 +40,11 @@ export default function ForgotPasswordPage() {
             <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]">
                 <div className="w-full max-w-md">
                     <div className="text-center mb-8">
-                        <div className="bg-blue-600 rounded-2xl p-4 w-16 h-16 mx-auto flex items-center justify-center shadow-lg mb-6">
-                            <span className="material-symbols-outlined text-white text-4xl">home</span>
-                        </div>
+                        <img
+                            alt="DomiHive company logo"
+                            className="h-16 w-16 mx-auto mb-6"
+                            src="/landing/logo.png"
+                        />
                         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Check your email</h1>
                         <p className="mt-2 text-slate-500 dark:text-slate-400">We've sent a password reset link to your email address.</p>
                     </div>
@@ -83,9 +85,11 @@ export default function ForgotPasswordPage() {
         <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]">
             <div className="w-full max-w-md">
                 <div className="flex flex-col items-center mb-8">
-                    <div className="bg-blue-600 rounded-2xl p-4 w-16 h-16 flex items-center justify-center shadow-lg mb-6">
-                        <span className="material-symbols-outlined text-white text-4xl">home</span>
-                    </div>
+                    <img
+                        alt="DomiHive company logo"
+                        className="h-16 w-16 mx-auto mb-6"
+                        src="/landing/logo.png"
+                    />
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white text-center">Forgot your password?</h1>
                     <p className="mt-2 text-slate-500 dark:text-slate-400 text-center">Enter your email and we'll send you a reset link.</p>
                 </div>

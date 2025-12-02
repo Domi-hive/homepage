@@ -26,7 +26,7 @@ export default function WelcomeCard() {
                         <button
                             type="button"
                             onClick={() => setIsDrawerOpen(true)}
-                            className="bg-[#1567c3] shadow-sm border-none rounded-2xl px-4 py-2.5 text-white text-sm font-semibold cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+                            className="bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/30 border-none rounded-2xl px-4 py-2.5 text-white text-sm font-semibold cursor-pointer flex items-center gap-1.5 whitespace-nowrap hover:opacity-90 transition-opacity"
                         >
                             <Plus className="w-3.5 h-3.5" />
                             <span>Create Request</span>
@@ -41,7 +41,7 @@ export default function WelcomeCard() {
                 <button
                     type="button"
                     onClick={() => setIsDrawerOpen(true)}
-                    className="hidden md:flex bg-[#1567c3] shadow-[0_20px_40px_rgba(21,103,195,0.35)] border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(21,103,195,0.45)]"
+                    className="hidden md:flex bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/30 border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-purple-500/40"
                 >
                     <Plus className="w-4 h-4" />
                     <span className="whitespace-nowrap">Create Property Request</span>

@@ -7,7 +7,6 @@ export default function ActiveRequestCard() {
         { value: '5', label: 'Agents Responded' },
         { value: '18', label: 'Properties' },
         { value: '3', label: 'Active Q&As' },
-        { value: '4', label: 'In Basket' },
     ];
 
     return (
@@ -26,7 +25,7 @@ export default function ActiveRequestCard() {
                 <Clock className="w-4 h-4" />
                 Created 2 days ago
             </p>
-            <div className="grid grid-cols-4 gap-4 mb-8 p-4 bg-white/50 rounded-2xl border border-white/50">
+            <div className="grid grid-cols-3 gap-4 mb-8 p-4 bg-white/50 rounded-2xl border border-white/50">
                 {stats.map((stat, index) => (
                     <div key={index} className="flex flex-col gap-1">
                         <p className="text-xl md:text-2xl font-bold text-slate-900 leading-8 m-0">{stat.value}</p>
