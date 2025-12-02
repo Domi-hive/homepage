@@ -214,19 +214,23 @@ export default function MarketplacePage() {
           <div>
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Listings Marketplace</h1>
           </div>
-          <div className="hidden md:flex items-center gap-6">
-            <ThemeToggle />
-            <button className="relative text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <Link href="/agent/profile" className="hover:opacity-80 transition-opacity">
-              <img
-                alt="Jessica's avatar"
-                className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-              />
-            </Link>
+          <div className="flex items-center gap-6 self-end md:self-auto">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/agent/activity" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+                <Bell className="w-6 h-6" />
+              </Link>
+              <ThemeToggle />
+            </div>
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/agent/profile">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
+                  <span className="header-user-initials">U</span>
+                </div>
+              </Link>
+              <div className="hidden md:flex flex-col">
+                <div className="text-base font-semibold text-slate-900 leading-6">User</div>
+              </div>
+            </div>
           </div>
         </header>
       </div>
