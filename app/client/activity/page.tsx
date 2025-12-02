@@ -17,6 +17,7 @@ import {
 export default function ClientActivityPage() {
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('All Categories');
+    const [activeTab, setActiveTab] = useState('All');
 
     const categories = ['All Categories', 'Q&A', 'Inspections', 'Request responses'];
 
@@ -37,10 +38,18 @@ export default function ClientActivityPage() {
                 <div className="mb-6">
                     <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-700/80">
                         <div className="flex items-center gap-2">
-                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">All</button>
-                            <button className="px-4 py-3 text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500">Action Required</button>
-                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">Updates</button>
-                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">Archive</button>
+                            {['All', 'Action Required', 'Updates'].map((tab) => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-4 py-3 font-medium transition-colors ${activeTab === tab
+                                        ? 'text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500'
+                                        : 'text-slate-500 dark:text-slate-400'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
                         </div>
                         <a className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-colors" href="#">
                             <Settings className="w-5 h-5" />

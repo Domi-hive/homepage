@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, ChevronDown, MessageCircle, X } from "lucide-react"
+import { ArrowLeft, ChevronDown, MessageCircle, X, Bell } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 import AgentSidebar from "@/components/client/responses/AgentSidebar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
@@ -212,26 +213,22 @@ export default function ResponsesPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {agents.map((agent) => (
-                <img
-                  key={agent.id}
-                  src={agent.photo}
-                  alt={agent.name}
-                  className="w-9 h-9 rounded-full border-2 border-white object-cover"
-                />
-              ))}
+          <div className="flex items-center gap-6 self-end md:self-auto">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/client/activity" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+                <Bell className="w-6 h-6" />
+              </Link>
+              <ThemeToggle />
             </div>
-            <div className="flex items-center gap-3 pl-2 border-l border-slate-300/50">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
-                U
+            <div className="hidden md:flex items-center gap-3">
+              <Link href="/client/profile">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
+                  <span className="header-user-initials">U</span>
+                </div>
+              </Link>
+              <div className="hidden md:flex flex-col">
+                <div className="text-base font-semibold text-slate-900 leading-6">User</div>
               </div>
-              <div>
-                <div className="font-semibold text-slate-800 text-sm">User</div>
-                <div className="text-xs text-slate-500">Tenant</div>
-              </div>
-              <ChevronDown className="w-5 h-5 text-slate-400" />
             </div>
           </div>
         </div>
