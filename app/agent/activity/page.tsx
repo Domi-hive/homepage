@@ -19,13 +19,13 @@ import Link from 'next/link';
 
 export default function AgentActivityPage() {
     return (
-        <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]">
+        <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] flex flex-col">
             <div
                 className="absolute inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
                 style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
             />
 
-            <div className="relative z-10 p-10 h-full overflow-y-auto">
+            <div className="relative z-10 px-10 pt-10 pb-6">
                 <header className="flex justify-between items-center mb-6">
                     <div>
                         <h1 className="text-4xl font-bold text-slate-800 dark:text-white">Activity</h1>
@@ -50,14 +50,16 @@ export default function AgentActivityPage() {
                         </div>
                     </div>
                 </header>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-10 pb-20 relative z-10">
 
                 <div className="mb-6">
                     <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-700/80">
                         <div className="flex items-center gap-2">
-                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">All</button>
-                            <button className="px-4 py-3 text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500">Action Required</button>
+                            <button className="px-4 py-3 text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500">All</button>
+                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">Action Required</button>
                             <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">Updates</button>
-                            <button className="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">Archive</button>
                         </div>
                         <a className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-colors" href="#">
                             <Settings className="w-5 h-5" />
@@ -68,9 +70,7 @@ export default function AgentActivityPage() {
                         <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
                             All Categories <ChevronDown className="w-4 h-4" />
                         </button>
-                        <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
-                            All Properties <ChevronDown className="w-4 h-4" />
-                        </button>
+
                         <button className="px-3 py-1 text-sm bg-white/70 dark:bg-slate-800/50 rounded-full flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 shadow-sm">
                             Last 7 days <ChevronDown className="w-4 h-4" />
                         </button>
@@ -98,9 +98,6 @@ export default function AgentActivityPage() {
                                                 <span className="text-sm font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">New Lead</span>
                                                 <p className="font-bold text-lg text-slate-800 dark:text-slate-100 mt-2">New client request from John Appleseed for a 2-bedroom apartment</p>
                                             </div>
-                                            <button className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
-                                                <ChevronUp className="w-6 h-6" />
-                                            </button>
                                         </div>
                                         <div className="mt-3 pr-8">
                                             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">The client is looking for properties in the Lekki Phase 1 area with a budget of $2,500/month.</p>
@@ -128,9 +125,6 @@ export default function AgentActivityPage() {
                                                 <span className="text-sm font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">Response Needed</span>
                                                 <p className="font-semibold text-slate-800 dark:text-slate-100 mt-2">Client asked a question about "123, Queen Street"</p>
                                             </div>
-                                            <button className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
-                                                <ChevronUp className="w-6 h-6" />
-                                            </button>
                                         </div>
                                         <div className="mt-3 pr-8">
                                             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">"Is it possible to schedule a viewing for this Saturday morning?" - Jane Doe</p>
@@ -164,9 +158,6 @@ export default function AgentActivityPage() {
                                                 <span className="text-sm font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300">Inspection Confirmed</span>
                                                 <p className="font-bold text-lg text-slate-800 dark:text-slate-100 mt-2">Inspection confirmed for 456, King Ave tomorrow at 2:00 PM</p>
                                             </div>
-                                            <button className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
-                                                <ChevronUp className="w-6 h-6" />
-                                            </button>
                                         </div>
                                         <div className="mt-3 pr-8">
                                             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Client Jane Doe has confirmed the inspection time. Please prepare the property accordingly.</p>
@@ -203,9 +194,6 @@ export default function AgentActivityPage() {
                                             <p className="text-xs text-slate-500 dark:text-slate-400">Client has paid the inspection fee for "Sunshine Villa".</p>
                                         </div>
                                     </div>
-                                    <button className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
-                                        <ChevronDown className="w-6 h-6" />
-                                    </button>
                                 </div>
                             </div>
 
@@ -224,9 +212,6 @@ export default function AgentActivityPage() {
                                             <p className="text-xs text-slate-500 dark:text-slate-400">The property status has changed to "Rented".</p>
                                         </div>
                                     </div>
-                                    <button className="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
-                                        <ChevronDown className="w-6 h-6" />
-                                    </button>
                                 </div>
                             </div>
                         </div>

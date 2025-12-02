@@ -216,28 +216,34 @@ export default function ClientRequests() {
         </header>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 bg-white/40 dark:bg-slate-900/40 p-1 rounded-xl backdrop-blur-sm w-fit">
+        <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-700/80">
           <button
             onClick={() => setActiveTab("incoming")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === "incoming"
-              ? "bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm"
-              : "text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50"
+            className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 ${activeTab === "incoming"
+              ? "text-slate-800 dark:text-slate-100 border-purple-500"
+              : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
           >
             Incoming
-            <span className="ml-2 px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs">
+            <span className={`ml-2 px-1.5 py-0.5 rounded-md text-xs ${activeTab === "incoming"
+              ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+              : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+              }`}>
               {MOCK_REQUESTS.filter(r => r.status === 'incoming').length}
             </span>
           </button>
           <button
             onClick={() => setActiveTab("responded")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === "responded"
-              ? "bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-sm"
-              : "text-slate-600 dark:text-slate-400 hover:bg-white/50 dark:hover:bg-slate-800/50"
+            className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 ${activeTab === "responded"
+              ? "text-slate-800 dark:text-slate-100 border-purple-500"
+              : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
           >
             Responded
-            <span className="ml-2 px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs">
+            <span className={`ml-2 px-1.5 py-0.5 rounded-md text-xs ${activeTab === "responded"
+              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+              : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+              }`}>
               {MOCK_REQUESTS.filter(r => r.status === 'responded').length}
             </span>
           </button>
