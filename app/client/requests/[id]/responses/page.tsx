@@ -237,25 +237,27 @@ export default function ResponsesPage() {
         </div>
 
         {/* Tabs */}
-        <div className="px-10 pb-6 flex gap-4">
-          <button
-            onClick={() => setActiveTab("responses")}
-            className={`px-6 py-2 rounded-full font-medium transition-colors ${activeTab === "responses"
-              ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
-              : "bg-white/40 text-slate-600 hover:bg-white/60"
-              }`}
-          >
-            Responses
-          </button>
-          <button
-            onClick={() => setActiveTab("recommendations")}
-            className={`px-6 py-2 rounded-full font-medium transition-colors ${activeTab === "recommendations"
-              ? "bg-purple-600 text-white shadow-lg shadow-purple-500/30"
-              : "bg-white/40 text-slate-600 hover:bg-white/60"
-              }`}
-          >
-            Recommendations
-          </button>
+        <div className="px-10 mb-6">
+          <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-700/80">
+            <button
+              onClick={() => setActiveTab("responses")}
+              className={`px-4 py-3 font-medium transition-colors ${activeTab === "responses"
+                ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                }`}
+            >
+              Responses
+            </button>
+            <button
+              onClick={() => setActiveTab("recommendations")}
+              className={`px-4 py-3 font-medium transition-colors ${activeTab === "recommendations"
+                ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500"
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                }`}
+            >
+              Recommendations
+            </button>
+          </div>
         </div>
 
         {activeTab === "responses" ? (

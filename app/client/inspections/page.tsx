@@ -51,22 +51,22 @@ export default function InspectionsPage() {
 
                 <div className="space-y-8">
                     {/* Tabs */}
-                    <div className="bg-white/60 backdrop-blur-sm p-1.5 rounded-xl shadow-sm inline-flex gap-1 border border-white/50 w-full md:w-auto">
+                    {/* Tabs */}
+                    <div className="flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-700/80">
                         <button
                             onClick={() => setActiveTab('active')}
-                            className={`flex-1 md:flex-none flex items-center justify-center gap-2 font-semibold py-2 px-6 rounded-lg transition-all ${activeTab === 'active'
-                                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-md shadow-purple-500/20'
-                                : 'text-slate-500 hover:bg-white/50'
+                            className={`px-4 py-3 font-medium transition-colors ${activeTab === 'active'
+                                ? 'text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                                 }`}
                         >
-                            <span>Active</span>
-                            {activeTab === 'active' && <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse"></div>}
+                            Active
                         </button>
                         <button
                             onClick={() => setActiveTab('upcoming')}
-                            className={`flex-1 md:flex-none font-semibold py-2 px-6 rounded-lg transition-all ${activeTab === 'upcoming'
-                                ? 'bg-white text-slate-800 shadow-md'
-                                : 'text-slate-500 hover:bg-white/50'
+                            className={`px-4 py-3 font-medium transition-colors ${activeTab === 'upcoming'
+                                ? 'text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
                                 }`}
                         >
                             Upcoming (2)
