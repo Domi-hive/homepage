@@ -188,16 +188,16 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
         <div className={`fixed inset-0 z-50 flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 h-[100dvh] bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
 
             {/* Drawer */}
             <div
-                className={`relative w-full max-w-lg bg-slate-50 dark:bg-[#1a1829] h-full flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative w-full max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 {/* Header */}
-                <div className="sticky top-0 z-10 p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
+                <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
                     <div className="flex justify-between items-center">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Create Property Request</h2>
@@ -238,7 +238,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                 <p className="text-xs text-slate-500 dark:text-slate-400">You can add up to 3 locations.</p>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div>
-                                        <select className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 p-2.5 text-slate-900 dark:text-white">
+                                        <select className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 py-2.5 pl-3 pr-10 text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center]">
                                             <option>Select State</option>
                                             <option>Abia</option>
                                             <option>Abuja (FCT)</option>
@@ -320,7 +320,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                         id="bedrooms"
                                         value={bedrooms}
                                         onChange={(e) => setBedrooms(e.target.value === '' ? '' : Number(e.target.value))}
-                                        className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 p-2.5 text-slate-900 dark:text-white"
+                                        className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 py-2.5 pl-3 pr-10 text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center]"
                                         required
                                     >
                                         {bedroomOptions.map(opt => (
@@ -336,7 +336,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                         id="tenure"
                                         value={tenure}
                                         onChange={(e) => setTenure(e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 p-2.5 text-slate-900 dark:text-white"
+                                        className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 py-2.5 pl-3 pr-10 text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center]"
                                         required
                                     >
                                         {tenureOptions.map(opt => (
@@ -389,7 +389,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
 
                 {/* Footer */}
                 {!success && (
-                    <div className="sticky bottom-0 z-10 p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800">
+                    <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800">
                         <button
                             type="submit"
                             form="request-form"
