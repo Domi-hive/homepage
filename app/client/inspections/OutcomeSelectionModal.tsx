@@ -8,13 +8,12 @@ interface OutcomeSelectionModalProps {
     initialStep?: Step;
 }
 
-type Step = 'selection' | 'satisfied' | 'issues' | 'did_not_happen';
+type Step = 'selection' | 'satisfied' | 'issues';
 
 export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit, initialStep = 'selection' }: OutcomeSelectionModalProps) {
     const [step, setStep] = useState<Step>(initialStep);
     const [rating, setRating] = useState(0);
     const [issueDetails, setIssueDetails] = useState('');
-    const [noShowReason, setNoShowReason] = useState('');
 
     React.useEffect(() => {
         if (isOpen) {
@@ -28,7 +27,6 @@ export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit, initi
         setStep('selection');
         setRating(0);
         setIssueDetails('');
-        setNoShowReason('');
     };
 
     const renderSelectionStep = () => (
@@ -127,42 +125,6 @@ export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit, initi
         </div>
     );
 
-    const renderDidNotHappenStep = () => (
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-xl font-bold text-slate-800">Why didn't it happen?</h3>
-                <p className="text-slate-500 mt-1">Select the main reason.</p>
-            </div>
-
-            <div className="space-y-3">
-                {['Agent didn\'t show up', 'I couldn\'t make it', 'Properties unavailable', 'Weather / Emergency', 'Other'].map((reason) => (
-                    <label key={reason} className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors">
-                        <input
-                            type="radio"
-                            name="noShowReason"
-                            value={reason}
-                            checked={noShowReason === reason}
-                            onChange={(e) => setNoShowReason(e.target.value)}
-                            className="w-5 h-5 text-red-600 border-slate-300 focus:ring-red-500"
-                        />
-                        <span className="font-medium text-slate-700">{reason}</span>
-                    </label>
-                ))}
-            </div>
-
-            <button
-                onClick={() => onSubmit('did_not_happen', { reason: noShowReason })}
-                disabled={!noShowReason}
-                className="w-full bg-red-600 hover:bg-red-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold py-3.5 px-6 rounded-xl transition-colors shadow-lg shadow-red-600/20"
-            >
-                Submit Report
-            </button>
-            <button onClick={handleBack} className="w-full text-slate-500 font-medium hover:text-slate-800">
-                Back
-            </button>
-        </div>
-    );
-
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in duration-200">
@@ -178,7 +140,6 @@ export default function OutcomeSelectionModal({ isOpen, onClose, onSubmit, initi
                 {step === 'selection' && renderSelectionStep()}
                 {step === 'satisfied' && renderSatisfiedStep()}
                 {step === 'issues' && renderIssuesStep()}
-                {step === 'did_not_happen' && renderDidNotHappenStep()}
             </div>
         </div>
     );

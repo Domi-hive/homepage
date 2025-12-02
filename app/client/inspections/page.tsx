@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import InspectionDetailsModal from './InspectionDetailsModal';
 import OutcomeSelectionModal from './OutcomeSelectionModal';
+import CancellationModal from './CancellationModal';
 import ClientHeader from '@/components/client/ClientHeader';
 import UpcomingInspectionCard from '@/components/client/inspections/UpcomingInspectionCard';
 
@@ -37,7 +38,8 @@ export default function InspectionsPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isOutcomeModalOpen, setIsOutcomeModalOpen] = useState(false);
-    const [outcomeModalStep, setOutcomeModalStep] = useState<'selection' | 'did_not_happen'>('selection');
+    const [isCancellationModalOpen, setIsCancellationModalOpen] = useState(false);
+    const [outcomeModalStep, setOutcomeModalStep] = useState<'selection'>('selection');
     const [selectedInspection, setSelectedInspection] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<'active' | 'upcoming' | 'history'>(initialTab);
     const [historyPage, setHistoryPage] = useState(1);
@@ -225,8 +227,7 @@ export default function InspectionsPage() {
                                     </button>
                                     <button
                                         onClick={() => {
-                                            setOutcomeModalStep('did_not_happen');
-                                            setIsOutcomeModalOpen(true);
+                                            setIsCancellationModalOpen(true);
                                         }}
                                         className="bg-red-50 border border-red-200 rounded-xl px-6 py-3 text-red-600 text-base font-medium cursor-pointer transition-colors hover:bg-red-100 flex items-center gap-2"
                                     >
@@ -395,6 +396,16 @@ export default function InspectionsPage() {
                     console.log('Outcome submitted:', outcome, details);
                     setIsOutcomeModalOpen(false);
                     // Here you would typically update the inspection status in your backend/state
+                }}
+            />
+
+            <CancellationModal
+                isOpen={isCancellationModalOpen}
+                onClose={() => setIsCancellationModalOpen(false)}
+                onSubmit={(details) => {
+                    console.log('Cancellation submitted:', details);
+                    setIsCancellationModalOpen(false);
+                    // Handle cancellation submission
                 }}
             />
         </div >

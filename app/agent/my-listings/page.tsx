@@ -235,48 +235,48 @@ export default function MyListingsPage() {
                         </div>
 
                         {/* Active Filters Chips */}
-                        <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-                            {filters.referralStatus !== "all" && (
-                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
-                                    Referrals: {filters.referralStatus}
-                                    <button onClick={() => handleFilterChange("referralStatus", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
-                                        <X className="w-3 h-3" />
-                                    </button>
-                                </Badge>
-                            )}
-                            {filters.updateStatus !== "all" && (
-                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-500/20 dark:text-orange-300">
-                                    Status: {filters.updateStatus}
-                                    <button onClick={() => handleFilterChange("updateStatus", "all")} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
-                                        <X className="w-3 h-3" />
-                                    </button>
-                                </Badge>
-                            )}
-                            {filters.availability !== "all" && (
-                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-500/20 dark:text-green-300">
-                                    Availability: {filters.availability}
-                                    <button onClick={() => handleFilterChange("availability", "all")} className="hover:bg-green-200 dark:hover:bg-green-500/30 rounded-full p-0.5">
-                                        <X className="w-3 h-3" />
-                                    </button>
-                                </Badge>
-                            )}
-                            {filters.location && (
-                                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
-                                    Location: {filters.location}
-                                    <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
-                                        <X className="w-3 h-3" />
-                                    </button>
-                                </Badge>
-                            )}
-                            {(filters.referralStatus !== "all" || filters.updateStatus !== "all" || filters.availability !== "all" || filters.location) && (
+                        {(filters.referralStatus !== "all" || filters.updateStatus !== "all" || filters.availability !== "all" || filters.location) && (
+                            <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+                                {filters.referralStatus !== "all" && (
+                                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
+                                        Referrals: {filters.referralStatus}
+                                        <button onClick={() => handleFilterChange("referralStatus", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </Badge>
+                                )}
+                                {filters.updateStatus !== "all" && (
+                                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-500/20 dark:text-orange-300">
+                                        Status: {filters.updateStatus}
+                                        <button onClick={() => handleFilterChange("updateStatus", "all")} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </Badge>
+                                )}
+                                {filters.availability !== "all" && (
+                                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-500/20 dark:text-green-300">
+                                        Availability: {filters.availability}
+                                        <button onClick={() => handleFilterChange("availability", "all")} className="hover:bg-green-200 dark:hover:bg-green-500/30 rounded-full p-0.5">
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </Badge>
+                                )}
+                                {filters.location && (
+                                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
+                                        Location: {filters.location}
+                                        <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </Badge>
+                                )}
                                 <button
                                     onClick={() => setFilters({ referralStatus: "all", updateStatus: "all", availability: "all", location: null, sortBy: "last-updated" })}
                                     className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
                                 >
                                     Clear all
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         {/* Bulk Actions (from original design) */}
                         <div className="flex flex-wrap items-center gap-4">
