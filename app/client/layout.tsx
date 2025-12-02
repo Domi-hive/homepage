@@ -2,7 +2,7 @@
 
 import type React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye, Bell, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -13,6 +13,7 @@ export default function ClientLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navItems = [
@@ -129,7 +130,8 @@ export default function ClientLayout({
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4">
           <button
-            className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors whitespace-nowrap overflow-hidden"
+            onClick={() => router.push('/')}
+            className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap overflow-hidden group/logout"
             aria-label="Log out"
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />
