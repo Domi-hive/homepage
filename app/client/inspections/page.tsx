@@ -128,7 +128,7 @@ export default function InspectionsPage() {
 
             <div className="flex flex-1 overflow-hidden relative z-10">
                 <main className="flex-1 h-full overflow-y-auto flex flex-col">
-                    <div className="px-4 md:px-10 pb-20 pt-2 space-y-6">
+                    <div className="px-4 md:px-10 pb-[50px] pt-2 space-y-6">
                         <div className="space-y-8">
                             {/* Tabs */}
                             {/* Tabs */}

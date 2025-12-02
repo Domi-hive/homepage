@@ -258,7 +258,7 @@ export default function ResponsesPage() {
         </div>
 
         {activeTab === "responses" ? (
-          <div className="flex flex-col md:flex-row gap-6 px-10 pb-10 h-full overflow-hidden">
+          <div className="flex flex-col md:flex-row gap-6 px-10 pb-[50px] h-full overflow-hidden">
             {/* Desktop Agent Sidebar */}
             <div className="hidden md:block h-full overflow-y-auto pr-2 custom-scrollbar">
               <AgentSidebar
