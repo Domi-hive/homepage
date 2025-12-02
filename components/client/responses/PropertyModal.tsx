@@ -17,6 +17,8 @@ interface Property {
     amenities: string[];
 }
 
+import AskQuestionModal from './AskQuestionModal';
+
 interface PropertyModalProps {
     property: Property | null;
     isOpen: boolean;
@@ -25,6 +27,7 @@ interface PropertyModalProps {
 
 export default function PropertyModal({ property, isOpen, onClose }: PropertyModalProps) {
     const [showDrawer, setShowDrawer] = useState(false);
+    const [showAskQuestionModal, setShowAskQuestionModal] = useState(false);
 
     if (!isOpen || !property) return null;
 
@@ -194,7 +197,10 @@ export default function PropertyModal({ property, isOpen, onClose }: PropertyMod
                         </div>
 
                         <div className="p-6 border-t border-slate-200/80 dark:border-slate-800/80 shrink-0">
-                            <button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50">
+                            <button
+                                onClick={() => setShowAskQuestionModal(true)}
+                                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50"
+                            >
                                 <PlusCircle className="w-5 h-5" />
                                 <span>Ask New Question</span>
                             </button>
@@ -202,6 +208,16 @@ export default function PropertyModal({ property, isOpen, onClose }: PropertyMod
                     </div>
                 </div>
             </div>
+
+            <AskQuestionModal
+                isOpen={showAskQuestionModal}
+                onClose={() => setShowAskQuestionModal(false)}
+                onSubmit={(question) => {
+                    console.log('Question submitted:', question);
+                    // Here you would typically send the question to the backend
+                    setShowAskQuestionModal(false);
+                }}
+            />
         </div>
     );
 }
