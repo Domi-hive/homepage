@@ -18,7 +18,8 @@ import {
     MinusCircle,
     XCircle,
     ChevronRight,
-    AlertTriangle
+    AlertTriangle,
+    ChevronLeft
 } from 'lucide-react';
 import InspectionDetailsModal from './InspectionDetailsModal';
 import OutcomeSelectionModal from './OutcomeSelectionModal';
@@ -39,6 +40,70 @@ export default function InspectionsPage() {
     const [outcomeModalStep, setOutcomeModalStep] = useState<'selection' | 'did_not_happen'>('selection');
     const [selectedInspection, setSelectedInspection] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<'active' | 'upcoming' | 'history'>(initialTab);
+    const [historyPage, setHistoryPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
+    const historyItems = [
+        {
+            id: 1,
+            icon: Hourglass,
+            iconColor: "text-orange-600",
+            iconBg: "bg-orange-100",
+            title: "2 properties in Ajah",
+            subtitle: "Pending completion on 26 Nov 2025 • Sarah Smith",
+            status: 'pending',
+            isRated: false
+        },
+        {
+            id: 2,
+            icon: CheckCircle,
+            iconColor: "text-green-600",
+            iconBg: "bg-green-100",
+            title: "1 property in Victoria Island",
+            subtitle: "Completed on 23 Nov 2025 • Tunde Bakare",
+            status: 'completed',
+            isRated: false
+        },
+        {
+            id: 3,
+            icon: MinusCircle,
+            iconColor: "text-red-600",
+            iconBg: "bg-red-100",
+            title: "1 property in Magodo",
+            subtitle: "No-show on 21 Nov 2025 • Grace Obi",
+            status: 'no-show',
+            isRated: false
+        },
+        {
+            id: 4,
+            icon: XCircle,
+            iconColor: "text-slate-600",
+            iconBg: "bg-slate-200",
+            title: "1 property in Lekki Phase 1",
+            subtitle: "Cancelled on 19 Nov 2025 • David Eze",
+            status: 'cancelled',
+            isRated: false
+        },
+        // Dummy data for pagination testing
+        { id: 5, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "3 properties in Maitama", subtitle: "Completed on 15 Nov 2025 • John Doe", status: 'completed', isRated: true },
+        { id: 6, icon: XCircle, iconColor: "text-slate-600", iconBg: "bg-slate-200", title: "1 property in Wuse II", subtitle: "Cancelled on 10 Nov 2025 • Jane Doe", status: 'cancelled', isRated: false },
+        { id: 7, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "2 properties in Gwarinpa", subtitle: "Completed on 05 Nov 2025 • Peter Pan", status: 'completed', isRated: false },
+        { id: 8, icon: MinusCircle, iconColor: "text-red-600", iconBg: "bg-red-100", title: "1 property in Jabi", subtitle: "No-show on 01 Nov 2025 • Mary Poppins", status: 'no-show', isRated: false },
+        { id: 9, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "4 properties in Asokoro", subtitle: "Completed on 25 Oct 2025 • Bruce Wayne", status: 'completed', isRated: true },
+        { id: 10, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "1 property in Katampe", subtitle: "Completed on 20 Oct 2025 • Clark Kent", status: 'completed', isRated: false },
+        { id: 11, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "2 properties in Central Area", subtitle: "Completed on 15 Oct 2025 • Diana Prince", status: 'completed', isRated: false },
+        { id: 12, icon: CheckCircle, iconColor: "text-green-600", iconBg: "bg-green-100", title: "3 properties in Guzape", subtitle: "Completed on 10 Oct 2025 • Barry Allen", status: 'completed', isRated: false },
+    ];
+
+    const totalHistoryPages = Math.ceil(historyItems.length / ITEMS_PER_PAGE);
+    const startHistoryIndex = (historyPage - 1) * ITEMS_PER_PAGE;
+    const currentHistoryItems = historyItems.slice(startHistoryIndex, startHistoryIndex + ITEMS_PER_PAGE);
+
+    const handleHistoryPageChange = (page: number) => {
+        if (page >= 1 && page <= totalHistoryPages) {
+            setHistoryPage(page);
+        }
+    };
 
     const handleViewInspection = (inspection: any) => {
         setSelectedInspection(inspection);
@@ -190,50 +255,9 @@ export default function InspectionsPage() {
                     {activeTab === 'history' && (
                         /* History */
                         <div>
-                            <h3 className="text-lg font-bold text-slate-800 mb-6 px-2">Inspection History (4)</h3>
+                            <h3 className="text-lg font-bold text-slate-800 mb-6 px-2">Inspection History ({historyItems.length})</h3>
                             <div className="space-y-4">
-                                {[
-                                    {
-                                        id: 1,
-                                        icon: Hourglass,
-                                        iconColor: "text-orange-600",
-                                        iconBg: "bg-orange-100",
-                                        title: "2 properties in Ajah",
-                                        subtitle: "Pending completion on 26 Nov 2025 • Sarah Smith",
-                                        status: 'pending',
-                                        isRated: false
-                                    },
-                                    {
-                                        id: 2,
-                                        icon: CheckCircle,
-                                        iconColor: "text-green-600",
-                                        iconBg: "bg-green-100",
-                                        title: "1 property in Victoria Island",
-                                        subtitle: "Completed on 23 Nov 2025 • Tunde Bakare",
-                                        status: 'completed',
-                                        isRated: false
-                                    },
-                                    {
-                                        id: 3,
-                                        icon: MinusCircle,
-                                        iconColor: "text-red-600",
-                                        iconBg: "bg-red-100",
-                                        title: "1 property in Magodo",
-                                        subtitle: "No-show on 21 Nov 2025 • Grace Obi",
-                                        status: 'no-show',
-                                        isRated: false
-                                    },
-                                    {
-                                        id: 4,
-                                        icon: XCircle,
-                                        iconColor: "text-slate-600",
-                                        iconBg: "bg-slate-200",
-                                        title: "1 property in Lekki Phase 1",
-                                        subtitle: "Cancelled on 19 Nov 2025 • David Eze",
-                                        status: 'cancelled',
-                                        isRated: false
-                                    }
-                                ].map((item, index) => (
+                                {currentHistoryItems.map((item, index) => (
                                     <div
                                         key={index}
                                         onClick={() => handleViewInspection(item)}
@@ -279,7 +303,42 @@ export default function InspectionsPage() {
                                         </div>
                                     </div>
                                 ))}
+
                             </div>
+
+                            {/* Pagination */}
+                            {totalHistoryPages > 1 && (
+                                <div className="mt-8 flex justify-center items-center gap-2">
+                                    <button
+                                        onClick={() => handleHistoryPageChange(historyPage - 1)}
+                                        disabled={historyPage === 1}
+                                        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+
+                                    {Array.from({ length: totalHistoryPages }, (_, i) => i + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => handleHistoryPageChange(page)}
+                                            className={`w-10 h-10 rounded-lg font-semibold text-sm transition-colors ${historyPage === page
+                                                ? 'bg-blue-500 text-white shadow'
+                                                : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                                }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        onClick={() => handleHistoryPageChange(historyPage + 1)}
+                                        disabled={historyPage === totalHistoryPages}
+                                        className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -338,6 +397,6 @@ export default function InspectionsPage() {
                     // Here you would typically update the inspection status in your backend/state
                 }}
             />
-        </div>
+        </div >
     );
 }
