@@ -24,7 +24,7 @@ export default function ClientRequests() {
         style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
       />
 
-      <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
+      <div className="hidden md:block relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
         <ClientHeader
           title="Requests"
           subtitle="Manage your property search requests"

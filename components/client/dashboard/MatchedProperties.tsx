@@ -70,7 +70,7 @@ export default function MatchedProperties() {
     };
 
     return (
-        <div className="mb-10">
+        <div className="mb-0">
             <div className="flex items-start justify-between mb-6">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-900 leading-8 m-0 mb-1">Featured Properties</h2>

@@ -17,7 +17,7 @@ export default function ClientDashboard() {
         style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
       />
 
-      <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
+      <div className="hidden md:block relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
         <ClientHeader
           title="Dashboard"
           subtitle="Welcome back to your property hub"
@@ -26,7 +26,7 @@ export default function ClientDashboard() {
 
       <div className="flex flex-1 overflow-hidden relative z-10">
         <main className="flex-1 h-full overflow-y-auto flex flex-col">
-          <div className="px-4 md:px-10 pb-20 pt-2 space-y-6">
+          <div className="px-4 md:px-10 pb-[50px] pt-5 space-y-6">
             <WelcomeCard />
             <StatsCards />
             <MatchedProperties />
