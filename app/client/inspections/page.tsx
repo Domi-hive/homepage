@@ -119,7 +119,7 @@ export default function InspectionsPage() {
                 style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
             />
 
-            <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-6">
+            <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
                 <ClientHeader
                     title="My Inspections"
                     subtitle="Manage and track all your property inspections"
@@ -304,23 +304,12 @@ export default function InspectionsPage() {
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                // Handle mark as complete
+                                                                setOutcomeModalStep('selection');
+                                                                setIsOutcomeModalOpen(true);
                                                             }}
                                                             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
                                                         >
                                                             Mark as Complete
-                                                        </button>
-                                                    )}
-                                                    {item.status === 'completed' && !item.isRated && (
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                // Handle rate agent
-                                                            }}
-                                                            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-1"
-                                                        >
-                                                            <Star className="w-4 h-4 fill-current" />
-                                                            <span>Rate Agent</span>
                                                         </button>
                                                     )}
                                                     <div className="flex items-center gap-1 font-bold text-purple-600 transition-opacity">

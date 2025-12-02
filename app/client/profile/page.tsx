@@ -24,7 +24,7 @@ export default function ClientProfilePage() {
                 className="absolute inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
                 style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
             />
-            <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-6">
+            <div className="relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
                 <ClientHeader
                     title="Profile Settings"
                     subtitle="Manage your account information and preferences"
