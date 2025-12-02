@@ -9,7 +9,7 @@ import AgentSidebar from "@/components/client/responses/AgentSidebar"
 import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
-import ScheduleInspectionModal from "@/components/client/responses/ScheduleInspectionModal"
+import ScheduleInspectionDrawer from "@/components/client/responses/ScheduleInspectionDrawer"
 import RecommendedPropertiesTab from "@/components/client/responses/RecommendedPropertiesTab"
 
 // ... (imports)
@@ -389,7 +389,7 @@ export default function ResponsesPage() {
       />
 
       {selectedAgent && (
-        <ScheduleInspectionModal
+        <ScheduleInspectionDrawer
           isOpen={isScheduleModalOpen}
           onClose={() => setIsScheduleModalOpen(false)}
           agent={selectedAgent}

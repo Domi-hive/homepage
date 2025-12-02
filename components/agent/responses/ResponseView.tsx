@@ -7,7 +7,7 @@ import Link from "next/link"
 import PropertyCard from "@/components/client/responses/PropertyCard"
 import RequestsSidebar from "@/components/agent/responses/RequestsSidebar"
 import PropertyModal from "@/components/client/responses/PropertyModal"
-import ScheduleInspectionModal from "@/components/client/responses/ScheduleInspectionModal"
+import ScheduleInspectionDrawer from "@/components/client/responses/ScheduleInspectionDrawer"
 
 interface Agent {
     id: string
@@ -337,7 +337,7 @@ export default function ResponseView() {
             />
 
             {selectedAgent && (
-                <ScheduleInspectionModal
+                <ScheduleInspectionDrawer
                     isOpen={isScheduleModalOpen}
                     onClose={() => setIsScheduleModalOpen(false)}
                     agent={selectedAgent}

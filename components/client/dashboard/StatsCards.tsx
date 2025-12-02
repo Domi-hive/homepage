@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClipboardList, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
 export default function StatsCards() {
     return (
@@ -29,9 +30,9 @@ export default function StatsCards() {
                         <Calendar className="w-4 h-4 md:w-6 md:h-6 text-slate-700" />
                     </div>
                 </div>
-                <a href="#" className="text-xs md:text-sm font-semibold text-[#1567c3] no-underline inline-block transition-colors hover:text-[#1567c3]/80">
+                <Link href="/client/inspections?tab=upcoming" className="text-xs md:text-sm font-semibold text-[#1567c3] no-underline inline-block transition-colors hover:text-[#1567c3]/80">
                     See details →
-                </a>
+                </Link>
             </div>
         </div>
     );
