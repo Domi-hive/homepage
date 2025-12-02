@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import RequestRow from "@/components/agent/request-row"
 import RequestDrawer from "@/components/agent/request-drawer"
 import FilterSidebar from "@/components/agent/filter-sidebar"
+import ResponseView from "@/components/agent/responses/ResponseView"
 
 
 type Request = {
@@ -241,124 +242,132 @@ export default function ClientRequests() {
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden relative z-10">
-        <FilterSidebar
-          isOpen={isFilterPanelOpen}
-          onClose={() => setIsFilterPanelOpen(false)}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          counts={counts}
-          locations={locations}
-          onSavePreset={handleSavePreset}
-          presets={presets}
-          onApplyPreset={handleApplyPreset}
-        />
-
-        <main className="flex-1 h-full overflow-y-auto flex flex-col">
-          <div className="px-10 pb-20 pt-2 space-y-6">
-            {/* Controls Bar */}
-            <div className="hidden md:flex flex-row gap-4 justify-between items-center">
-              <div className="flex items-center gap-3 w-full md:w-auto">
-                {/* Quick Shortcuts */}
-                <Button
-                  variant="outline"
-                  onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters
-                </Button>
-              </div>
-
-              {/* Search */}
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
-                <input
-                  className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
-                  placeholder="Search by client name or location..."
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Active Filters Chips */}
-            <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-
-              {filters.priority !== "all" && (
-                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
-                  Priority: {filters.priority}
-                  <button onClick={() => handleFilterChange("priority", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              )}
-              {filters.location && (
-                <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
-                  Location: {filters.location}
-                  <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </Badge>
-              )}
-              {(filters.priority !== "all" || filters.location) && (
-                <button
-                  onClick={() => setFilters({ priority: "all", location: null })}
-                  className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-
-            {/* Requests List */}
-            {filteredRequests.length > 0 ? (
-              <div className="flex flex-col gap-4">
-                {filteredRequests.map((request) => (
-                  <RequestRow
-                    key={request.id}
-                    request={request}
-                    onRespond={setSelectedRequest}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/30 dark:bg-slate-900/30 py-12">
-                <Search className="h-12 w-12 text-slate-400 mb-4" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">No requests found</h3>
-                <p className="text-slate-500 dark:text-slate-400">Try adjusting your search or filters</p>
-                <Button
-                  variant="link"
-                  onClick={() => setFilters({ priority: "all", location: null })}
-                  className="mt-2 text-purple-600 dark:text-purple-400"
-                >
-                  Clear all filters
-                </Button>
-              </div>
-            )}
-
-            {/* Pagination */}
-            <div className="mt-8 flex justify-center items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
-              <span className="text-slate-500 dark:text-slate-400">...</span>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
-              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Request Drawer */}
-          <RequestDrawer
-            request={selectedRequest}
-            isOpen={selectedRequest !== null}
-            onClose={() => setSelectedRequest(null)}
+        {activeTab === "incoming" && (
+          <FilterSidebar
+            isOpen={isFilterPanelOpen}
+            onClose={() => setIsFilterPanelOpen(false)}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            counts={counts}
+            locations={locations}
+            onSavePreset={handleSavePreset}
+            presets={presets}
+            onApplyPreset={handleApplyPreset}
           />
+        )}
+
+        <main className={`flex-1 h-full flex flex-col ${activeTab === "incoming" ? "overflow-y-auto" : "overflow-hidden"}`}>
+          {activeTab === "incoming" ? (
+            <>
+              <div className="px-10 pb-20 pt-2 space-y-6">
+                {/* Controls Bar */}
+                <div className="hidden md:flex flex-row gap-4 justify-between items-center">
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    {/* Quick Shortcuts */}
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                      className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                    >
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filters
+                    </Button>
+                  </div>
+
+                  {/* Search */}
+                  <div className="relative w-full md:w-96">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                    <input
+                      className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
+                      placeholder="Search by client name or location..."
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {/* Active Filters Chips */}
+                <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+
+                  {filters.priority !== "all" && (
+                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
+                      Priority: {filters.priority}
+                      <button onClick={() => handleFilterChange("priority", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  )}
+                  {filters.location && (
+                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
+                      Location: {filters.location}
+                      <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  )}
+                  {(filters.priority !== "all" || filters.location) && (
+                    <button
+                      onClick={() => setFilters({ priority: "all", location: null })}
+                      className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* Requests List */}
+                {filteredRequests.length > 0 ? (
+                  <div className="flex flex-col gap-4">
+                    {filteredRequests.map((request) => (
+                      <RequestRow
+                        key={request.id}
+                        request={request}
+                        onRespond={setSelectedRequest}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/30 dark:bg-slate-900/30 py-12">
+                    <Search className="h-12 w-12 text-slate-400 mb-4" />
+                    <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">No requests found</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Try adjusting your search or filters</p>
+                    <Button
+                      variant="link"
+                      onClick={() => setFilters({ priority: "all", location: null })}
+                      className="mt-2 text-purple-600 dark:text-purple-400"
+                    >
+                      Clear all filters
+                    </Button>
+                  </div>
+                )}
+
+                {/* Pagination */}
+                <div className="mt-8 flex justify-center items-center gap-2">
+                  <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
+                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
+                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
+                  <span className="text-slate-500 dark:text-slate-400">...</span>
+                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
+                  <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Request Drawer */}
+              <RequestDrawer
+                request={selectedRequest}
+                isOpen={selectedRequest !== null}
+                onClose={() => setSelectedRequest(null)}
+              />
+            </>
+          ) : (
+            <ResponseView />
+          )}
         </main>
       </div>
     </div>
