@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, ChevronDown, MessageCircle, X } from "lucide-react"
+
+import { ArrowLeft, ChevronDown, MessageCircle, X, Eye, MessageSquare, User, Calendar, CheckCircle, Clock, ArrowRight, MapPin, DollarSign, Home } from "lucide-react"
 import Link from "next/link"
-import AgentSidebar from "@/components/client/responses/AgentSidebar"
-import AgentInfoCard from "@/components/client/responses/AgentInfoCard"
+
 import PropertyCard from "@/components/client/responses/PropertyCard"
+import RequestsSidebar from "@/components/agent/responses/RequestsSidebar"
 import PropertyModal from "@/components/client/responses/PropertyModal"
 import ScheduleInspectionModal from "@/components/client/responses/ScheduleInspectionModal"
 
@@ -42,6 +43,40 @@ export default function ResponsesPage() {
     const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
     const [showQADrawer, setShowQADrawer] = useState(false)
     const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+    const [selectedRequestId, setSelectedRequestId] = useState("1")
+
+    const requests = [
+        {
+            id: "1",
+            title: "2-3 bed in Lekki",
+            location: "Lekki Phase 1",
+            timeAgo: "2h ago",
+            unreadCount: 3,
+            initial: "U",
+            newQas: 2,
+            pendingInspections: 1
+        },
+        {
+            id: "2",
+            title: "Luxury Penthouse",
+            location: "Victoria Island",
+            timeAgo: "5h ago",
+            unreadCount: 0,
+            initial: "J",
+            newQas: 0,
+            pendingInspections: 0
+        },
+        {
+            id: "3",
+            title: "Cozy Apartment",
+            location: "Ikoyi",
+            timeAgo: "1d ago",
+            unreadCount: 1,
+            initial: "M",
+            newQas: 1,
+            pendingInspections: 0
+        }
+    ]
 
     const agents: Agent[] = [
         {
@@ -186,130 +221,157 @@ export default function ResponsesPage() {
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">
-                                2-3 bed in Lekki, Victoria Island, Ikoyi
+                                2-3 bed in Lekki
                             </h1>
-                            <p className="text-sm text-slate-500">Budget: ₦2-4M</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <div className="flex -space-x-2">
-                            {agents.map((agent) => (
-                                <img
-                                    key={agent.id}
-                                    src={agent.photo}
-                                    alt={agent.name}
-                                    className="w-9 h-9 rounded-full border-2 border-white object-cover"
-                                />
-                            ))}
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
+                            U
                         </div>
-                        <div className="flex items-center gap-3 pl-2 border-l border-slate-300/50">
-                            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold">
-                                U
-                            </div>
-                            <div>
-                                <div className="font-semibold text-slate-800 text-sm">User</div>
-                                <div className="text-xs text-slate-500">Tenant</div>
-                            </div>
-                            <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <div>
+                            <div className="font-semibold text-slate-800 text-sm">User</div>
+                            <div className="text-xs text-slate-500">Tenant</div>
                         </div>
+                        <ChevronDown className="w-5 h-5 text-slate-400" />
                     </div>
-                </div>
+                </div >
 
                 <div className="flex flex-col md:flex-row gap-6 px-10 pb-10 h-full overflow-hidden">
-                    {/* Desktop Agent Sidebar */}
-                    <div className="hidden md:block h-full overflow-y-auto pr-2 custom-scrollbar">
-                        <AgentSidebar
-                            agents={agents}
-                            selectedAgentId={selectedAgentId}
-                            onSelectAgent={setSelectedAgentId}
-                        />
-                    </div>
-
-                    {/* Mobile Agent Dropdown */}
-                    <div className="md:hidden pb-4">
-                        <div className="relative">
-                            <button
-                                onClick={() => setShowAgentDropdown(!showAgentDropdown)}
-                                className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <img
-                                        src={selectedAgent?.photo || "/placeholder.svg"}
-                                        alt={selectedAgent?.name}
-                                        className="h-8 w-8 rounded-full object-cover"
-                                    />
-                                    <div className="text-left">
-                                        <div className="font-medium text-sm">{selectedAgent?.name}</div>
-                                        <div className="text-xs text-slate-500">⭐ {selectedAgent?.rating}</div>
-                                    </div>
-                                </div>
-                                <ChevronDown className="h-5 w-5 text-slate-500" />
-                            </button>
-
-                            {showAgentDropdown && (
-                                <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
-                                    {agents.map((agent) => (
-                                        <button
-                                            key={agent.id}
-                                            onClick={() => {
-                                                setSelectedAgentId(agent.id)
-                                                setShowAgentDropdown(false)
-                                            }}
-                                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${selectedAgentId === agent.id ? "bg-purple-50 text-purple-700" : "text-slate-800 hover:bg-slate-50"
-                                                }`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <img
-                                                    src={agent.photo || "/placeholder.svg"}
-                                                    alt={agent.name}
-                                                    className="h-8 w-8 rounded-full object-cover"
-                                                />
-                                                <div className="text-left">
-                                                    <div className="font-medium text-sm">{agent.name}</div>
-                                                    <div className="text-xs text-slate-500">
-                                                        ⭐ {agent.rating} ({agent.reviews})
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {selectedAgentId === agent.id && (
-                                                <div className="h-2 w-2 rounded-full bg-purple-600" />
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    <RequestsSidebar
+                        requests={requests}
+                        selectedRequestId={selectedRequestId}
+                        onSelectRequest={setSelectedRequestId}
+                    />
 
                     {/* Main Content Area */}
                     <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
-                        <div className="space-y-6">
-                            {selectedAgent && (
-                                <AgentInfoCard
-                                    agent={selectedAgent}
-                                    onScheduleInspection={() => setIsScheduleModalOpen(true)}
-                                />
-                            )}
+                        <div className="space-y-8">
+                            {/* Client Request Details Card */}
+                            <div className="bg-white dark:bg-slate-800/50 p-6 rounded-2xl shadow-soft-light border border-slate-200/80 dark:border-white/10">
+                                <div className="flex flex-col md:flex-row justify-between gap-6">
+                                    <div className="flex-1 space-y-4">
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-1">
+                                                <h2 className="text-xl font-bold text-slate-800 dark:text-white">Emma Rodriguez</h2>
+                                                <span className="bg-red-100 text-red-700 border border-red-200 dark:bg-red-400/20 dark:text-red-300 dark:border-red-400/30 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 dark:bg-red-400"></span>
+                                                    HIGH
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-300">
+                                                <div className="flex items-center gap-1.5">
+                                                    <MapPin className="h-4 w-4 text-slate-400" />
+                                                    <span>Tech Park District</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <DollarSign className="h-4 w-4 text-slate-400" />
+                                                    <span>350k - 450k</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <Clock className="h-4 w-4 text-slate-400" />
+                                                    <span>1 hour ago</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-medium">
+                                                    <MessageSquare className="h-4 w-4" />
+                                                    <span>3 Questions</span>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {selectedProperties.map((property) => (
-                                    <PropertyCard
-                                        key={property.id}
-                                        property={property}
-                                        isFavorite={favorites.has(property.id)}
-                                        onToggleFavorite={toggleFavorite}
-                                        onClick={() => {
-                                            setSelectedProperty(property)
-                                            setShowQADrawer(false)
-                                        }}
-                                    />
-                                ))}
+                                        <div>
+                                            <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Preferences</h4>
+                                            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700/50">
+                                                Investment property close to tech hubs. Looking for high rental yield potential. Preferably with existing tenants or ready to lease.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-row md:flex-col gap-4 min-w-[200px]">
+                                        <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700/50">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Home className="h-3.5 w-3.5 text-slate-400" />
+                                                <span className="text-xs text-slate-500">Bedrooms</span>
+                                            </div>
+                                            <p className="font-semibold text-slate-700 dark:text-slate-200">2</p>
+                                        </div>
+                                        <div className="flex-1 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700/50">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Clock className="h-3.5 w-3.5 text-slate-400" />
+                                                <span className="text-xs text-slate-500">Timeline</span>
+                                            </div>
+                                            <p className="font-semibold text-slate-700 dark:text-slate-200">Immediate</p>
+                                        </div>
+                                        <div className="flex-1 flex items-center justify-center">
+                                            <span className="bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300 px-3 py-1 rounded-full text-xs font-semibold">
+                                                Responded
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Inspection Request Pending Card */}
+                            <div className="bg-white dark:bg-slate-800/50 p-6 rounded-2xl shadow-soft-light border border-slate-200/80 dark:border-white/10 flex flex-col gap-4">
+                                <p className="text-yellow-600 dark:text-yellow-400 font-semibold text-sm">INSPECTION REQUEST PENDING</p>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                    <div>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Property</p>
+                                        <p className="font-semibold text-slate-700 dark:text-slate-200">3-Bedroom Duplex in Maitama</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Date & Time</p>
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="w-4 h-4 text-slate-400" />
+                                            <p className="font-semibold text-slate-700 dark:text-slate-200">Oct 24, 2025 • 10:00 AM</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Location</p>
+                                        <p className="font-semibold text-slate-700 dark:text-slate-200">123 Maitama St, Abuja</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3 mt-2">
+                                    <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
+                                        <CheckCircle className="w-5 h-5" />
+                                        <span>Confirm Time</span>
+                                    </button>
+                                    <button className="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600/50 text-slate-700 dark:text-slate-200 font-semibold py-2.5 px-4 rounded-lg flex items-center gap-2 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm">
+                                        <Clock className="w-5 h-5" />
+                                        <span>Suggest Different Time</span>
+                                    </button>
+                                    <a href="#" className="text-blue-600 dark:text-blue-400 font-semibold text-sm ml-auto flex items-center gap-1">
+                                        <span>Details</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </a>
+                                </div>
+                            </div>
+
+
+
+                            {/* Property Grid */}
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Property Grid</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {selectedProperties.map((property) => (
+                                        <PropertyCard
+                                            key={property.id}
+                                            property={property}
+                                            isFavorite={favorites.has(property.id)}
+                                            onToggleFavorite={toggleFavorite}
+                                            onClick={() => {
+                                                setSelectedProperty(property)
+                                                setShowQADrawer(false)
+                                            }}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </main >
 
 
 
@@ -319,14 +381,16 @@ export default function ResponsesPage() {
                 onClose={() => setSelectedProperty(null)}
             />
 
-            {selectedAgent && (
-                <ScheduleInspectionModal
-                    isOpen={isScheduleModalOpen}
-                    onClose={() => setIsScheduleModalOpen(false)}
-                    agent={selectedAgent}
-                    properties={selectedProperties}
-                />
-            )}
+            {
+                selectedAgent && (
+                    <ScheduleInspectionModal
+                        isOpen={isScheduleModalOpen}
+                        onClose={() => setIsScheduleModalOpen(false)}
+                        agent={selectedAgent}
+                        properties={selectedProperties}
+                    />
+                )
+            }
         </div >
     )
 }

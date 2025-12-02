@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Bell, Search, MapPin, Filter, X, Zap } from "lucide-react"
+import { Bell, Search, MapPin, Filter, X, Zap, ChevronLeft, ChevronRight } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -188,12 +189,10 @@ export default function ClientRequests() {
       {/* Top Section: Header & Tabs */}
       <div className="relative z-10 px-10 pt-10 pb-6">
         {/* Header */}
-        <header className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <div>
-              <h1 className="text-4xl font-bold text-slate-800 dark:text-white hidden md:block">Client Requests</h1>
-
-            </div>
+        {/* Header */}
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Client Requests</h1>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <ThemeToggle />
@@ -201,11 +200,13 @@ export default function ClientRequests() {
               <Bell className="w-6 h-6" />
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <img
-              alt="Jessica's avatar"
-              className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
-            />
+            <Link href="/agent/profile" className="hover:opacity-80 transition-opacity">
+              <img
+                alt="Jessica's avatar"
+                className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
+              />
+            </Link>
           </div>
         </header>
 
@@ -335,6 +336,21 @@ export default function ClientRequests() {
                 </Button>
               </div>
             )}
+
+            {/* Pagination */}
+            <div className="mt-8 flex justify-center items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
+              <span className="text-slate-500 dark:text-slate-400">...</span>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
+              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Request Drawer */}

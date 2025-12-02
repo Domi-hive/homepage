@@ -1,8 +1,10 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter } from "lucide-react"
+import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter, X, Bell, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 import FilterSidebar from "@/components/agent/filter-sidebar"
 
 interface Listing {
@@ -205,131 +207,225 @@ export default function MarketplacePage() {
         </div>
       </div>
 
-      <FilterSidebar
-        isOpen={isFilterPanelOpen}
-        onClose={() => setIsFilterPanelOpen(false)}
-        filters={sidebarFilters}
-        onFilterChange={handleSidebarFilterChange}
-        counts={counts}
-        locations={locations}
-        onSavePreset={handleSavePreset}
-        presets={presets}
-        onApplyPreset={handleApplyPreset}
-      />
-
-      <main className="flex-1 p-10 overflow-y-auto relative z-10">
-        <header className="flex justify-between items-center mb-10">
+      {/* Top Section: Header */}
+      {/* Top Section: Header */}
+      <div className="relative z-10 px-10 pt-10 pb-6">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-slate-800 dark:text-white hidden md:block">Listings Marketplace</h1>
-
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Listings Marketplace</h1>
           </div>
-          <div className="flex items-center gap-6">
-            {/* User profile removed as requested */}
+          <div className="hidden md:flex items-center gap-6">
+            <ThemeToggle />
+            <button className="relative text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+              <Bell className="w-6 h-6" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <Link href="/agent/profile" className="hover:opacity-80 transition-opacity">
+              <img
+                alt="Jessica's avatar"
+                className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-700"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A"
+              />
+            </Link>
           </div>
         </header>
+      </div>
 
-        <div className="space-y-8">
-
-          <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-            <input
-              className="w-full bg-slate-100/50 dark:bg-slate-800/50 border-none rounded-xl pl-12 pr-4 py-3.5 text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-purple-500 outline-none"
-              placeholder="Search by property name or location..."
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <input
-                className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                id="updated-24h"
-                type="checkbox"
-                checked={filters.updatedIn24h}
-                onChange={(e) => setFilters({ ...filters, updatedIn24h: e.target.checked })}
-              />
-              <label className="font-medium cursor-pointer" htmlFor="updated-24h">Updated in 24 hours</label>
+      <div className="flex flex-1 overflow-hidden relative z-10">
+        <FilterSidebar
+          isOpen={isFilterPanelOpen}
+          onClose={() => setIsFilterPanelOpen(false)}
+          filters={sidebarFilters}
+          onFilterChange={handleSidebarFilterChange}
+          counts={counts}
+          locations={locations}
+          onSavePreset={handleSavePreset}
+          presets={presets}
+          onApplyPreset={handleApplyPreset}
+        >
+          <div className="space-y-3">
+            <label className="font-medium text-slate-600 dark:text-slate-300">Marketplace Filters</label>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <input
+                  className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                  id="updated-24h"
+                  type="checkbox"
+                  checked={filters.updatedIn24h}
+                  onChange={(e) => setFilters({ ...filters, updatedIn24h: e.target.checked })}
+                />
+                <label className="cursor-pointer" htmlFor="updated-24h">Updated in 24 hours</label>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <input
+                  className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
+                  id="referral-only"
+                  type="checkbox"
+                  checked={filters.referralOnly}
+                  onChange={(e) => setFilters({ ...filters, referralOnly: e.target.checked })}
+                />
+                <label className="cursor-pointer" htmlFor="referral-only">Referral Only</label>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <input
-                className="w-5 h-5 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                id="referral-only"
-                type="checkbox"
-                checked={filters.referralOnly}
-                onChange={(e) => setFilters({ ...filters, referralOnly: e.target.checked })}
-              />
-              <label className="font-medium cursor-pointer" htmlFor="referral-only">Referral Only</label>
-            </div>
           </div>
+        </FilterSidebar>
+
+        <main className="flex-1 h-full overflow-y-auto flex flex-col">
+          <div className="px-10 pb-20 pt-2 space-y-6">
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredListings.map((listing) => (
-              <div
-                key={listing.id}
-                className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] border border-white/50 dark:border-white/10 overflow-hidden group"
-              >
-                <div className="relative">
-                  <img
-                    alt={listing.title}
-                    className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
-                    src={listing.image}
-                  />
-                  <div className={`absolute top-4 left-4 text-white text-sm font-bold px-3 py-1 rounded-full backdrop-blur-sm ${listing.matchPercentage >= 90 ? 'bg-green-500/80' :
-                    listing.matchPercentage >= 80 ? 'bg-green-500/80' :
-                      'bg-yellow-500/80'
-                    }`}>
-                    {listing.matchPercentage}% match
-                  </div>
-                  <button
-                    onClick={() => toggleFavorite(listing.id)}
-                    className="absolute top-4 right-4 bg-white/50 dark:bg-slate-900/50 p-2 rounded-full text-slate-700 dark:text-slate-200 hover:text-red-500 dark:hover:text-red-500 transition-colors"
-                  >
-                    <Heart
-                      className="w-5 h-5"
-                      fill={favorites.has(listing.id) ? "currentColor" : "none"}
-                      color={favorites.has(listing.id) ? "#ef4444" : "currentColor"}
-                    />
+            {/* Controls Bar */}
+            <div className="hidden md:flex flex-row gap-4 justify-between items-center">
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                {/* Quick Shortcuts */}
+                <Button
+                  variant="outline"
+                  onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
+
+              {/* Search */}
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
+                <input
+                  className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
+                  placeholder="Search by property name or location..."
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Active Filters Chips */}
+            <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+              {filters.updatedIn24h && (
+                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 text-sm">
+                  Updated in 24h
+                  <button onClick={() => setFilters({ ...filters, updatedIn24h: false })} className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5">
+                    <X className="w-3 h-3" />
                   </button>
                 </div>
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">{listing.title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    {listing.location} • ${listing.price.toLocaleString()} • {listing.bedrooms} bed
-                  </p>
-                  <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                    <img
-                      alt={`Agent ${listing.agentName}`}
-                      className="w-6 h-6 rounded-full object-cover"
-                      src={listing.agentImage}
-                    />
-                    <span>Listed by {listing.agentName}</span>
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span>{listing.agentRating}</span>
-                  </div>
-                  <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
-                    {listing.referralEnabled && (
-                      <>
-                        <CheckCircle2 className="w-4 h-4 bg-blue-100 dark:bg-blue-900/50 rounded-full p-0.5" />
-                        <span className="font-medium">Referral Enabled</span>
-                      </>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-3 flex items-center gap-1">
-                    <History className="w-3 h-3" />
-                    Updated {listing.updatedAt}
-                  </p>
+              )}
+              {filters.referralOnly && (
+                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-sm">
+                  Referral Only
+                  <button onClick={() => setFilters({ ...filters, referralOnly: false })} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+              {sidebarFilters.priority !== "all" && (
+                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-sm">
+                  Priority: {sidebarFilters.priority}
+                  <button onClick={() => handleSidebarFilterChange("priority", "all")} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+              {sidebarFilters.location && (
+                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 text-sm">
+                  Location: {sidebarFilters.location}
+                  <button onClick={() => handleSidebarFilterChange("location", null)} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+              {(filters.updatedIn24h || filters.referralOnly || sidebarFilters.priority !== "all" || sidebarFilters.location) && (
+                <button
+                  onClick={() => {
+                    setFilters({ updatedIn24h: false, referralOnly: false });
+                    setSidebarFilters({ priority: "all", location: null });
+                  }}
+                  className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
 
-          <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] border border-white/50 dark:border-white/10 overflow-hidden flex items-center justify-center p-5 text-slate-400 dark:text-slate-500">
-            <span>More listings coming soon...</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredListings.map((listing) => (
+                <div
+                  key={listing.id}
+                  className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] border border-white/50 dark:border-white/10 overflow-hidden group"
+                >
+                  <div className="relative">
+                    <img
+                      alt={listing.title}
+                      className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
+                      src={listing.image}
+                    />
+                    <div className={`absolute top-4 left-4 text-white text-sm font-bold px-3 py-1 rounded-full backdrop-blur-sm ${listing.matchPercentage >= 90 ? 'bg-green-500/80' :
+                      listing.matchPercentage >= 80 ? 'bg-green-500/80' :
+                        'bg-yellow-500/80'
+                      }`}>
+                      {listing.matchPercentage}% match
+                    </div>
+                    <button
+                      onClick={() => toggleFavorite(listing.id)}
+                      className="absolute top-4 right-4 bg-white/50 dark:bg-slate-900/50 p-2 rounded-full text-slate-700 dark:text-slate-200 hover:text-red-500 dark:hover:text-red-500 transition-colors"
+                    >
+                      <Heart
+                        className="w-5 h-5"
+                        fill={favorites.has(listing.id) ? "currentColor" : "none"}
+                        color={favorites.has(listing.id) ? "#ef4444" : "currentColor"}
+                      />
+                    </button>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-white">{listing.title}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      {listing.location} • ${listing.price.toLocaleString()} • {listing.bedrooms} bed
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                      <img
+                        alt={`Agent ${listing.agentName}`}
+                        className="w-6 h-6 rounded-full object-cover"
+                        src={listing.agentImage}
+                      />
+                      <span>Listed by {listing.agentName}</span>
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span>{listing.agentRating}</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
+                      {listing.referralEnabled && (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 bg-blue-100 dark:bg-blue-900/50 rounded-full p-0.5" />
+                          <span className="font-medium">Referral Enabled</span>
+                        </>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-3 flex items-center gap-1">
+                      <History className="w-3 h-3" />
+                      Updated {listing.updatedAt}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-8 flex justify-center items-center gap-2">
+              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
+              <span className="text-slate-500 dark:text-slate-400">...</span>
+              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
+              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-        </div>
-      </main >
-    </div >
+        </main>
+      </div>
+    </div>
   )
 }

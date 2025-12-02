@@ -22,6 +22,7 @@ interface FilterSidebarProps {
     onSavePreset: (name: string) => void
     presets: { name: string; filters: any }[]
     onApplyPreset: (filters: any) => void
+    children?: React.ReactNode
 }
 
 export default function FilterSidebar({
@@ -34,6 +35,7 @@ export default function FilterSidebar({
     onSavePreset,
     presets,
     onApplyPreset,
+    children,
 }: FilterSidebarProps) {
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
         priority: true,
@@ -105,6 +107,16 @@ export default function FilterSidebar({
 
                 <ScrollArea className="flex-1">
                     <div className="p-6 space-y-8">
+                        {/* Custom Filters (Children) */}
+                        {children && (
+                            <>
+                                <div className="space-y-3">
+                                    {children}
+                                </div>
+                                <div className="h-px bg-slate-200 dark:bg-slate-800" />
+                            </>
+                        )}
+
                         {/* Presets Section */}
                         <div className="space-y-3">
                             <div className="flex justify-between items-center">
