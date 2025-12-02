@@ -22,7 +22,7 @@ export default function AgentSignupPage() {
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-violet-200 to-blue-200 dark:from-violet-900 dark:to-blue-900">
             <div className="w-full max-w-6xl mx-auto">
-                <main className="grid lg:grid-cols-2 gap-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden">
+                <main className="grid lg:grid-cols-2 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden">
                     <div className="relative hidden lg:block rounded-l-2xl overflow-hidden">
                         <img
                             alt="An illustration of a real estate agent presenting a house key to a happy couple."
