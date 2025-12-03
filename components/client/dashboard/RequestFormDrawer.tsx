@@ -209,23 +209,15 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 {/* Header */}
                 <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-4">
-                        {/* Mobile Back Button */}
-                        <button
-                            onClick={onClose}
-                            className="md:hidden text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                        >
-                            <span className="material-symbols-outlined">arrow_back</span>
-                        </button>
-
                         <div className="flex-1">
                             <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Create Property Request</h2>
                             <p className="text-sm text-slate-500 dark:text-slate-400">Specify your property needs to find the perfect match.</p>
                         </div>
 
-                        {/* Desktop Close Button */}
+                        {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="hidden md:block text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                             <span className="material-symbols-outlined">close</span>
                         </button>

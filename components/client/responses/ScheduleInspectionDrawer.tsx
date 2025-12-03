@@ -76,9 +76,7 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                     <div className="flex justify-between items-start">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Schedule Inspection</h2>
-                            <p className="text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-                                with {agent.name}
-                            </p>
+
                         </div>
                         <button
                             onClick={onClose}
@@ -114,9 +112,6 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                                 {selectedPropertyIds.size}/3 selected
                             </span>
                         </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                            Choose up to 3 properties to inspect in this session.
-                        </p>
                     </div>
 
                     {/* Properties List */}
