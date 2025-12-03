@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Loader2 } from 'lucide-react';
 
 const propertyTypeOptions = [
@@ -182,10 +183,19 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
         }
     };
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    if (!mounted) return null;
+
     if (!isVisible && !isOpen) return null;
 
-    return (
-        <div className={`fixed inset-0 z-50 flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+    return createPortal(
+        <div className={`fixed inset-0 z-[100] flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {/* Backdrop */}
             <div
                 className="fixed inset-0 h-[100dvh] bg-black/60 backdrop-blur-sm"
@@ -194,18 +204,28 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
 
             {/* Drawer */}
             <div
-                className={`relative w-full max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative w-full md:max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 {/* Header */}
                 <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Create Property Request</h2>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">Specify your client's needs to find the perfect match.</p>
-                        </div>
+                    <div className="flex items-center gap-4">
+                        {/* Mobile Back Button */}
                         <button
                             onClick={onClose}
-                            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                            className="md:hidden text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                        >
+                            <span className="material-symbols-outlined">arrow_back</span>
+                        </button>
+
+                        <div className="flex-1">
+                            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Create Property Request</h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">Specify your property needs to find the perfect match.</p>
+                        </div>
+
+                        {/* Desktop Close Button */}
+                        <button
+                            onClick={onClose}
+                            className="hidden md:block text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                             <span className="material-symbols-outlined">close</span>
                         </button>
@@ -408,6 +428,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                     </div>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
