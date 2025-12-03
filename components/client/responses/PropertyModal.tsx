@@ -212,10 +212,15 @@ export default function PropertyModal({ property, isOpen, onClose }: PropertyMod
             <AskQuestionModal
                 isOpen={showAskQuestionModal}
                 onClose={() => setShowAskQuestionModal(false)}
-                onSubmit={(question) => {
-                    console.log('Question submitted:', question);
+                onSubmit={(question, category) => {
+                    console.log('Question submitted:', { question, category });
                     // Here you would typically send the question to the backend
                     setShowAskQuestionModal(false);
+                }}
+                property={{
+                    title: property.title,
+                    location: property.location,
+                    image: property.image
                 }}
             />
         </div>
