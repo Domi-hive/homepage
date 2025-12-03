@@ -165,7 +165,7 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                         className="w-full px-5 py-3 text-base font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         disabled={selectedPropertyIds.size === 0}
                     >
-                        <span>Continue to Schedule</span>
+                        <span>Continue to Time Selection</span>
                         <ArrowRight className="w-5 h-5" />
                     </button>
                 </div>
