@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
 
@@ -120,8 +120,8 @@ export default function ResetPasswordPage() {
                                     <div className="h-1.5 flex-1 rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
                                         <div
                                             className={`h-full rounded-full transition-all duration-300 ${strength <= 25 ? 'bg-red-500' :
-                                                    strength <= 50 ? 'bg-orange-500' :
-                                                        strength <= 75 ? 'bg-yellow-500' : 'bg-green-500'
+                                                strength <= 50 ? 'bg-orange-500' :
+                                                    strength <= 75 ? 'bg-yellow-500' : 'bg-green-500'
                                                 }`}
                                             style={{ width: `${strength}%` }}
                                         ></div>
@@ -173,5 +173,13 @@ export default function ResetPasswordPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResetPasswordContent />
+        </Suspense>
     );
 }

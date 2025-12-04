@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import {
     Bell,
     MessageSquare,
@@ -30,7 +30,7 @@ import UpcomingInspectionCard from '@/components/client/inspections/UpcomingInsp
 
 import { useSearchParams } from 'next/navigation';
 
-export default function InspectionsPage() {
+function InspectionsContent() {
     const searchParams = useSearchParams();
     const tabParam = searchParams.get('tab');
     let initialTab: 'active' | 'upcoming' | 'history' = 'active';
@@ -426,5 +426,13 @@ export default function InspectionsPage() {
                 }}
             />
         </div >
+    );
+}
+
+export default function InspectionsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <InspectionsContent />
+        </Suspense>
     );
 }

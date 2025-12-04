@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ClientHeader from '@/components/client/ClientHeader';
 import ActiveRequestCard from '@/components/client/requests/ActiveRequestCard';
 import InfoBanner from '@/components/client/requests/InfoBanner';
 import RequestHistory from '@/components/client/requests/RequestHistory';
 
-export default function ClientRequests() {
+function ClientRequestsContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get('tab');
   let initialTab: 'active' | 'history' = 'active';
@@ -72,5 +72,13 @@ export default function ClientRequests() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ClientRequests() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ClientRequestsContent />
+    </Suspense>
   );
 }
