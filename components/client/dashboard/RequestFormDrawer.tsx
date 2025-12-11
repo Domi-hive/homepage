@@ -204,16 +204,16 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     if (!isVisible && !isOpen) return null;
 
     return createPortal(
-        <div className={`fixed inset-0 z-[100] flex justify-end transition-opacity duration-300 ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-0 z-[100] flex justify-end ${show ? 'pointer-events-auto' : 'pointer-events-none'}`}>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 h-[100dvh] bg-black/60 backdrop-blur-sm"
+                className={`fixed inset-0 h-[100dvh] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${show ? 'opacity-100' : 'opacity-0'}`}
                 onClick={onClose}
             />
 
             {/* Drawer */}
             <div
-                className={`relative w-full md:max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${show ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative w-full md:max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${show ? 'translate-x-0 delay-100' : 'translate-x-full'}`}
             >
                 {/* Header */}
                 <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">

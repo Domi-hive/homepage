@@ -28,6 +28,7 @@ interface ScheduleInspectionDrawerProps {
 
 export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, properties }: ScheduleInspectionDrawerProps) {
     const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
+    const [show, setShow] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [step, setStep] = useState<'selection' | 'time'>('selection');
     const [inspectionType, setInspectionType] = useState<'in-person' | 'video'>('in-person');
@@ -47,11 +48,18 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
-            document.body.style.overflow = 'hidden';
+            const timer = setTimeout(() => {
+                setShow(true);
+                document.body.style.overflow = 'hidden';
+            }, 10);
             setStep('selection'); // Reset step on open
+            return () => clearTimeout(timer);
         } else {
-            const timer = setTimeout(() => setIsVisible(false), 300);
-            document.body.style.overflow = 'unset';
+            setShow(false);
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+                document.body.style.overflow = 'unset';
+            }, 300);
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
@@ -83,16 +91,16 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
     };
 
     return (
-        <div className={`fixed inset-0 z-50 flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-0 z-50 flex justify-end ${show ? 'pointer-events-auto' : 'pointer-events-none'}`}>
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${show ? 'opacity-100' : 'opacity-0'}`}
                 onClick={onClose}
             />
 
             {/* Drawer */}
             <div
-                className={`relative w-full max-w-lg bg-slate-50 dark:bg-[#1a1829] h-full flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative w-full max-w-lg bg-slate-50 dark:bg-[#1a1829] h-full flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${show ? 'translate-x-0 delay-100' : 'translate-x-full'}`}
             >
                 {/* Header */}
                 <div className="sticky top-0 z-10 p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
