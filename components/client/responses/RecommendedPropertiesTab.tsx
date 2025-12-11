@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import { Clock, Heart, CheckCircle2, Lock } from 'lucide-react';
+import { Clock, Heart, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 // Mock data based on the provided HTML
@@ -18,7 +18,6 @@ const RECOMMENDED_PROPERTIES = [
             image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFqcfsVyr79WCc3cycwoGVNTY1VmZc9yvOkFPU_du7UgNPGw7lnT1-jRvtti6gTNA0NXAjH2q3gY58vJxEd4FmfifSDDPtdEkhYgSa5MZRWjbxWLb6tyfGzuwTPthUPOHuVtAIorASRh0Wr-3zOZdMk98MHqvYdmnPECyY1AXjySGw7I1auwaua5ANs5Ui4VNL62Rd63KnwUfW0Nsq5lgQA4RODQB9QoQHmRuXN6CG7CgUCm47f3Ji6rg58w8jmK_Msa-igcbuoQ",
             verified: true
         },
-        isLocked: false
     },
     {
         id: 2,
@@ -32,22 +31,8 @@ const RECOMMENDED_PROPERTIES = [
             image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDMHZOPtw8sN6qPD_ExJIYRQi9PmUucV7BMY3HHPCVS9kww5vAgMJCcITnjgMSU81_hO1PEy4SYZ_sCelxv0iX-ExQRNYeDAwT_m1D1A1GpmtCIzLJsADEFmsh12ytrb4WgjtF8Gp3X9-fr3ojInER9lNiDz5R5qCbYiUVAywzcbOmHx-YGm8WbKTTGFlw3JBtdgLDyMrBgF2nhY-OeWvNmqB6XQBRLxvdvgEVfe2w29myMxcM8pRCAimxPZBDxmbFifHkcCz6Ehw",
             verified: true
         },
-        isLocked: false
     },
-    {
-        id: 3,
-        title: "Spacious 3-Bedroom Unit",
-        location: "Wuse II, Abuja",
-        price: 2500000,
-        period: "month",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-8Sdc3-ipIllqmU3eHHxSKiXpJthijHpTW23F0ALlv5AGYaSO7H2YT8ppuJHMa2VjTIPHrZ22YbKkWMkfearprnoyXAcyNwxYbe9nBBRhv5Wt18JeyiSCb3Jj3oUfvGnFeqnpeJeE8fdX3mbsHUPw_UIntEmE0CyxWCauI3qH9vQChgDb8XIsNPfcf-Nc24PfBZV1dlOASGsHbSCB_n_TEL-Zrt73N-djeMenr9h9GjvqogIsSxlJmvJIs3GoZstRw0wFCAL1yQ",
-        agent: {
-            name: "Emma Davis",
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB4mC6vUqlCNhjcDYiNGywG6UFeClRzChZGUxuCi0CAvz_JZdD4UnjRB41ipOAv7fkQKFetnPk_KWDfn713KWmMEAJ3A7nQE2-ti-4Ydq-Ap_FJQ2dPvtHKw2OmfO105fWmn4BrNCric7kU-wAm_umH-U2K4_SpRp_IS_CbcNvmneOE_BGqLyJueVXXWq6X69WrQZrT2F7YSzH7XPy01Fg6Hsfvq2K7LMGOh77NvyQd6oK1SK_7Imd0YAVJWdIbixxOSWn-JWeGzw",
-            verified: true
-        },
-        isLocked: true
-    },
+
     {
         id: 4,
         title: "Premium Penthouse with City Views",
@@ -60,7 +45,6 @@ const RECOMMENDED_PROPERTIES = [
             image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqO9fdnab1aAab75gRFNJxa1tkxscK5CjcX_uW8bFcA06mhQcgEmsRFACY4I9Hri0jJ0KRc0yScHNXfu2OHbiP87xiggqtuivFJNxsu9hnNHV9SJz0f3fV_b5o4SC27VgyApJytYbZYUEReXkAzMMmFC6RdkDRQ5F_uTMpfSy-WAndF6UvwZtpRhBoOD7uS5hr947DG_AMPQ7uIXoeeHGgBXVge0kGeF2J0cBe4oT9BBBOHQ3IO8PuHABbz_JQ2GL65qE3jjqcbg",
             verified: true
         },
-        isLocked: false
     },
     {
         id: 5,
@@ -74,7 +58,6 @@ const RECOMMENDED_PROPERTIES = [
             image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBf0hG-2Mng_L1drLHNXRDrwfXJaAD4_udZm6U7HAG_H-MYlEt-JyceKQWKaskuJAj6cqHzUik4wq188jYoXSY6JdsFb7d0aFGZSzYHaf_mjdn-kIEdMaultbz0Ag0uHKtwUuL-abGhd3QFvyTvCtpZos1NQ7I_I9a8sBu0gYcQyyJ--G7QyPe5NOCmmFBcugTskvDA6l18YWYgt64u5V0XR_PouJi1qCzdZMOq6yyYM4TRNVjGDxISupjAigStn3BnrBpYGQKQnA",
             verified: true
         },
-        isLocked: false
     }
 ];
 
@@ -96,28 +79,8 @@ export default function RecommendedPropertiesTab({ favorites, toggleFavorite, on
                                 className="w-full h-52 object-cover"
                                 src={property.image}
                             />
-                            {property.isLocked && (
-                                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-white p-5 text-center">
-                                    <Lock className="w-10 h-10 mb-2" />
-                                    <p className="font-semibold">Locked - Pending Update</p>
-                                    <p className="text-sm text-slate-300">Contact agent for availability</p>
-                                </div>
-                            )}
-                            <div className="absolute top-3 right-3 flex gap-2">
-                                {!property.isLocked && (
-                                    <button className="w-8 h-8 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 dark:hover:bg-black/40 transition-colors">
-                                        <Clock className="w-4 h-4" />
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => toggleFavorite(property.id)}
-                                    className="w-8 h-8 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 dark:hover:bg-black/40 transition-colors"
-                                >
-                                    <Heart
-                                        className={`w-4 h-4 ${favorites.has(property.id) ? "fill-red-500 text-red-500" : ""}`}
-                                    />
-                                </button>
-                            </div>
+
+
                         </div>
                         <div className="p-5 flex flex-col flex-grow">
                             <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
@@ -140,26 +103,18 @@ export default function RecommendedPropertiesTab({ favorites, toggleFavorite, on
                                     <CheckCircle2 className="w-4 h-4 text-green-500 ml-1 fill-current" />
                                 )}
                             </div>
-                            {property.isLocked ? (
-                                <div className="mt-4 w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold py-3 rounded-lg text-center">
-                                    Locked - Pending Update
-                                </div>
-                            ) : (
-                                <Button
-                                    onClick={() => onExpressInterest(property.title)}
-                                    className="mt-4 w-full bg-blue-200/80 dark:bg-blue-800/50 hover:bg-blue-300/80 dark:hover:bg-blue-700/50 text-blue-800 dark:text-blue-200 font-semibold py-6 rounded-lg transition-colors"
-                                >
-                                    Express Interest
-                                </Button>
-                            )}
+                            <Button
+                                onClick={() => onExpressInterest(property.title)}
+                                className="mt-4 w-full bg-blue-200/80 dark:bg-blue-800/50 hover:bg-blue-300/80 dark:hover:bg-blue-700/50 text-blue-800 dark:text-blue-200 font-semibold py-6 rounded-lg transition-colors"
+                            >
+                                Express Interest
+                            </Button>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="text-center py-4">
-                <p className="text-slate-600 dark:text-slate-400 font-medium">Budget ₦5M – ₦8M</p>
-            </div>
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {RECOMMENDED_PROPERTIES.slice(3).map((property) => (
@@ -170,28 +125,8 @@ export default function RecommendedPropertiesTab({ favorites, toggleFavorite, on
                                 className="w-full h-52 object-cover"
                                 src={property.image}
                             />
-                            {property.isLocked && (
-                                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center text-white p-5 text-center">
-                                    <Lock className="w-10 h-10 mb-2" />
-                                    <p className="font-semibold">Locked - Pending Update</p>
-                                    <p className="text-sm text-slate-300">Contact agent for availability</p>
-                                </div>
-                            )}
-                            <div className="absolute top-3 right-3 flex gap-2">
-                                {!property.isLocked && (
-                                    <button className="w-8 h-8 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 dark:hover:bg-black/40 transition-colors">
-                                        <Clock className="w-4 h-4" />
-                                    </button>
-                                )}
-                                <button
-                                    onClick={() => toggleFavorite(property.id)}
-                                    className="w-8 h-8 rounded-full bg-white/30 dark:bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 dark:hover:bg-black/40 transition-colors"
-                                >
-                                    <Heart
-                                        className={`w-4 h-4 ${favorites.has(property.id) ? "fill-red-500 text-red-500" : ""}`}
-                                    />
-                                </button>
-                            </div>
+
+
                         </div>
                         <div className="p-5 flex flex-col flex-grow">
                             <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
@@ -214,18 +149,12 @@ export default function RecommendedPropertiesTab({ favorites, toggleFavorite, on
                                     <CheckCircle2 className="w-4 h-4 text-green-500 ml-1 fill-current" />
                                 )}
                             </div>
-                            {property.isLocked ? (
-                                <div className="mt-4 w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold py-3 rounded-lg text-center">
-                                    Locked - Pending Update
-                                </div>
-                            ) : (
-                                <Button
-                                    onClick={() => onExpressInterest(property.title)}
-                                    className="mt-4 w-full bg-blue-200/80 dark:bg-blue-800/50 hover:bg-blue-300/80 dark:hover:bg-blue-700/50 text-blue-800 dark:text-blue-200 font-semibold py-6 rounded-lg transition-colors"
-                                >
-                                    Express Interest
-                                </Button>
-                            )}
+                            <Button
+                                onClick={() => onExpressInterest(property.title)}
+                                className="mt-4 w-full bg-blue-200/80 dark:bg-blue-800/50 hover:bg-blue-300/80 dark:hover:bg-blue-700/50 text-blue-800 dark:text-blue-200 font-semibold py-6 rounded-lg transition-colors"
+                            >
+                                Express Interest
+                            </Button>
                         </div>
                     </div>
                 ))}
