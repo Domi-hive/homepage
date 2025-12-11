@@ -165,7 +165,7 @@ function InspectionsContent() {
                             {activeTab === 'active' && (
                                 <>
                                     {/* Active Inspection Card */}
-                                    <div className="bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
+                                    <div className="bg-white/60 backdrop-blur-md p-6 md:p-8 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50">
                                         <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                                             <div>
                                                 <div className="flex flex-wrap items-center gap-3 mb-3">

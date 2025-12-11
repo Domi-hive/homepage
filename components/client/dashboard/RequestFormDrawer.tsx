@@ -46,6 +46,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [show, setShow] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
     // Mock state for the "1 of 3 locations selected" UI from reference
@@ -54,10 +55,18 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
-            document.body.style.overflow = 'hidden';
+            // Small timeout to ensure component is mounted and DOM is ready for transition
+            const timer = setTimeout(() => {
+                setShow(true);
+                document.body.style.overflow = 'hidden';
+            }, 10);
+            return () => clearTimeout(timer);
         } else {
-            const timer = setTimeout(() => setIsVisible(false), 300);
-            document.body.style.overflow = 'unset';
+            setShow(false);
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+                document.body.style.overflow = 'unset';
+            }, 300);
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
@@ -195,7 +204,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     if (!isVisible && !isOpen) return null;
 
     return createPortal(
-        <div className={`fixed inset-0 z-[100] flex justify-end transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-0 z-[100] flex justify-end transition-opacity duration-300 ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {/* Backdrop */}
             <div
                 className="fixed inset-0 h-[100dvh] bg-black/60 backdrop-blur-sm"
@@ -204,7 +213,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
 
             {/* Drawer */}
             <div
-                className={`relative w-full md:max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                className={`relative w-full md:max-w-lg bg-slate-50 dark:bg-[#1a1829] h-[100dvh] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out ${show ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 {/* Header */}
                 <div className="p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
