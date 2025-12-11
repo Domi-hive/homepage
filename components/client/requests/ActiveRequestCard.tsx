@@ -4,7 +4,7 @@ import { Clock, ArrowRight } from 'lucide-react';
 
 export default function ActiveRequestCard() {
     const stats = [
-        { value: '5', label: 'Agents Responded' },
+        { value: '5', label: 'Responses' },
         { value: '18', label: 'Properties' },
         { value: '3', label: 'Active Q&As' },
     ];
@@ -29,7 +29,7 @@ export default function ActiveRequestCard() {
                 {stats.map((stat, index) => (
                     <div key={index} className="flex flex-col gap-1">
                         <p className="text-xl md:text-2xl font-bold text-slate-900 leading-8 m-0">{stat.value}</p>
-                        <p className="text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wide m-0 truncate">{stat.label}</p>
+                        <p className="text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wide m-0">{stat.label}</p>
                     </div>
                 ))}
             </div>

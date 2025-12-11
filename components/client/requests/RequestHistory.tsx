@@ -84,7 +84,7 @@ export default function RequestHistory() {
             <h3 className="text-lg font-bold text-slate-900 leading-7 m-0 mb-4">Request History ({historyItems.length})</h3>
             <div className="flex flex-col gap-4">
                 {currentItems.map((item) => (
-                    <div key={item.id} className="bg-white/40 border border-white/50 rounded-2xl p-4 flex items-center justify-between transition-colors hover:bg-white/60">
+                    <div key={item.id} className="bg-white/40 border border-white/50 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-colors hover:bg-white/60">
                         <div className="flex items-start gap-4">
                             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 shrink-0">
                                 <Check className="w-5 h-5" />
@@ -118,8 +118,8 @@ export default function RequestHistory() {
                             key={page}
                             onClick={() => handlePageChange(page)}
                             className={`w-10 h-10 rounded-lg font-semibold text-sm transition-colors ${currentPage === page
-                                    ? 'bg-blue-500 text-white shadow'
-                                    : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                ? 'bg-blue-500 text-white shadow'
+                                : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
                                 }`}
                         >
                             {page}

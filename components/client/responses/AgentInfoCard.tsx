@@ -19,7 +19,7 @@ interface AgentInfoCardProps {
 
 export default function AgentInfoCard({ agent, onScheduleInspection, hideAction }: AgentInfoCardProps) {
     return (
-        <div className="mb-8 bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 flex items-center justify-between">
+        <div className="mb-8 bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
                 <img
                     src={agent.photo || "/placeholder.svg"}

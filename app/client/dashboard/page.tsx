@@ -26,7 +26,7 @@ export default function ClientDashboard() {
 
       <div className="flex flex-1 overflow-hidden relative z-10">
         <main className="flex-1 h-full overflow-y-auto flex flex-col">
-          <div className="px-4 md:px-10 pb-[50px] pt-5 space-y-6">
+          <div className="px-4 md:px-10 pb-[50px] pt-[30px] space-y-6">
             <WelcomeCard />
             <StatsCards />
             <MatchedProperties />
