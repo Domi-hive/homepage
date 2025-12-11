@@ -33,11 +33,23 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
   const [searchQuery, setSearchQuery] = useState("")
   const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false)
 
+  const [show, setShow] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+
   useEffect(() => {
     setIsAnimating(isOpen)
-    if (!isOpen) {
+    if (isOpen) {
+      setIsVisible(true)
+      // Small timeout to ensure component is mounted and DOM is ready for transition
+      const timer = setTimeout(() => {
+        setShow(true)
+      }, 10)
+      return () => clearTimeout(timer)
+    } else {
+      setShow(false)
       // Reset state when closed
       setTimeout(() => {
+        setIsVisible(false)
         setSelectedProperties([])
         setMessage("")
         setActiveTab("my-listings")
@@ -47,7 +59,7 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
     }
   }, [isOpen])
 
-  if (!request) return null
+
 
   // Mock Data from ResponseModal
   const myListings = [
@@ -130,6 +142,9 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
     onClose()
   }
 
+  if (!isOpen && !isVisible) return null
+
+
   const PropertyCard = ({ property, canAdd = true }: { property: any; canAdd?: boolean }) => {
     const isSelected = selectedProperties.find((p) => p.id === property.id)
     const cannotAdd = canAdd && selectedProperties.length >= 5 && !isSelected
@@ -184,21 +199,13 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
         myListings={myListings}
       />
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity"
-          onClick={onClose}
-          style={{
-            opacity: isAnimating ? 1 : 0,
-          }}
-        />
-      )}
+      <div
+        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${show ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={onClose}
+      />
 
       <div
-        className="fixed right-0 top-0 h-full w-full md:w-[600px] z-50 bg-[#F7F5FF] dark:bg-[#1a1829] shadow-2xl transition-transform duration-300 flex flex-col"
-        style={{
-          transform: isAnimating ? "translateX(0)" : "translateX(100%)",
-        }}
+        className={`fixed right-0 top-0 h-full w-full md:max-w-lg z-50 bg-[#F7F5FF] dark:bg-[#1a1829] shadow-2xl transition-transform duration-300 ease-in-out flex flex-col ${show ? "translate-x-0 delay-100" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/50 backdrop-blur-lg z-10">
