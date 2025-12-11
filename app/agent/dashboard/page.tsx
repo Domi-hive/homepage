@@ -65,7 +65,7 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20 flex flex-col justify-between">
+            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Total Earnings</h3>
                 <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -74,7 +74,7 @@ export default function Dashboard() {
               </div>
               <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">₦1.2M</p>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20 flex flex-col justify-between">
+            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Upcoming Inspections</h3>
                 <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -83,7 +83,7 @@ export default function Dashboard() {
               </div>
               <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">5</p>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20 flex flex-col justify-between">
+            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Active Leads</h3>
                 <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
@@ -92,7 +92,7 @@ export default function Dashboard() {
               </div>
               <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">12</p>
             </div>
-            <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20 flex flex-col justify-between">
+            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Agent Rating</h3>
                 <div className="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
@@ -108,7 +108,7 @@ export default function Dashboard() {
             <div className="lg:col-span-2 space-y-6">
               {/* Today's Schedule */}
               {/* Today's Schedule */}
-              <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20">
+              <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
                 <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">Today's Schedule</h3>
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 gap-4 sm:gap-0">
@@ -132,7 +132,7 @@ export default function Dashboard() {
 
               {/* Urgent Actions */}
               {/* Urgent Actions */}
-              <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20">
+              <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-slate-800 dark:text-white">Urgent Actions</h3>
                   <Link href="/agent/activity" className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
@@ -175,7 +175,7 @@ export default function Dashboard() {
             <div className="lg:col-span-1 space-y-6">
               {/* Quick Actions */}
               {/* Quick Actions */}
-              <div className="bg-white/80 backdrop-blur-sm dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/20">
+              <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
                 <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">Quick Actions</h3>
                 <div className="space-y-3">
                   <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
@@ -186,10 +186,7 @@ export default function Dashboard() {
                     <Home className="text-[#2E6BFF] w-6 h-6" />
                     <span className="font-semibold text-slate-700 dark:text-slate-200">My Listings</span>
                   </button>
-                  <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                    <Share2 className="text-[#2E6BFF] w-6 h-6" />
-                    <span className="font-semibold text-slate-700 dark:text-slate-200">Share Profile</span>
-                  </button>
+
                 </div>
               </div>
 
