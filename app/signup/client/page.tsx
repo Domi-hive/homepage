@@ -1,11 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { useState } from 'react';
 
 export default function ClientSignupPage() {
+    const router = useRouter();
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     // Simple password strength logic for visualization
     const getStrength = (pass: string) => {
@@ -18,6 +26,52 @@ export default function ClientSignupPage() {
     };
 
     const strength = getStrength(password);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await fetch('https://s-dev.domihive.com/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    role: 'user',
+                    phoneNumber,
+                    firstName,
+                    lastName,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Store in localStorage for API calls
+                localStorage.setItem('authToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                localStorage.setItem('userRole', 'user'); // Explictly set role to match middleware
+                localStorage.setItem('userData', JSON.stringify(data.user));
+
+                // Set cookie for middleware
+                document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
+                document.cookie = `userRole=user; path=/; max-age=86400; SameSite=Strict`;
+
+                router.push('/client/dashboard');
+            } else {
+                setError(data.message || 'Signup failed');
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again.');
+            console.error('Signup error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-100 to-blue-100">
@@ -55,7 +109,12 @@ export default function ClientSignupPage() {
                         <p className="text-slate-500 text-sm mt-1">Let's get you started on your property search.</p>
                     </div>
 
-                    <form className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {error && (
+                            <div className="p-3 text-sm text-red-500 bg-red-50 rounded-lg border border-red-100">
+                                {error}
+                            </div>
+                        )}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="first-name">First Name</label>
@@ -65,6 +124,9 @@ export default function ClientSignupPage() {
                                     name="first-name"
                                     placeholder="John"
                                     type="text"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    required
                                 />
                             </div>
                             <div>
@@ -75,6 +137,9 @@ export default function ClientSignupPage() {
                                     name="last-name"
                                     placeholder="Doe"
                                     type="text"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    required
                                 />
                             </div>
                         </div>
@@ -86,6 +151,9 @@ export default function ClientSignupPage() {
                                 name="email"
                                 placeholder="you@example.com"
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </div>
                         <div>
@@ -96,6 +164,9 @@ export default function ClientSignupPage() {
                                 name="phone-number"
                                 placeholder="0801 234 5678"
                                 type="tel"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                required
                             />
                         </div>
                         <div>
@@ -108,6 +179,7 @@ export default function ClientSignupPage() {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                             <div className="flex items-center justify-between mt-1.5">
                                 <span className={`text-xs font-medium ${strength > 2 ? 'text-green-500' : strength > 1 ? 'text-yellow-500' : 'text-slate-400'}`}>
@@ -129,6 +201,7 @@ export default function ClientSignupPage() {
                                 id="terms"
                                 name="terms"
                                 type="checkbox"
+                                required
                             />
                             <label className="ml-2 block text-xs text-slate-500" htmlFor="terms">
                                 I agree to the <a className="font-medium text-purple-600 hover:text-purple-700" href="#">Terms & Privacy</a>
@@ -136,10 +209,11 @@ export default function ClientSignupPage() {
                         </div>
                         <div>
                             <button
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-[#C084FC] to-[#8B5CF6] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 transition-all duration-200"
+                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-[#C084FC] to-[#8B5CF6] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 type="submit"
+                                disabled={loading}
                             >
-                                Create Account & Verify
+                                {loading ? 'Creating Account...' : 'Create Account & Verify'}
                             </button>
                         </div>
                         <p className="text-center text-xs text-slate-500">

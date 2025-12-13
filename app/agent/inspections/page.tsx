@@ -19,7 +19,8 @@ import {
     XCircle,
     ChevronRight,
     AlertTriangle,
-    ChevronLeft
+    ChevronLeft,
+    Clock
 } from 'lucide-react';
 import InspectionDetailsModal from './InspectionDetailsModal';
 import OutcomeSelectionModal from './OutcomeSelectionModal';
@@ -160,12 +161,18 @@ function InspectionsContent() {
                     {activeTab === 'active' && (
                         <>
                             {/* Active Inspection Card */}
-                            <div className="bg-white/70 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
+                            <div className="bg-white/60 backdrop-blur-md p-6 md:p-8 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50">
                                 <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-4">
                                     <div>
                                         <div className="flex flex-wrap items-center gap-3 mb-3">
 
-                                            <p className="text-sm font-medium text-slate-500">Today, 7:56 am</p>
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative w-3 h-3 flex items-center justify-center">
+                                                    <div className="absolute w-full h-full bg-green-500 rounded-full animate-ping opacity-75"></div>
+                                                    <div className="relative w-2 h-2 bg-green-500 rounded-full"></div>
+                                                </div>
+                                                <p className="text-sm font-bold text-green-600 uppercase tracking-wider m-0">Active Inspection</p>
+                                            </div>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <img
@@ -183,7 +190,10 @@ function InspectionsContent() {
                                             </div>
                                         </div>
                                     </div>
-
+                                    <button className="bg-green-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-green-500/20 hover:bg-green-600 transition-all flex items-center gap-2">
+                                        <MapPin className="w-4 h-4" />
+                                        I've Arrived
+                                    </button>
                                 </div>
 
                                 <div className="border-y border-slate-100 my-6">
@@ -204,13 +214,24 @@ function InspectionsContent() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4 mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                    <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
-                                        <MapPin className="w-6 h-6 text-purple-600" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                                            <MapPin className="w-6 h-6 text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-0.5">Meeting Point</p>
+                                            <p className="font-bold text-slate-800 text-lg">Banana Island, Ikoyi</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-0.5">Meeting Point</p>
-                                        <p className="font-bold text-slate-800 text-lg">Banana Island, Ikoyi</p>
+                                    <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                            <Clock className="w-6 h-6 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-0.5">Meeting Time</p>
+                                            <p className="font-bold text-slate-800 text-lg">08:00 AM</p>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -244,6 +265,7 @@ function InspectionsContent() {
                                     </button>
 
                                 </div>
+
                             </div>
 
                             <div className="bg-blue-50 text-blue-800 p-4 rounded-xl flex items-start gap-3 border border-blue-100">
