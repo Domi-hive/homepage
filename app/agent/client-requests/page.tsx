@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Bell, Search, MapPin, Filter, X, Zap, ChevronLeft, ChevronRight } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
@@ -95,9 +95,47 @@ const MOCK_REQUESTS: Request[] = [
   },
 ]
 
+import { requestService } from "@/services/request.service";
+import { Loader2 } from "lucide-react";
+
 export default function ClientRequests() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedRequest, setSelectedRequest] = useState<(typeof MOCK_REQUESTS)[0] | null>(null)
+  const [requests, setRequests] = useState<Request[]>(MOCK_REQUESTS) // Initial with Mock, will replace
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
+
+  // Fetch requests
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const data = await requestService.getAllRequests();
+        const mappedData = data.map((item: any) => ({
+          id: item.id || Math.random().toString(),
+          clientName: item.firstName ? `${item.firstName} ${item.lastName}` : 'Unknown Client',
+          location: item.state || 'Unknown Location',
+          budget: item.minPrice ? `${(item.minPrice / 1000)}k - ${(item.maxPrice / 1000)}k` : 'N/A',
+          bedrooms: item.bedrooms?.toString() || 'N/A',
+          preferences: 'N/A', // API might need to provide this
+          timeline: 'ASAP', // API might need to provide this
+          timestamp: new Date(item.createdAt || Date.now()).toLocaleDateString(),
+          priority: "medium" as "high" | "medium" | "low", // Explicit cast
+          respondentsCount: 0,
+          status: "incoming" as const
+        }));
+
+        // Merge or replace mock data. For now, replacing MOCK if data comes back, else keep mock for demo
+        if (mappedData.length > 0) {
+          setRequests(mappedData);
+        }
+      } catch (err) {
+        console.error("Failed to fetch requests", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, []);
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
   // Filter State
@@ -127,7 +165,7 @@ export default function ClientRequests() {
 
 
   const filteredRequests = useMemo(() => {
-    return MOCK_REQUESTS.filter((request) => {
+    return requests.filter((request) => {
       const matchesSearch =
         request.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         request.location.toLowerCase().includes(searchQuery.toLowerCase())
@@ -144,7 +182,7 @@ export default function ClientRequests() {
     const locationCounts: Record<string, number> = {}
     const statusCounts: Record<string, number> = { incoming: 0, responded: 0 }
 
-    MOCK_REQUESTS.forEach((req) => {
+    requests.forEach((req) => {
       priorityCounts.all++
       priorityCounts[req.priority]++
 
@@ -156,7 +194,7 @@ export default function ClientRequests() {
     return { priority: priorityCounts, location: locationCounts }
   }, [])
 
-  const locations = Array.from(new Set(MOCK_REQUESTS.map((r) => r.location)))
+  const locations = Array.from(new Set(requests.map((r) => r.location)))
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] dark:bg-[#121826] flex flex-col">

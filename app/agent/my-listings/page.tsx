@@ -13,10 +13,84 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { listingService } from "@/services/listing.service"
 import { Listing } from "@/types/api"
 
+// Placeholder for MOCK_LISTINGS. In a real app, this would be defined elsewhere or removed.
+const MOCK_LISTINGS: Listing[] = [
+    {
+        id: "1",
+        title: "Luxury Villa with Ocean View",
+        location: "Malibu, CA",
+        price: 15000000,
+        image: "https://images.unsplash.com/photo-1568605114243-e209b1292591?q=80&w=2000&auto=format&fit=crop",
+        status: "active",
+        createdAt: new Date().toISOString(),
+        agentId: "me",
+        bedrooms: 5,
+        bathrooms: 6,
+        views: 1234,
+        inquiries: 56,
+        dailyViews: 120,
+        lastUpdated: "2023-10-26",
+        isStale: false,
+        isAvailable: true,
+        beds: 5,
+        baths: 6,
+        sqft: 8000,
+        referralsOn: true,
+        activeResponses: 12
+    },
+    {
+        id: "2",
+        title: "Modern Downtown Apartment",
+        location: "New York, NY",
+        price: 2500000,
+        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2000&auto=format&fit=crop",
+        status: "draft", // Changed from pending to match type
+        createdAt: new Date().toISOString(),
+        agentId: "me",
+        bedrooms: 2,
+        bathrooms: 2,
+        views: 876,
+        inquiries: 32,
+        dailyViews: 80,
+        lastUpdated: "2023-10-20",
+        isStale: true,
+        isAvailable: true,
+        beds: 2,
+        baths: 2,
+        sqft: 1200,
+        referralsOn: false,
+        activeResponses: 5
+    },
+    {
+        id: "3",
+        title: "Cozy Suburban Home",
+        location: "Austin, TX",
+        price: 750000,
+        image: "https://images.unsplash.com/photo-1580582932707-5205c5f491af?q=80&w=2000&auto=format&fit=crop",
+        status: "active",
+        createdAt: new Date().toISOString(),
+        agentId: "me",
+        bedrooms: 4,
+        bathrooms: 3,
+        views: 2345,
+        inquiries: 89,
+        dailyViews: 200,
+        lastUpdated: "2023-10-28",
+        isStale: false,
+        isAvailable: false,
+        beds: 4,
+        baths: 3,
+        sqft: 2500,
+        referralsOn: true,
+        activeResponses: 20
+    }
+];
+
 export default function MyListingsPage() {
     const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
     const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
+    const [activeTab, setActiveTab] = useState("active") // New state for active tab
     const [filters, setFilters] = useState({
         referralStatus: "all" as "all" | "on" | "off",
         updateStatus: "all" as "all" | "up-to-date" | "stale",

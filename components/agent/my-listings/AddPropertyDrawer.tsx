@@ -25,7 +25,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         sqm: '',
         description: '',
         meetingPoint: '',
-        availability: '',
+        availableDays: [] as string[],
         referralEnabled: false,
     });
 
@@ -40,6 +40,17 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         // Handle select elements that might use name instead of id if needed, but HTML uses id
         const key = id || e.target.name;
         setFormData(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleDayToggle = (day: string) => {
+        setFormData(prev => {
+            const currentDays = prev.availableDays || [];
+            if (currentDays.includes(day)) {
+                return { ...prev, availableDays: currentDays.filter(d => d !== day) };
+            } else {
+                return { ...prev, availableDays: [...currentDays, day] };
+            }
+        });
     };
 
     const fetchInspectionPoints = async () => {
@@ -347,17 +358,38 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="availability">
-                                        Availability for Inspections
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                                        Available Days for Inspections <span className="text-red-500">*</span>
                                     </label>
-                                    <textarea
-                                        id="availability"
-                                        value={formData.availability}
-                                        onChange={handleInputChange}
-                                        rows={3}
-                                        placeholder="e.g. Weekends only, 9am - 5pm"
-                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white resize-none"
-                                    />
+                                    <div className="border border-slate-300 dark:border-slate-700 rounded-2xl p-4 bg-white dark:bg-slate-800">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+                                                <label key={day} className="flex items-center gap-3 cursor-pointer group">
+                                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.availableDays?.includes(day)
+                                                            ? 'bg-purple-500 border-purple-500'
+                                                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 group-hover:border-purple-400'
+                                                        }`}>
+                                                        {formData.availableDays?.includes(day) && (
+                                                            <CheckCircle className="w-3.5 h-3.5 text-white" />
+                                                        )}
+                                                    </div>
+                                                    <input
+                                                        type="checkbox"
+                                                        className="hidden"
+                                                        checked={formData.availableDays?.includes(day)}
+                                                        onChange={() => handleDayToggle(day)}
+                                                    />
+                                                    <span className={`text-sm ${formData.availableDays?.includes(day)
+                                                            ? 'text-purple-700 dark:text-purple-300 font-medium'
+                                                            : 'text-slate-600 dark:text-slate-400'
+                                                        }`}>{day}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <p className="mt-2 text-xs text-slate-500 flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 p-2 rounded-lg">
+                                        <span className="text-lg">💡</span> Clients will coordinate exact times with you directly
+                                    </p>
                                 </div>
                             </div>
                         </div>

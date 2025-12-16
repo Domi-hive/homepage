@@ -8,5 +8,9 @@ export const listingService = {
 
     async createListing(payload: Partial<Listing>): Promise<Listing> {
         return apiClient.post<Listing>('/listing', payload);
+    },
+
+    async getAllListings(): Promise<Listing[]> {
+        return apiClient.get<Listing[]>('/listing');
     }
 };

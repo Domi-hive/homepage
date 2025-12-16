@@ -10,5 +10,9 @@ export const requestService = {
         // If userId is provided, usage might differ based on API. 
         // For now, assuming /users/requests/all gets requests for current authenticated user.
         return apiClient.get<any[]>('/users/requests/all');
+    },
+
+    async getAllRequests(): Promise<any[]> {
+        return apiClient.get<any[]>('/requests');
     }
 };

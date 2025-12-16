@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, HelpCircle, Star, MapPin, Check, ArrowRight } from 'lucide-react';
+import { X, Star, MapPin, Check, ArrowRight, CheckCircle, AlertTriangle, Calendar } from 'lucide-react';
 
 interface Agent {
     id: string;
@@ -26,24 +26,47 @@ interface ScheduleInspectionDrawerProps {
     properties: Property[];
 }
 
+// Mock availability status for 'Soft Warning' logic
+type AvailabilityStatus = 'available' | 'busy' | 'full';
+
+interface DayAvailability {
+    date: Date;
+    status: AvailabilityStatus;
+    inspectionCount: number;
+}
+
 export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, properties }: ScheduleInspectionDrawerProps) {
     const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
     const [show, setShow] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const [step, setStep] = useState<'selection' | 'time'>('selection');
+    const [step, setStep] = useState<'selection' | 'date'>('selection');
     const [inspectionType, setInspectionType] = useState<'in-person' | 'video'>('in-person');
-    const [selectedDate, setSelectedDate] = useState<string>('Mon Nov 3');
-    const [selectedTime, setSelectedTime] = useState<string>('');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-    // Mock dates for the carousel
-    const dates = [
-        { day: 'Mon', date: 'Nov 3' },
-        { day: 'Tue', date: 'Nov 4' },
-        { day: 'Wed', date: 'Nov 5' },
-    ];
+    // Generate next 7 days with mock availability
+    const [availableDays, setAvailableDays] = useState<DayAvailability[]>([]);
 
-    // Mock times
-    const times = ['08:30', '09:00', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30'];
+    useEffect(() => {
+        // Generate next 7 days
+        const days: DayAvailability[] = Array.from({ length: 7 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() + i + 1); // Start from tomorrow
+
+            // Randomly assign status for demo purposes
+            const rand = Math.random();
+            let status: AvailabilityStatus = 'available';
+            let count = 0;
+
+            // Force the 3rd day to be busy for demo purposes, or random
+            if (i === 2 || rand > 0.8) {
+                status = 'busy';
+                count = Math.floor(Math.random() * 3) + 1; // 1-3 existing inspections
+            }
+
+            return { date, status, inspectionCount: count };
+        });
+        setAvailableDays(days);
+    }, []);
 
     useEffect(() => {
         if (isOpen) {
@@ -82,12 +105,26 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
         return `₦${(price / 1000000).toFixed(1)}M`;
     };
 
+    const formatDate = (date: Date) => {
+        return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    };
+
     const handleBack = () => {
-        if (step === 'time') {
+        if (step === 'date') {
             setStep('selection');
         } else {
             onClose();
         }
+    };
+
+    const handleConfirm = () => {
+        // Here you would submit the booking
+        console.log('Booking Confirmed', {
+            properties: Array.from(selectedPropertyIds),
+            date: selectedDate,
+            type: inspectionType
+        });
+        onClose();
     };
 
     return (
@@ -107,7 +144,7 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                     <div className="flex justify-between items-start">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
-                                {step === 'selection' ? 'Schedule Inspection' : 'Inspection Time Selection'}
+                                {step === 'selection' ? 'Schedule Inspection' : 'Select a Day'}
                             </h2>
                         </div>
                         <button
@@ -193,7 +230,7 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                             </div>
                         </>
                     ) : (
-                        // Time Selection Step
+                        // Date Selection Step (Simpler, Outcome-Based)
                         <div className="space-y-6">
                             {/* Selected Properties Summary */}
                             <div className="space-y-3">
@@ -202,12 +239,12 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                                         <img
                                             src={property.image}
                                             alt={property.title}
-                                            className="w-24 h-20 object-cover rounded-lg"
+                                            className="w-16 h-16 object-cover rounded-lg"
                                         />
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Property details</p>
-                                            <h3 className="font-semibold text-slate-800 dark:text-white text-lg truncate">{property.title}</h3>
-                                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-1">
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-semibold text-slate-800 dark:text-white text-base truncate">{property.title}</h3>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                                <MapPin className="w-3 h-3" />
                                                 {property.location}
                                             </p>
                                         </div>
@@ -215,87 +252,66 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                                 ))}
                             </div>
 
-                            {/* Inspection Type Toggle */}
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setInspectionType('in-person')}
-                                    className={`
-                                        font-semibold py-2 px-5 rounded-full transition-colors border shadow-sm
-                                        ${inspectionType === 'in-person'
-                                            ? 'bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-700 dark:text-blue-300 border-purple-500/50 dark:border-blue-400/50'
-                                            : 'bg-white/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80'
-                                        }
-                                    `}
-                                >
-                                    In-person
-                                </button>
-                                <button
-                                    onClick={() => setInspectionType('video')}
-                                    className={`
-                                        font-semibold py-2 px-5 rounded-full transition-colors border shadow-sm
-                                        ${inspectionType === 'video'
-                                            ? 'bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-700 dark:text-blue-300 border-purple-500/50 dark:border-blue-400/50'
-                                            : 'bg-white/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80'
-                                        }
-                                    `}
-                                >
-                                    Live video
-                                </button>
-                            </div>
 
-                            {/* Date & Time Selection */}
+
+                            {/* Date Selection List */}
                             <div>
-                                <h3 className="text-lg font-bold text-slate-800 dark:text-white">Select a tour date and time</h3>
-                                <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Your tour will be booked after confirming your contact details.</p>
-                            </div>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-3 flex items-center gap-2">
+                                    <Calendar className="w-5 h-5 text-slate-500" />
+                                    Select a Day
+                                </h3>
 
-                            <div className="flex items-center gap-3">
-                                <div className="flex-1 grid grid-cols-3 gap-3">
-                                    {dates.map((d) => {
-                                        const dateStr = `${d.day} ${d.date}`;
-                                        const isSelected = selectedDate === dateStr;
+                                <div className="space-y-3">
+                                    {availableDays.map((day, idx) => {
+                                        const isSelected = selectedDate?.toDateString() === day.date.toDateString();
+                                        const isBusy = day.status === 'busy';
+
                                         return (
                                             <button
-                                                key={dateStr}
-                                                onClick={() => setSelectedDate(dateStr)}
+                                                key={idx}
+                                                onClick={() => setSelectedDate(day.date)}
                                                 className={`
-                                                    p-3 rounded-xl text-center transition-colors
+                                                    w-full p-4 rounded-xl text-left border transition-all relative overflow-hidden
                                                     ${isSelected
-                                                        ? 'bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50 border-2 border-purple-500 dark:border-blue-400 shadow-soft'
-                                                        : 'bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80'
+                                                        ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-500 shadow-md z-10'
+                                                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-700'
                                                     }
                                                 `}
                                             >
-                                                <p className="font-bold text-lg text-slate-800 dark:text-white">{d.day}</p>
-                                                <p className="text-sm text-slate-600 dark:text-slate-300">{d.date}</p>
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <span className={`block text-lg font-bold ${isSelected ? 'text-purple-700 dark:text-purple-300' : 'text-slate-800 dark:text-white'}`}>
+                                                            {formatDate(day.date)}
+                                                        </span>
+
+                                                        {isBusy && (
+                                                            <div className="flex items-center gap-1.5 mt-1 text-amber-600 dark:text-amber-400 text-sm font-medium">
+                                                                <AlertTriangle className="w-4 h-4" />
+                                                                <span>Agent has {day.inspectionCount} inspections</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className={`
+                                                        w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                                        ${isSelected ? 'border-purple-500 bg-purple-500 text-white' : 'border-slate-300 dark:border-slate-600'}
+                                                    `}>
+                                                        {isSelected && <Check className="w-3.5 h-3.5" />}
+                                                    </div>
+                                                </div>
                                             </button>
                                         );
                                     })}
                                 </div>
-                                <button className="flex-shrink-0 w-10 h-10 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 rounded-full flex items-center justify-center border border-slate-200/80 dark:border-slate-700/80 transition-colors">
-                                    <span className="material-symbols-outlined text-slate-600 dark:text-slate-300">chevron_right</span>
-                                </button>
                             </div>
 
-                            <div className="grid grid-cols-4 gap-3">
-                                {times.map((time) => {
-                                    const isSelected = selectedTime === time;
-                                    return (
-                                        <button
-                                            key={time}
-                                            onClick={() => setSelectedTime(time)}
-                                            className={`
-                                                p-3 rounded-xl text-center transition-colors font-semibold
-                                                ${isSelected
-                                                    ? 'bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50 border-2 border-purple-500 dark:border-blue-400 shadow-soft text-slate-800 dark:text-white'
-                                                    : 'bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300'
-                                                }
-                                            `}
-                                        >
-                                            {time}
-                                        </button>
-                                    );
-                                })}
+                            <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
+                                <p className="flex gap-2">
+                                    <span className="text-xl">💡</span>
+                                    <span>
+                                        After booking, the agent will contact you to coordinate the exact meeting time.
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     )}
@@ -305,11 +321,11 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                 <div className="sticky bottom-0 z-10 p-6 bg-slate-50/80 dark:bg-[#1a1829]/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800">
                     {step === 'selection' ? (
                         <button
-                            onClick={() => setStep('time')}
+                            onClick={() => setStep('date')}
                             className="w-full px-5 py-3 text-base font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             disabled={selectedPropertyIds.size === 0}
                         >
-                            <span>Continue to Time Selection</span>
+                            <span>Continue to Day Selection</span>
                             <ArrowRight className="w-5 h-5" />
                         </button>
                     ) : (
@@ -321,8 +337,9 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                                 Back
                             </button>
                             <button
+                                onClick={handleConfirm}
                                 className="flex-1 px-5 py-3 text-base font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                disabled={!selectedTime}
+                                disabled={!selectedDate}
                             >
                                 <span>Confirm Booking</span>
                                 <Check className="w-5 h-5" />

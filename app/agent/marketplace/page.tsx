@@ -102,8 +102,47 @@ const MOCK_LISTINGS: Listing[] = [
   },
 ]
 
+import { listingService } from "@/services/listing.service"
+import { Loader2 } from "lucide-react"
+import { useEffect } from "react"
+
 export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [listings, setListings] = useState<Listing[]>(MOCK_LISTINGS) // Initial Mock, replace if API success
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const data = await listingService.getAllListings();
+        const mappedListings = data.map((item: any) => ({
+          id: item.id || Math.random().toString(),
+          title: item.title || 'Untitled Property',
+          location: item.location || item.address || 'Unknown Location',
+          price: Number(item.price) || 0,
+          bedrooms: Number(item.bedrooms) || 0, // Fallback
+          image: item.image || item.media?.[0]?.url || "https://images.unsplash.com/photo-1600596542815-2a4d04774c13?q=80&w=2000&auto=format&fit=crop", // Fallback image
+          agentName: item.agent?.name || item.agentName || "Unknown Agent",
+          agentRating: item.agent?.rating || 4.5, // Default/Mock
+          agentImage: item.agent?.image || "https://ui-avatars.com/api/?name=" + (item.agentName || "Agent"),
+          referralEnabled: item.referralEnabled || false,
+          updatedAt: new Date(item.updatedAt || Date.now()).toLocaleDateString(),
+          matchPercentage: 85, // Mock match %
+          propertyType: item.propertyType || "House"
+        }));
+
+        if (mappedListings.length > 0) {
+          setListings(mappedListings as Listing[]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch marketplace listings", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchListings();
+  }, []);
+
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [filters, setFilters] = useState({
     updatedIn24h: false,
@@ -148,7 +187,7 @@ export default function MarketplacePage() {
   }
 
   const filteredListings = useMemo(() => {
-    return MOCK_LISTINGS.filter((listing) => {
+    return listings.filter((listing) => {
       // Search query filter
       if (
         searchQuery &&
