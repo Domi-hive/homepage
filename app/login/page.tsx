@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { authService } from '@/services/auth.service';
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -16,39 +18,19 @@ export default function LoginPage() {
         setError('');
 
         try {
-            const response = await fetch('https://s-dev.domihive.com/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
+            const data = await authService.login({ email, password });
 
-            const data = await response.json();
+            // Store session
+            authService.setSession(data);
 
-            if (response.ok) {
-                // Store in localStorage for API calls
-                localStorage.setItem('authToken', data.accessToken);
-                localStorage.setItem('refreshToken', data.refreshToken);
-                localStorage.setItem('userRole', data.user.role);
-                localStorage.setItem('userData', JSON.stringify(data.user));
-
-                // Set cookie for middleware
-                document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
-                document.cookie = `userRole=${data.user.role}; path=/; max-age=86400; SameSite=Strict`;
-
-                // Redirect based on role
-                if (data.user.role === 'agent') {
-                    window.location.href = '/agent/dashboard';
-                } else {
-                    window.location.href = '/client/dashboard';
-                }
+            // Redirect based on role
+            if (data.user.role === 'agent') {
+                window.location.href = '/agent/dashboard';
             } else {
-                setError(data.message || 'Login failed');
+                window.location.href = '/client/dashboard';
             }
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-            console.error('Login error:', err);
+        } catch (err: any) {
+            setError(err.message || 'Login failed');
         } finally {
             setLoading(false);
         }

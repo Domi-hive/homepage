@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { useState } from 'react';
+import { authService } from '@/services/auth.service';
+
 
 export default function ClientSignupPage() {
     const router = useRouter();
@@ -33,40 +35,21 @@ export default function ClientSignupPage() {
         setError('');
 
         try {
-            const response = await fetch('https://s-dev.domihive.com/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    role: 'user',
-                    phoneNumber,
-                    firstName,
-                    lastName,
-                }),
+            const data = await authService.signup({
+                email,
+                password,
+                role: 'user',
+                phoneNumber,
+                firstName,
+                lastName,
             });
 
-            const data = await response.json();
+            // Store session
+            authService.setSession(data);
 
-            if (response.ok) {
-                // Store in localStorage for API calls
-                localStorage.setItem('authToken', data.accessToken);
-                localStorage.setItem('refreshToken', data.refreshToken);
-                localStorage.setItem('userRole', 'user'); // Explictly set role to match middleware
-                localStorage.setItem('userData', JSON.stringify(data.user));
-
-                // Set cookie for middleware
-                document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
-                document.cookie = `userRole=user; path=/; max-age=86400; SameSite=Strict`;
-
-                router.push('/client/dashboard');
-            } else {
-                setError(data.message || 'Signup failed');
-            }
-        } catch (err) {
-            setError('An error occurred. Please try again.');
+            router.push('/client/dashboard');
+        } catch (err: any) {
+            setError(err.message || 'Signup failed');
             console.error('Signup error:', err);
         } finally {
             setLoading(false);

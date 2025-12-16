@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Loader2 } from 'lucide-react';
+import { requestService } from '@/services/request.service';
+
 
 const propertyTypeOptions = [
     { id: 'detached', label: 'Detached', icon: 'home' },
@@ -118,18 +120,12 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     const removeLocation = (loc: string) => {
         setSelectedLocations(selectedLocations.filter(l => l !== loc));
     };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
         try {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                throw new Error('You must be logged in to create a request.');
-            }
-
             const formattedBudgetRange = `₦${budgetRange.min.toLocaleString()} - ₦${budgetRange.max.toLocaleString()}`;
             const propertyTypeString = Array.from(selectedTypes)
                 .map(id => propertyTypeOptions.find(opt => opt.id === id)?.label)
@@ -144,7 +140,13 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 throw new Error('Please fill in all required fields.');
             }
 
-            const payload = {
+            // Note: Manual token check removed as API client handles Auth header, 
+            // but we can leave a check if we want immediate feedback.
+            if (!localStorage.getItem('authToken')) {
+                throw new Error('You must be logged in to create a request.');
+            }
+
+            await requestService.createPropertyRequest({
                 location: locationString,
                 propertyType: propertyTypeString,
                 bedrooms,
@@ -155,21 +157,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 propertyStructure: 'Standard',
                 locationType: 'Urban',
                 moveInDate: new Date().toISOString().split('T')[0],
-            };
-
-            const response = await fetch('https://s-dev.domihive.com/requests', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(payload),
             });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Failed to create request');
-            }
 
             setSuccess(true);
             setTimeout(() => {
