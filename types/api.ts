@@ -33,6 +33,7 @@ export interface PropertyRequestPayload {
     location: string;
     propertyType: string;
     bedrooms: string | number; // Frontend currently can send empty string or number
+    bathrooms: string | number;
     tenure: string;
     budgetRange: string;
     additionalInfo: string;

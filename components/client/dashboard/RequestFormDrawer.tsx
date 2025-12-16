@@ -30,6 +30,14 @@ const bedroomOptions = [
     { value: 4, label: '4+' },
 ];
 
+const bathroomOptions = [
+    { value: '', label: 'Any' },
+    { value: 1, label: '1' },
+    { value: 2, label: '2' },
+    { value: 3, label: '3' },
+    { value: 4, label: '4+' },
+];
+
 const tenureOptions = [
     { value: '', label: 'Any' },
     { value: 'buy', label: 'For Sale' },
@@ -45,6 +53,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     const [location, setLocation] = useState('');
     const [budgetRange, setBudgetRange] = useState({ min: BUDGET_MIN, max: BUDGET_MAX });
     const [bedrooms, setBedrooms] = useState<string | number>('');
+    const [bathrooms, setBathrooms] = useState<string | number>('');
     const [tenure, setTenure] = useState('');
     const [details, setDetails] = useState('');
     const [selectedTypes, setSelectedTypes] = useState<Set<string>>(new Set());
@@ -191,6 +200,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 location: locationString,
                 propertyType: propertyTypeString,
                 bedrooms,
+                bathrooms,
                 tenure,
                 budgetRange: formattedBudgetRange,
                 additionalInfo: details,
@@ -205,6 +215,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 setSelectedLocations([]);
                 setBudgetRange({ min: BUDGET_MIN, max: BUDGET_MAX });
                 setBedrooms('');
+                setBathrooms('');
                 setTenure('');
                 setDetails('');
                 setSelectedTypes(new Set());
@@ -356,8 +367,8 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                 </div>
                             </div>
 
-                            {/* Bedrooms & Tenure */}
-                            <div className="grid grid-cols-2 gap-6">
+                            {/* Bedrooms, Bathrooms & Tenure */}
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <label htmlFor="bedrooms" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
                                         Bedrooms
@@ -370,6 +381,21 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                         required
                                     >
                                         {bedroomOptions.map(opt => (
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="bathrooms" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                                        Bathrooms
+                                    </label>
+                                    <select
+                                        id="bathrooms"
+                                        value={bathrooms}
+                                        onChange={(e) => setBathrooms(e.target.value === '' ? '' : Number(e.target.value))}
+                                        className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 py-2.5 pl-3 pr-10 text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center]"
+                                    >
+                                        {bathroomOptions.map(opt => (
                                             <option key={opt.value} value={opt.value}>{opt.label}</option>
                                         ))}
                                     </select>
