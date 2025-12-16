@@ -49,3 +49,39 @@ export interface PropertyRequestResponse {
     // Add other fields as we discover them
     [key: string]: any;
 }
+
+export interface PropertyType {
+    id: string;
+    label: string; // Assuming 'label' or 'name'
+    value?: string; // Sometimes APIs return value/label pairs
+    [key: string]: any;
+}
+
+export interface Property {
+    id: string;
+    title: string;
+    location: string;
+    price: number | string; // UI uses string checks sometimes
+    bedrooms: number;
+    bathrooms: number;
+    images?: string[];
+    sqft?: number; // Added for UI
+    [key: string]: any;
+}
+
+export interface Listing extends Property {
+    agentId: string;
+    status: 'active' | 'draft' | 'sold';
+    createdAt: string;
+
+    // UI specific fields (can be mapped or optional)
+    image?: string; // UI uses this single image property sometimes
+    beds?: number; // UI uses 'beds' alias
+    baths?: number; // UI uses 'baths' alias
+    lastUpdated?: string;
+    isStale?: boolean;
+    isAvailable?: boolean;
+    referralsOn?: boolean;
+    activeResponses?: number;
+}
+

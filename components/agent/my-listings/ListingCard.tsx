@@ -1,21 +1,7 @@
 import React from 'react';
-import { MapPin, Edit, MoreVertical, Send, AlertTriangle } from 'lucide-react';
-
-interface Listing {
-    id: string;
-    title: string;
-    image: string;
-    location: string;
-    price: string;
-    beds: number;
-    baths: number;
-    sqft: number;
-    lastUpdated: string;
-    isStale: boolean;
-    isAvailable: boolean;
-    referralsOn: boolean;
-    activeResponses?: number;
-}
+import { Edit, RefreshCw, MoreVertical, ToggleLeft, ToggleRight, Trash2, AlertTriangle, Send, MapPin } from "lucide-react"
+import Link from 'next/link';
+import { Listing } from "@/types/api"
 
 interface ListingCardProps {
     listing: Listing;
@@ -24,11 +10,12 @@ interface ListingCardProps {
 export default function ListingCard({ listing }: ListingCardProps) {
     return (
         <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl shadow-soft border border-white/50 dark:border-white/10 overflow-hidden flex flex-col transition-all hover:shadow-lg">
-            <div className="relative">
+            {/* Image Container */}
+            <div className="relative aspect-[4/3] overflow-hidden group">
                 <img
+                    src={listing.image || listing.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1073&q=80'} // Fallback
                     alt={listing.title}
-                    className="w-full h-48 object-cover"
-                    src={listing.image}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className={`absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-sm ${listing.isStale ? 'bg-orange-100/80 text-orange-800' : 'bg-white/80 text-slate-700'}`}>
                     {listing.isStale && <AlertTriangle className="w-4 h-4" />}

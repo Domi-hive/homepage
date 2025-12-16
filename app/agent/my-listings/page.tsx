@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Bell, PlusCircle, ChevronLeft, ChevronRight, Filter, Search, X, ToggleRight, ToggleLeft, RefreshCw } from 'lucide-react';
 import StatsBanner from '@/components/agent/my-listings/StatsBanner';
 import ListingCard from '@/components/agent/my-listings/ListingCard';
@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { listingService } from "@/services/listing.service"
+import { Listing } from "@/types/api"
 
 export default function MyListingsPage() {
     const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
@@ -24,51 +26,27 @@ export default function MyListingsPage() {
     })
     const [presets, setPresets] = useState<{ name: string; filters: any }[]>([])
 
-    const listings = [
-        {
-            id: '1',
-            title: '3-Bedroom Duplex in Maitama',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjY0TlcynzUAUN3sNYA4umxtnJloi4Hp8qnv8icv_07pvR2UQf9Tjmrn76TlGf74Uk_FL0FxwjOX2cgeCdknGoqDsXX1zM56B3gzp6F18Aq6RIIu3tYL7OPaMEyQ88T8J_yRCgEPK_BD2qyE7oJRsNxcBKP6C_c9lIiZN9CkOSlo1wkgj8McE3srVf0k8DPPCmdawXFWvZzKjgtfGIKq6Uung2Q9hkCJ88C4M6ioEkPDLXSh2RT6CMtwsEhRwHnzbat70fislUAg',
-            location: 'Maitama, Abuja',
-            price: '₦3.5M',
-            beds: 3,
-            baths: 2,
-            sqft: 150,
-            lastUpdated: '45 days ago',
-            isStale: true,
-            isAvailable: true,
-            referralsOn: true,
-        },
-        {
-            id: '2',
-            title: 'Luxury Penthouse',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBU-kpzbTcKSUdziXUX4RcNGoS1S-ZUuzTwJVrIXs26xnGYGOON1EbW6vQ0F8Ve7wjOhHrLeybm62rDqFZIYebrOqbN_iTH455ix-dsrsBWtvtnNiMVaAIIz5FNF_x7y8q3o9lRMWNZ0on06H4AaL9xhzj04Ywxy4bbTT141VFuZ38uPeEvczwzV8ieJedKTEyiBfIaXJhZOgbstqtX63STn8n_kMqueqAYKSFyyQk_5pCYuAr5ZstMvNMGpqCSkTxcHULPX-RREA',
-            location: 'Victoria Island, Lagos',
-            price: '₦5.5M',
-            beds: 4,
-            baths: 3,
-            sqft: 220,
-            lastUpdated: '2 days ago',
-            isStale: false,
-            isAvailable: false,
-            referralsOn: false,
-        },
-        {
-            id: '3',
-            title: 'Cozy Apartment',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDT-NOSkrt7wACdcbB2hOQhcFoq0KpuWqXa8kkBeLgBSdTi4WUerLmipv12Evf_YQZI5bL-2X5fbQU0Dk1Hskhpj0Xr9JSywsNFUMbbRCSkIBrcOU2iGc1pJCKXojogPhObrQxypdqXZHMxRaLNhDPTiaaXe37wzp7zRUTXwLVB_scAfFAa3eTHEJg_DRWjl0PdI9_7ITBA80X11dwHJyh06AW9u64LbvVXkeeSHxPnjEP8gJ3lgs58GTtuMHQfLNZlL-7hXIwrdQ',
-            location: 'Ikoyi, Lagos',
-            price: '₦2.8M',
-            beds: 2,
-            baths: 2,
-            sqft: 110,
-            lastUpdated: '10 days ago',
-            isStale: false,
-            isAvailable: true,
-            referralsOn: true,
-            activeResponses: 2,
-        },
-    ];
+    // New state for fetched listings and loading
+    const [listings, setListings] = useState<Listing[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch listings on component mount
+    useEffect(() => {
+        const fetchListings = async () => {
+            try {
+                // TODO: Get actual logged in agent ID. For now using 'me' or a placeholder if API supports it, 
+                // or we'd need to decode info from local storage
+                const agentId = 'me';
+                const data = await listingService.getAgentListings(agentId);
+                setListings(data);
+            } catch (error) {
+                console.error("Failed to fetch listings", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchListings();
+    }, []); // Empty dependency array means this runs once on mount
 
     const handleFilterChange = (key: string, value: any) => {
         setFilters((prev) => ({ ...prev, [key]: value }))

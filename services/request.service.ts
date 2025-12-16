@@ -5,4 +5,10 @@ export const requestService = {
     async createPropertyRequest(payload: PropertyRequestPayload): Promise<PropertyRequestResponse> {
         return apiClient.post<PropertyRequestResponse>('/requests', payload);
     },
+
+    async getUserRequests(userId?: string): Promise<any[]> {
+        // If userId is provided, usage might differ based on API. 
+        // For now, assuming /users/requests/all gets requests for current authenticated user.
+        return apiClient.get<any[]>('/users/requests/all');
+    }
 };

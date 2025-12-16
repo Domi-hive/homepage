@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+// import { Plus } from 'lucide-react'; // Removed
 import RequestFormDrawer from './RequestFormDrawer';
 
+// onOpenDrawer prop removed as button is moved to StatsCards
+// interface WelcomeCardProps {
+//     onOpenDrawer: () => void;
+// }
+
 export default function WelcomeCard() {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -20,35 +24,19 @@ export default function WelcomeCard() {
                         {getGreeting()}, User! 👋
                     </h2>
 
-                    {/* Mobile Layout: Question + Button Side-by-Side */}
-                    <div className="flex md:hidden items-center justify-between gap-3">
-                        <p className="text-sm text-slate-600 leading-tight m-0 max-w-[50%]">Looking for anything new today?</p>
-                        <button
-                            type="button"
-                            onClick={() => setIsDrawerOpen(true)}
-                            className="bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/30 border-none rounded-2xl px-4 py-2.5 text-white text-sm font-semibold cursor-pointer flex items-center gap-1.5 whitespace-nowrap hover:opacity-90 transition-opacity"
-                        >
-                            <Plus className="w-3.5 h-3.5" />
-                            <span>Create Request</span>
-                        </button>
+                    {/* Mobile Layout: Question Only */}
+                    <div className="md:hidden">
+                        <p className="text-sm text-slate-600 leading-tight m-0">Looking for anything new today?</p>
                     </div>
 
                     {/* Desktop Layout: Question Only */}
                     <p className="hidden md:block text-base text-slate-600 leading-6 m-0">Looking for anything new today?</p>
                 </div>
 
-                {/* Desktop Button */}
-                <button
-                    type="button"
-                    onClick={() => setIsDrawerOpen(true)}
-                    className="hidden md:flex bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/30 border-none rounded-3xl px-6 py-3 text-white text-base font-semibold cursor-pointer items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-purple-500/40"
-                >
-                    <Plus className="w-4 h-4" />
-                    <span className="whitespace-nowrap">Create Property Request</span>
-                </button>
+                {/* Desktop Button Removed */}
             </div>
 
-            <RequestFormDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+            {/* Drawer moved to parent */}
         </>
     );
 }

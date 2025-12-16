@@ -4,9 +4,12 @@ import { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Loader2 } from 'lucide-react';
 import { requestService } from '@/services/request.service';
+import { propertyService } from '@/services/property.service';
+import { PropertyType } from '@/types/api';
 
 
-const propertyTypeOptions = [
+// Fallback options while loading or if error
+const FALLBACK_PROPERTY_TYPES = [
     { id: 'detached', label: 'Detached', icon: 'home' },
     { id: 'semi-detached', label: 'Semi-detached', icon: 'home' },
     { id: 'terraced', label: 'Terraced', icon: 'holiday_village' },
@@ -48,6 +51,44 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
+    const [isLoadingTypes, setIsLoadingTypes] = useState(false);
+
+    useEffect(() => {
+        const fetchTypes = async () => {
+            setIsLoadingTypes(true);
+            try {
+                const types = await propertyService.getPropertyTypes();
+                setPropertyTypes(types);
+            } catch (err) {
+                console.error('Failed to fetch property types', err);
+                setPropertyTypes(FALLBACK_PROPERTY_TYPES);
+            } finally {
+                setIsLoadingTypes(false);
+            }
+        };
+        fetchTypes();
+    }, []);
+
+    // Helper to get options to display
+    const displayOptions = propertyTypes.length > 0 ? propertyTypes : FALLBACK_PROPERTY_TYPES;
+
+    // Helper to get icon (since API might not return it)
+    const getIcon = (id: string) => {
+        // Try to match by ID strictly first
+        const match = FALLBACK_PROPERTY_TYPES.find(t => t.id === id);
+        if (match) return match.icon;
+
+        // Heuristic matching
+        const lowerId = id.toLowerCase();
+        if (lowerId.includes('flat') || lowerId.includes('apartment')) return 'apartment';
+        if (lowerId.includes('land') || lowerId.includes('farm')) return 'grass';
+        if (lowerId.includes('holiday') || lowerId.includes('terrace')) return 'holiday_village';
+        if (lowerId.includes('bungalow')) return 'bungalow';
+
+        return 'home';
+    };
+
     const [show, setShow] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
@@ -128,7 +169,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
         try {
             const formattedBudgetRange = `₦${budgetRange.min.toLocaleString()} - ₦${budgetRange.max.toLocaleString()}`;
             const propertyTypeString = Array.from(selectedTypes)
-                .map(id => propertyTypeOptions.find(opt => opt.id === id)?.label)
+                .map(id => displayOptions.find(opt => opt.id === id)?.label)
                 .filter(Boolean)
                 .join(', ');
 
@@ -361,18 +402,18 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                     Property types
                                 </label>
                                 <div className="flex flex-wrap gap-3">
-                                    {propertyTypeOptions.map((option) => (
+                                    {displayOptions.map((type) => (
                                         <button
-                                            key={option.id}
+                                            key={type.id}
                                             type="button"
-                                            onClick={() => togglePropertyType(option.id)}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-colors ${selectedTypes.has(option.id)
+                                            onClick={() => togglePropertyType(type.id)}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-colors ${selectedTypes.has(type.id)
                                                 ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-semibold border-2 border-purple-500'
                                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-200 dark:hover:bg-slate-700'
                                                 }`}
                                         >
-                                            <span className="material-symbols-outlined text-base">{option.icon}</span>
-                                            {option.label}
+                                            <span className="material-symbols-outlined text-base">{getIcon(type.id)}</span>
+                                            {type.label}
                                         </button>
                                     ))}
                                 </div>

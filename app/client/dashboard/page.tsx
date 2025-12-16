@@ -7,7 +7,12 @@ import StatsCards from '@/components/client/dashboard/StatsCards';
 import MatchedProperties from '@/components/client/dashboard/MatchedProperties';
 
 
+import { useState } from 'react';
+import RequestFormDrawer from '@/components/client/dashboard/RequestFormDrawer';
+
 export default function ClientDashboard() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
     <div
       className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] flex flex-col"
@@ -28,10 +33,12 @@ export default function ClientDashboard() {
         <main className="flex-1 h-full overflow-y-auto flex flex-col">
           <div className="px-4 md:px-10 pb-[50px] pt-[30px] space-y-6">
             <WelcomeCard />
-            <StatsCards />
+            <StatsCards onOpenDrawer={() => setIsDrawerOpen(true)} />
             <MatchedProperties />
-
           </div>
+
+          <RequestFormDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+
         </main>
       </div>
     </div>
