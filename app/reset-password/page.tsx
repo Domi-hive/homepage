@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { authService } from '@/services/auth.service';
 
 function ResetPasswordContent() {
     const searchParams = useSearchParams();
@@ -40,18 +41,18 @@ function ResetPasswordContent() {
             return;
         }
 
+        if (!token) {
+            setError('Missing reset token. Please check your email link.');
+            return;
+        }
+
         setIsLoading(true);
 
         try {
-            // Mock API call or real endpoint if available
-            // const response = await fetch('https://s-dev.domihive.com/auth/reset-password', { ... });
-
-            // Simulating API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
+            await authService.resetPassword(token, password);
             setIsSubmitted(true);
-        } catch (err) {
-            setError('An error occurred. Please try again.');
+        } catch (err: any) {
+            setError(err.message || 'An error occurred. Please try again.');
         } finally {
             setIsLoading(false);
         }

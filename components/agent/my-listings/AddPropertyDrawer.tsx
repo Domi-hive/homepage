@@ -29,6 +29,10 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         referralEnabled: false,
     });
 
+    const [inspectionPoints, setInspectionPoints] = useState<string[]>([]);
+    const [isLoadingPoints, setIsLoadingPoints] = useState(false);
+    const [pointsError, setPointsError] = useState('');
+
     const isLastStep = currentStep === 5;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -37,6 +41,39 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         const key = id || e.target.name;
         setFormData(prev => ({ ...prev, [key]: value }));
     };
+
+    const fetchInspectionPoints = async () => {
+        setIsLoadingPoints(true);
+        setPointsError('');
+        try {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // In a real app, this would use formData.state and formData.neighborhood
+            // const response = await fetch(`/api/inspection-points?state=${formData.state}&neighborhood=${formData.neighborhood}`);
+
+            // Mock response
+            const mockPoints = [
+                "Estate Main Gate",
+                "Community Center",
+                "Police Station Junction",
+                "Market Square",
+                "Mall Entrance"
+            ];
+
+            setInspectionPoints(mockPoints);
+        } catch (err) {
+            setPointsError('Failed to load inspection points');
+        } finally {
+            setIsLoadingPoints(false);
+        }
+    };
+
+    React.useEffect(() => {
+        if (currentStep === 3) {
+            fetchInspectionPoints();
+        }
+    }, [currentStep]);
 
     const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5));
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
@@ -278,14 +315,36 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="meetingPoint">
                                         Meeting Point <span className="text-red-500">*</span>
                                     </label>
-                                    <input
-                                        type="text"
-                                        id="meetingPoint"
-                                        placeholder="e.g. Estate Main Gate"
-                                        value={formData.meetingPoint}
-                                        onChange={handleInputChange}
-                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
-                                    />
+
+                                    {isLoadingPoints ? (
+                                        <div className="flex items-center gap-2 text-slate-500 text-sm py-2.5 px-4 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-transparent">
+                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-500 border-t-transparent"></div>
+                                            <span>Loading inspection points...</span>
+                                        </div>
+                                    ) : pointsError ? (
+                                        <div className="flex items-center justify-between text-red-500 text-sm py-2 px-4 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-200 dark:border-red-800">
+                                            <span>{pointsError}</span>
+                                            <button
+                                                onClick={fetchInspectionPoints}
+                                                className="text-red-600 dark:text-red-400 font-semibold hover:underline"
+                                                type="button"
+                                            >
+                                                Retry
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <select
+                                            id="meetingPoint"
+                                            value={formData.meetingPoint}
+                                            onChange={handleInputChange}
+                                            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                        >
+                                            <option value="">Select a meeting point</option>
+                                            {inspectionPoints.map((point) => (
+                                                <option key={point} value={point}>{point}</option>
+                                            ))}
+                                        </select>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="availability">

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
+import { authService } from '@/services/auth.service';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -16,12 +17,7 @@ export default function ForgotPasswordPage() {
         setError('');
 
         try {
-            // Mock API call or real endpoint if available
-            // const response = await fetch('https://s-dev.domihive.com/auth/forgot-password', { ... });
-
-            // Simulating API delay for now as per plan assumption
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
+            await authService.forgotPassword(email);
             setIsSubmitted(true);
         } catch (err) {
             setError('An error occurred. Please try again.');

@@ -10,6 +10,14 @@ export const authService = {
         return apiClient.post<AuthResponse>('/auth/signup', payload, { skipAuth: true });
     },
 
+    async forgotPassword(email: string): Promise<any> {
+        return apiClient.post('/auth/forgot-password', { email }, { skipAuth: true });
+    },
+
+    async resetPassword(token: string, newPassword: string): Promise<any> {
+        return apiClient.post('/auth/reset-password', { token, newPassword }, { skipAuth: true });
+    },
+
     // Helper to centralize session management (optional usage)
     setSession(data: AuthResponse) {
         if (typeof window !== 'undefined') {

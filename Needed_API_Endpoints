@@ -1,0 +1,76 @@
+# Needed API Endpoints
+
+This document tracks API endpoints that are required by the frontend but are currently mock-up or hardcoded.
+
+## High Priority (New Features)
+
+### 1. Inspection Points (Dynamic Loading)
+- **Method**: `GET`
+- **Endpoint**: `/api/inspection-points`
+- **Query Params**:
+  - `state` (string): The selected state (e.g., "Lagos")
+  - `neighborhood` (string): The selected neighborhood (e.g., "Ikoyi")
+- **Response**:
+  ```json
+  {
+    "inspectionPoints": [
+      "Estate Main Gate",
+      "Community Center",
+      "Police Station Junction",
+      "Market Square"
+    ]
+  }
+  ```
+- **Used In**: `components/agent/my-listings/AddPropertyDrawer.tsx`
+- **Status**: Mocked pending backend.
+
+## Agent Dashboard
+
+### 2. Client Requests (Agent View)
+- **Method**: `GET`
+- **Endpoint**: `/api/agent/client-requests`
+- **Response**: List of requests with status (incoming, responded, etc.)
+- **Used In**: `app/agent/client-requests/page.tsx` (`MOCK_REQUESTS`)
+
+### 3. Marketplace Listings (Agent View)
+- **Method**: `GET`
+- **Endpoint**: `/api/agent/marketplace/listings`
+- **Response**: List of properties in the marketplace.
+- **Used In**: `app/agent/marketplace/page.tsx` (`MOCK_LISTINGS`)
+
+### 4. Notifications
+- **Method**: `GET`
+- **Endpoint**: `/api/notifications`
+- **Response**: List of user notifications.
+- **Used In**: `components/agent/notification-center.tsx` (`MOCK_NOTIFICATIONS`)
+
+### 5. Marketplace Overlay Properties
+- **Method**: `GET`
+- **Endpoint**: `/api/marketplace/properties`
+- **Response**: Properties to display in overlay.
+- **Used In**: `components/agent/marketplace-overlay.tsx` (`MOCK_MARKETPLACE_PROPERTIES`)
+
+## Client Dashboard
+
+### 6. Request Form Locations
+- **Method**: `GET`
+- **Endpoint**: `/api/locations` (or similar)
+- **Used In**: `components/client/dashboard/RequestFormDrawer.tsx` (Mock state for locations)
+
+### 7. Inspection Availability
+- **Method**: `GET`
+- **Endpoint**: `/api/inspections/availability`
+- **Used In**: `components/client/responses/ScheduleInspectionDrawer.tsx` (Mock dates and times)
+
+## Authentication
+
+
+
+
+
+## General
+
+### 10. Inspection Details
+- **Method**: `GET`
+- **Endpoint**: `/api/inspections/:id`
+- **Used In**: `app/client/inspections/InspectionDetailsModal.tsx` & `app/agent/inspections/InspectionDetailsModal.tsx`
