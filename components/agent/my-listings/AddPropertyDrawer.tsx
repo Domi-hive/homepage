@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useState, useRef } from 'react';
-import { X, Upload, Home, Image as ImageIcon, FileText, MapPin, Users, CheckCircle, ChevronRight, ChevronLeft, Calendar, DollarSign, Info } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Upload, MapPin, CheckCircle, ChevronRight, ChevronLeft, Calendar, DollarSign, Edit3, Image as ImageIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AddPropertyDrawerProps {
     isOpen: boolean;
@@ -14,473 +13,341 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         title: '',
+        propertyType: '',
+        currency: '₦',
         price: '',
-        propertyType: 'apartment',
-        description: '',
         address: '',
-        city: '',
         state: '',
+        neighborhood: '',
         beds: '',
         baths: '',
-        sqft: '',
-        furnished: false,
-        parking: false,
-        inspectionTime: '',
-        inspectionNote: '',
+        sqm: '',
+        description: '',
         referralEnabled: false,
     });
 
-    const steps = [
-        { id: 1, title: 'Basic Info', icon: Home },
-        { id: 2, title: 'Media', icon: ImageIcon },
-        { id: 3, title: 'Details', icon: FileText },
-        { id: 4, title: 'Inspection', icon: Calendar },
-        { id: 5, title: 'Referral', icon: Users },
-        { id: 6, title: 'Review', icon: CheckCircle },
-    ];
+    const isLastStep = currentStep === 4;
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        // Handle select elements that might use name instead of id if needed, but HTML uses id
+        const key = id || e.target.name;
+        setFormData(prev => ({ ...prev, [key]: value }));
     };
 
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = e.target;
-        setFormData(prev => ({ ...prev, [name]: checked }));
-    };
-
-    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length));
+    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
     if (!isOpen) return null;
 
     return (
-        <>
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity" onClick={onClose} />
-            <div className="fixed inset-y-0 right-0 z-50 w-full max-w-4xl bg-white dark:bg-slate-900 shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col md:flex-row h-full">
-
-                {/* Sidebar Steps */}
-                <div className="w-full md:w-64 bg-slate-50 dark:bg-slate-900 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 p-6 flex-shrink-0">
-                    <div className="flex justify-between items-center mb-8 md:mb-12">
-                        <h2 className="text-xl font-bold text-slate-800 dark:text-white">Add Property</h2>
-                        <button onClick={onClose} className="md:hidden p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full">
-                            <X className="w-5 h-5" />
-                        </button>
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-2xl bg-slate-50 dark:bg-slate-900 h-full flex flex-col animate-in slide-in-from-right duration-300">
+                {/* Header */}
+                <div className="sticky top-0 z-10 p-6 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Add New Property</h2>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">Complete the steps below to list a new property.</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+                                <X className="w-6 h-6" />
+                            </button>
+                            <button className="px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors hidden md:block">
+                                Save as Draft
+                            </button>
+                            <button
+                                className={`px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/30 transition-opacity ${!isLastStep ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
+                                disabled={!isLastStep}
+                            >
+                                Publish
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible pb-4 md:pb-0">
-                        {steps.map((step) => {
-                            const Icon = step.icon;
-                            const isActive = currentStep === step.id;
-                            const isCompleted = currentStep > step.id;
 
-                            return (
-                                <div
-                                    key={step.id}
-                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer whitespace-nowrap ${isActive
-                                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold'
-                                            : isCompleted
-                                                ? 'text-green-600 dark:text-green-400'
-                                                : 'text-slate-500 dark:text-slate-400'
-                                        }`}
-                                    onClick={() => setCurrentStep(step.id)}
-                                >
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${isActive
-                                            ? 'border-blue-200 bg-blue-100 dark:bg-blue-900/40'
-                                            : isCompleted
-                                                ? 'border-green-200 bg-green-100 dark:bg-green-900/40'
-                                                : 'border-slate-200 bg-white dark:bg-slate-800'
-                                        }`}>
-                                        {isCompleted ? <CheckCircle className="w-5 h-5" /> : <Icon className="w-4 h-4" />}
-                                    </div>
-                                    <span>{step.title}</span>
-                                </div>
-                            );
-                        })}
+                    {/* Progress Bar */}
+                    <div>
+                        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                            <div
+                                className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${(currentStep / 4) * 100}%` }}
+                            ></div>
+                        </div>
+                        <div className="flex justify-between text-xs font-medium text-slate-500 mt-1.5">
+                            <span className={currentStep >= 1 ? "text-purple-600 dark:text-purple-400" : ""}>Basic Information</span>
+                            <span className={currentStep >= 2 ? "text-purple-600 dark:text-purple-400" : ""}>Property Details</span>
+                            <span className={currentStep >= 3 ? "text-purple-600 dark:text-purple-400" : ""}>Media</span>
+                            <span className={currentStep >= 4 ? "text-purple-600 dark:text-purple-400" : ""}>Publish</span>
+                        </div>
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-                    <div className="hidden md:flex absolute top-4 right-4 z-10">
-                        <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                            <X className="w-6 h-6 text-slate-500" />
-                        </button>
-                    </div>
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
 
-                    <ScrollArea className="flex-1 p-6 md:p-10">
-                        <div className="max-w-2xl mx-auto pb-20">
-
-                            {/* Step 1: Basic Info */}
-                            {currentStep === 1 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Basic Information</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Start with the essentials of your property.</p>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Property Title</label>
-                                            <input
-                                                type="text"
-                                                name="title"
-                                                value={formData.title}
-                                                onChange={handleInputChange}
-                                                placeholder="e.g. Modern 3-Bedroom Apartment in Maitama"
-                                                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Price (₦/year)</label>
-                                                <div className="relative">
-                                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-                                                    <input
-                                                        type="text"
-                                                        name="price"
-                                                        value={formData.price}
-                                                        onChange={handleInputChange}
-                                                        placeholder="3,500,000"
-                                                        className="w-full p-3 pl-10 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Property Type</label>
-                                                <select
-                                                    name="propertyType"
-                                                    value={formData.propertyType}
-                                                    onChange={handleInputChange}
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none"
-                                                >
-                                                    <option value="apartment">Apartment</option>
-                                                    <option value="house">House</option>
-                                                    <option value="duplex">Duplex</option>
-                                                    <option value="land">Land</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
-                                            <textarea
-                                                name="description"
-                                                value={formData.description}
-                                                onChange={handleInputChange}
-                                                rows={4}
-                                                placeholder="Describe the key features and selling points..."
-                                                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Step 2: Media */}
-                            {currentStep === 2 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Media Uploads</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Add high-quality photos to attract more clients.</p>
-                                    </div>
-
-                                    <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-8 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
-                                        <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Upload className="w-8 h-8" />
-                                        </div>
-                                        <h4 className="font-semibold text-slate-700 dark:text-slate-200 mb-1">Click to upload or drag and drop</h4>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        {/* Mock uploaded images */}
-                                        <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden relative group">
-                                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Preview" className="w-full h-full object-cover" />
-                                            <button className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <X className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                        <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden relative group">
-                                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Preview" className="w-full h-full object-cover" />
-                                            <button className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <X className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Step 3: Details */}
-                            {currentStep === 3 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Property Details</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Specify the location and features.</p>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Address</label>
-                                            <div className="relative">
-                                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-                                                <input
-                                                    type="text"
-                                                    name="address"
-                                                    value={formData.address}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Street address"
-                                                    className="w-full p-3 pl-10 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">City</label>
-                                                <input
-                                                    type="text"
-                                                    name="city"
-                                                    value={formData.city}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Abuja"
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">State</label>
-                                                <input
-                                                    type="text"
-                                                    name="state"
-                                                    value={formData.state}
-                                                    onChange={handleInputChange}
-                                                    placeholder="FCT"
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-3 gap-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bedrooms</label>
-                                                <input
-                                                    type="number"
-                                                    name="beds"
-                                                    value={formData.beds}
-                                                    onChange={handleInputChange}
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bathrooms</label>
-                                                <input
-                                                    type="number"
-                                                    name="baths"
-                                                    value={formData.baths}
-                                                    onChange={handleInputChange}
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Size (sqm)</label>
-                                                <input
-                                                    type="number"
-                                                    name="sqft"
-                                                    value={formData.sqft}
-                                                    onChange={handleInputChange}
-                                                    className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="flex gap-6 pt-2">
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    name="furnished"
-                                                    checked={formData.furnished}
-                                                    onChange={handleCheckboxChange}
-                                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                <span className="text-slate-700 dark:text-slate-300">Furnished</span>
-                                            </label>
-                                            <label className="flex items-center gap-2 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    name="parking"
-                                                    checked={formData.parking}
-                                                    onChange={handleCheckboxChange}
-                                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                />
-                                                <span className="text-slate-700 dark:text-slate-300">Parking Available</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Step 4: Inspection */}
-                            {currentStep === 4 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Inspection Details</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Set up how clients can view the property.</p>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Preferred Inspection Times</label>
-                                            <input
-                                                type="text"
-                                                name="inspectionTime"
-                                                value={formData.inspectionTime}
-                                                onChange={handleInputChange}
-                                                placeholder="e.g. Weekdays 9am - 5pm"
-                                                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Agent Notes (Private)</label>
-                                            <textarea
-                                                name="inspectionNote"
-                                                value={formData.inspectionNote}
-                                                onChange={handleInputChange}
-                                                rows={3}
-                                                placeholder="Private notes about keys, access codes, etc..."
-                                                className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Step 5: Referral */}
-                            {currentStep === 5 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Referral Settings</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Control how other agents can interact with this listing.</p>
-                                    </div>
-
-                                    <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-800">
-                                        <div className="flex items-start gap-4">
-                                            <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
-                                                <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <h4 className="font-bold text-slate-800 dark:text-white">Allow Other Agents to Refer</h4>
-                                                    <label className="relative inline-flex items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            name="referralEnabled"
-                                                            checked={formData.referralEnabled}
-                                                            onChange={handleCheckboxChange}
-                                                            className="sr-only peer"
-                                                        />
-                                                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                                    </label>
-                                                </div>
-                                                <p className="text-sm text-slate-600 dark:text-slate-300">
-                                                    When enabled, other agents can include this property in their responses to client requests. You'll receive 40% of inspection fees for referred bookings.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Step 6: Review */}
-                            {currentStep === 6 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Review & Publish</h3>
-                                        <p className="text-slate-500 dark:text-slate-400">Double check everything before going live.</p>
-                                    </div>
-
-                                    <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                                        <div className="aspect-video bg-slate-100 dark:bg-slate-900 relative">
-                                            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80" alt="Cover" className="w-full h-full object-cover" />
-                                            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-sm font-bold text-slate-800">
-                                                ₦{formData.price || '0'}/year
-                                            </div>
-                                        </div>
-                                        <div className="p-6">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div>
-                                                    <h4 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{formData.title || 'Untitled Property'}</h4>
-                                                    <p className="text-slate-500 flex items-center gap-1">
-                                                        <MapPin className="w-4 h-4" /> {formData.address}, {formData.city}
-                                                    </p>
-                                                </div>
-                                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${formData.referralEnabled ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}`}>
-                                                    {formData.referralEnabled ? 'Referrals ON' : 'Referrals OFF'}
-                                                </span>
-                                            </div>
-
-                                            <div className="grid grid-cols-3 gap-4 py-4 border-t border-slate-100 dark:border-slate-700">
-                                                <div className="text-center">
-                                                    <span className="block font-bold text-slate-800 dark:text-white">{formData.beds || 0}</span>
-                                                    <span className="text-xs text-slate-500">Beds</span>
-                                                </div>
-                                                <div className="text-center border-l border-slate-100 dark:border-slate-700">
-                                                    <span className="block font-bold text-slate-800 dark:text-white">{formData.baths || 0}</span>
-                                                    <span className="text-xs text-slate-500">Baths</span>
-                                                </div>
-                                                <div className="text-center border-l border-slate-100 dark:border-slate-700">
-                                                    <span className="block font-bold text-slate-800 dark:text-white">{formData.sqft || 0}</span>
-                                                    <span className="text-xs text-slate-500">Sqm</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl flex items-start gap-3">
-                                        <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />
-                                        <div>
-                                            <h5 className="font-bold text-green-800 dark:text-green-300 text-sm">Ready to Publish</h5>
-                                            <p className="text-xs text-green-700 dark:text-green-400 mt-1">All required fields have been filled. Your listing will be visible immediately.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-                    </ScrollArea>
-
-                    {/* Footer Actions */}
-                    <div className="sticky bottom-0 z-10 p-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
-                        <div className="flex justify-between items-center max-w-2xl mx-auto w-full">
-                            <Button
-                                variant="outline"
-                                onClick={prevStep}
-                                disabled={currentStep === 1}
-                                className="gap-2"
-                            >
-                                <ChevronLeft className="w-4 h-4" /> Back
-                            </Button>
-
-                            <div className="flex gap-3">
-                                {currentStep === 6 ? (
-                                    <Button
-                                        className="bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90 text-white gap-2 shadow-lg shadow-green-500/30"
-                                        onClick={onClose}
+                    {/* Step 1: Basic Information */}
+                    {currentStep === 1 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
+                                <Edit3 className="w-5 h-5 text-purple-500" />
+                                Basic Information
+                            </h3>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="title">
+                                    Property Title <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    id="title"
+                                    placeholder="e.g. Modern 3-Bedroom Duplex"
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="propertyType">
+                                        Property Type <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
+                                        id="propertyType"
+                                        value={formData.propertyType}
+                                        onChange={handleInputChange}
                                     >
-                                        <CheckCircle className="w-4 h-4" /> Publish Listing
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white gap-2 shadow-lg shadow-purple-500/30"
-                                        onClick={nextStep}
+                                        <option value="">Select property type</option>
+                                        <option value="apartment">Apartment</option>
+                                        <option value="duplex">Duplex</option>
+                                        <option value="penthouse">Penthouse</option>
+                                        <option value="bungalow">Bungalow</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="price">
+                                        Price <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="flex">
+                                        <select
+                                            className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 border-r-0 rounded-l-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-2 outline-none appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                            id="currency"
+                                            value={formData.currency}
+                                            onChange={handleInputChange}
+                                        >
+                                            <option value="₦">₦</option>
+                                            <option value="$">$</option>
+                                        </select>
+                                        <input
+                                            className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-r-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                            id="price"
+                                            placeholder="3,500,000"
+                                            type="text"
+                                            value={formData.price}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="address">
+                                    Location / Address <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    id="address"
+                                    placeholder="Enter street address"
+                                    type="text"
+                                    value={formData.address}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="state">
+                                        State <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                        id="state"
+                                        value={formData.state}
+                                        onChange={handleInputChange}
                                     >
-                                        Next Step <ChevronRight className="w-4 h-4" />
-                                    </Button>
-                                )}
+                                        <option value="">Select State</option>
+                                        <option value="Lagos">Lagos</option>
+                                        <option value="Abuja">Abuja (FCT)</option>
+                                        <option value="Rivers">Rivers</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="neighborhood">
+                                        Neighborhood <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                        id="neighborhood"
+                                        value={formData.neighborhood}
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="">Select Neighborhood</option>
+                                        <option value="Ikoyi">Ikoyi</option>
+                                        <option value="Victoria Island">Victoria Island</option>
+                                        <option value="Maitama">Maitama</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                    )}
+
+                    {/* Step 2: Property Details */}
+                    {currentStep === 2 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-purple-500" />
+                                Property Details
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="beds">Bedrooms</label>
+                                    <input
+                                        type="number"
+                                        id="beds"
+                                        value={formData.beds}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="baths">Bathrooms</label>
+                                    <input
+                                        type="number"
+                                        id="baths"
+                                        value={formData.baths}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="sqm">Size (sqm)</label>
+                                    <input
+                                        type="number"
+                                        id="sqm"
+                                        value={formData.sqm}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="description">Description</label>
+                                <textarea
+                                    id="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    rows={4}
+                                    placeholder="Describe the key features and selling points..."
+                                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white resize-none"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+
+                    {/* Step 3: Media */}
+                    {currentStep === 3 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
+                                <ImageIcon className="w-5 h-5 text-purple-500" />
+                                Media Upload
+                            </h3>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Property Images <span className="text-red-500">*</span></label>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Upload at least 3 images (max 20). First image will be the cover photo.</p>
+                                <div className="flex items-center justify-center w-full">
+                                    <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-slate-300 dark:border-slate-700 border-dashed rounded-2xl cursor-pointer bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" htmlFor="dropzone-file">
+                                        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
+                                            <Upload className="w-10 h-10 text-slate-400 dark:text-slate-500 mb-2" />
+                                            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                        </div>
+                                        <input className="hidden" id="dropzone-file" multiple type="file" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 4: Publish */}
+                    {currentStep === 4 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
+                                <CheckCircle className="w-5 h-5 text-purple-500" />
+                                Review & Publish
+                            </h3>
+
+                            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                                <div className="aspect-video bg-slate-100 dark:bg-slate-900 relative">
+                                    <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                        Cover Image Preview
+                                    </div>
+                                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-2xl text-sm font-bold text-slate-800">
+                                        {formData.currency}{formData.price}/year
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <h4 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{formData.title || 'Untitled Property'}</h4>
+                                    <p className="text-slate-500 flex items-center gap-1">
+                                        <MapPin className="w-4 h-4" /> {formData.address}, {formData.neighborhood}
+                                    </p>
+                                    <div className="grid grid-cols-3 gap-4 py-4 mt-4 border-t border-slate-100 dark:border-slate-700">
+                                        <div className="text-center">
+                                            <span className="block font-bold text-slate-800 dark:text-white">{formData.beds || 0}</span>
+                                            <span className="text-xs text-slate-500">Beds</span>
+                                        </div>
+                                        <div className="text-center border-l border-slate-100 dark:border-slate-700">
+                                            <span className="block font-bold text-slate-800 dark:text-white">{formData.baths || 0}</span>
+                                            <span className="text-xs text-slate-500">Baths</span>
+                                        </div>
+                                        <div className="text-center border-l border-slate-100 dark:border-slate-700">
+                                            <span className="block font-bold text-slate-800 dark:text-white">{formData.sqm || 0}</span>
+                                            <span className="text-xs text-slate-500">Sqm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+
+                {/* Footer */}
+                <div className="sticky bottom-0 z-10 p-6 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800 transition-all">
+                    <div className="flex justify-end gap-4">
+                        <button
+                            className="px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                            onClick={currentStep === 1 ? onClose : prevStep}
+                        >
+                            {currentStep === 1 ? 'Cancel' : 'Back'}
+                        </button>
+
+                        {!isLastStep ? (
+                            <button
+                                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity"
+                                onClick={nextStep}
+                            >
+                                Next: {currentStep === 1 ? 'Property Details' : currentStep === 2 ? 'Media' : 'Publish'}
+                            </button>
+                        ) : (
+                            <button
+                                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg shadow-green-500/30 hover:opacity-90 transition-opacity"
+                                onClick={onClose}
+                            >
+                                Publish Listing
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

@@ -6,6 +6,10 @@ import ClientHeader from '@/components/client/ClientHeader';
 import ActiveRequestCard from '@/components/client/requests/ActiveRequestCard';
 import InfoBanner from '@/components/client/requests/InfoBanner';
 import RequestHistory from '@/components/client/requests/RequestHistory';
+import EmptyRequestsCard from '@/components/client/requests/EmptyRequestsCard';
+import RequestFormDrawer from '@/components/client/dashboard/RequestFormDrawer';
+import { requestService } from '@/services/request.service';
+import { Loader2 } from 'lucide-react';
 
 function ClientRequestsContent() {
   const searchParams = useSearchParams();
@@ -14,6 +18,26 @@ function ClientRequestsContent() {
   if (tabParam === 'history') initialTab = 'history';
 
   const [activeTab, setActiveTab] = useState<'active' | 'history'>(initialTab);
+  const [activeRequests, setActiveRequests] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  React.useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const requests = await requestService.getUserRequests();
+        // Assuming getUserRequests returns active requests or we filter them
+        // For now, we use the responses as is
+        setActiveRequests(Array.isArray(requests) ? requests : []);
+      } catch (error) {
+        console.error('Failed to fetch requests', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, []);
 
   return (
     <div
@@ -59,8 +83,18 @@ function ClientRequestsContent() {
 
               {activeTab === 'active' && (
                 <div className="flex flex-col gap-8">
-                  <ActiveRequestCard />
-                  <InfoBanner />
+                  {isLoading ? (
+                    <div className="flex justify-center p-10">
+                      <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                    </div>
+                  ) : activeRequests.length > 0 ? (
+                    <>
+                      <ActiveRequestCard />
+                      <InfoBanner />
+                    </>
+                  ) : (
+                    <EmptyRequestsCard onCreateRequest={() => setIsDrawerOpen(true)} />
+                  )}
                 </div>
               )}
 
@@ -68,6 +102,8 @@ function ClientRequestsContent() {
                 <RequestHistory />
               )}
             </div>
+
+            <RequestFormDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
           </div>
         </main>
       </div>
