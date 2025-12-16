@@ -13,6 +13,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         title: '',
+        offerType: 'rent',
         propertyType: '',
         currency: '₦',
         price: '',
@@ -23,10 +24,12 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         baths: '',
         sqm: '',
         description: '',
+        meetingPoint: '',
+        availability: '',
         referralEnabled: false,
     });
 
-    const isLastStep = currentStep === 4;
+    const isLastStep = currentStep === 5;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
@@ -35,7 +38,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
         setFormData(prev => ({ ...prev, [key]: value }));
     };
 
-    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
+    const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5));
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
     if (!isOpen) return null;
@@ -51,17 +54,11 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                             <p className="text-sm text-slate-500 dark:text-slate-400">Complete the steps below to list a new property.</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
-                                <X className="w-6 h-6" />
-                            </button>
                             <button className="px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors hidden md:block">
                                 Save as Draft
                             </button>
-                            <button
-                                className={`px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/30 transition-opacity ${!isLastStep ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
-                                disabled={!isLastStep}
-                            >
-                                Publish
+                            <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
                     </div>
@@ -71,14 +68,15 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                             <div
                                 className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${(currentStep / 4) * 100}%` }}
+                                style={{ width: `${(currentStep / 5) * 100}%` }}
                             ></div>
                         </div>
                         <div className="flex justify-between text-xs font-medium text-slate-500 mt-1.5">
                             <span className={currentStep >= 1 ? "text-purple-600 dark:text-purple-400" : ""}>Basic Information</span>
                             <span className={currentStep >= 2 ? "text-purple-600 dark:text-purple-400" : ""}>Property Details</span>
-                            <span className={currentStep >= 3 ? "text-purple-600 dark:text-purple-400" : ""}>Media</span>
-                            <span className={currentStep >= 4 ? "text-purple-600 dark:text-purple-400" : ""}>Publish</span>
+                            <span className={currentStep >= 3 ? "text-purple-600 dark:text-purple-400" : ""}>Inspections</span>
+                            <span className={currentStep >= 4 ? "text-purple-600 dark:text-purple-400" : ""}>Media</span>
+                            <span className={currentStep >= 5 ? "text-purple-600 dark:text-purple-400" : ""}>Publish</span>
                         </div>
                     </div>
                 </div>
@@ -108,6 +106,21 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="offerType">
+                                        Offer Type <span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                        id="offerType"
+                                        value={formData.offerType}
+                                        onChange={handleInputChange}
+                                    >
+                                        <option value="rent">For Rent</option>
+                                        <option value="sale">For Sale</option>
+                                        <option value="shortlet">Short Let</option>
+                                    </select>
+                                </div>
+                                <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="propertyType">
                                         Property Type <span className="text-red-500">*</span>
                                     </label>
@@ -130,7 +143,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                     </label>
                                     <div className="flex">
                                         <select
-                                            className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 border-r-0 rounded-l-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-2 outline-none appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                                            className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 border-r-0 rounded-l-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-2 outline-none appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
                                             id="currency"
                                             value={formData.currency}
                                             onChange={handleInputChange}
@@ -208,7 +221,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                             </h3>
                             <div className="grid grid-cols-3 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="beds">Bedrooms</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="beds">Bedrooms <span className="text-red-500">*</span></label>
                                     <input
                                         type="number"
                                         id="beds"
@@ -218,7 +231,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="baths">Bathrooms</label>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="baths">Bathrooms <span className="text-red-500">*</span></label>
                                     <input
                                         type="number"
                                         id="baths"
@@ -253,8 +266,46 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                     )}
 
 
-                    {/* Step 3: Media */}
+                    {/* Step 3: Inspections */}
                     {currentStep === 3 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                            <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
+                                <Calendar className="w-5 h-5 text-purple-500" />
+                                Inspection Details
+                            </h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="meetingPoint">
+                                        Meeting Point <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="meetingPoint"
+                                        placeholder="e.g. Estate Main Gate"
+                                        value={formData.meetingPoint}
+                                        onChange={handleInputChange}
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="availability">
+                                        Availability for Inspections
+                                    </label>
+                                    <textarea
+                                        id="availability"
+                                        value={formData.availability}
+                                        onChange={handleInputChange}
+                                        rows={3}
+                                        placeholder="e.g. Weekends only, 9am - 5pm"
+                                        className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white resize-none"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 4: Media */}
+                    {currentStep === 4 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                             <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
                                 <ImageIcon className="w-5 h-5 text-purple-500" />
@@ -277,8 +328,8 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                         </div>
                     )}
 
-                    {/* Step 4: Publish */}
-                    {currentStep === 4 && (
+                    {/* Step 5: Publish */}
+                    {currentStep === 5 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                             <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
                                 <CheckCircle className="w-5 h-5 text-purple-500" />
@@ -335,7 +386,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                 className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity"
                                 onClick={nextStep}
                             >
-                                Next: {currentStep === 1 ? 'Property Details' : currentStep === 2 ? 'Media' : 'Publish'}
+                                Next: {currentStep === 1 ? 'Property Details' : currentStep === 2 ? 'Inspections' : currentStep === 3 ? 'Media' : 'Publish'}
                             </button>
                         ) : (
                             <button
