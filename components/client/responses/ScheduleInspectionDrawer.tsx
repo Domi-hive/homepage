@@ -287,7 +287,7 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
                                                         {isBusy && (
                                                             <div className="flex items-center gap-1.5 mt-1 text-amber-600 dark:text-amber-400 text-sm font-medium">
                                                                 <AlertTriangle className="w-4 h-4" />
-                                                                <span>Agent has {day.inspectionCount} inspections</span>
+                                                                <span>Agent has {day.inspectionCount} other inspections on this day</span>
                                                             </div>
                                                         )}
                                                     </div>

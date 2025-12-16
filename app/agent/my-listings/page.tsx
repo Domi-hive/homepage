@@ -113,8 +113,10 @@ export default function MyListingsPage() {
                 const agentId = 'me';
                 const data = await listingService.getAgentListings(agentId);
                 setListings(data);
-            } catch (error) {
-                console.error("Failed to fetch listings", error);
+            } catch (error: any) {
+                if (!error.message?.includes('Unauthorized')) {
+                    console.error("Failed to fetch listings", error);
+                }
             } finally {
                 setLoading(false);
             }

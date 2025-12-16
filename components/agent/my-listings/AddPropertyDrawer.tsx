@@ -366,8 +366,8 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                             {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
                                                 <label key={day} className="flex items-center gap-3 cursor-pointer group">
                                                     <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${formData.availableDays?.includes(day)
-                                                            ? 'bg-purple-500 border-purple-500'
-                                                            : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 group-hover:border-purple-400'
+                                                        ? 'bg-purple-500 border-purple-500'
+                                                        : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 group-hover:border-purple-400'
                                                         }`}>
                                                         {formData.availableDays?.includes(day) && (
                                                             <CheckCircle className="w-3.5 h-3.5 text-white" />
@@ -380,8 +380,8 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                                         onChange={() => handleDayToggle(day)}
                                                     />
                                                     <span className={`text-sm ${formData.availableDays?.includes(day)
-                                                            ? 'text-purple-700 dark:text-purple-300 font-medium'
-                                                            : 'text-slate-600 dark:text-slate-400'
+                                                        ? 'text-purple-700 dark:text-purple-300 font-medium'
+                                                        : 'text-slate-600 dark:text-slate-400'
                                                         }`}>{day}</span>
                                                 </label>
                                             ))}
@@ -426,6 +426,24 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                                 <CheckCircle className="w-5 h-5 text-purple-500" />
                                 Review & Publish
                             </h3>
+
+                            <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-800">
+                                <div>
+                                    <h4 className="font-semibold text-slate-800 dark:text-white">Enable Referrals</h4>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                                        Allow other agents to find clients. <span className="text-purple-600 dark:text-purple-400 font-medium">Referral agents receive a 40% commission split.</span>
+                                    </p>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={formData.referralEnabled}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, referralEnabled: e.target.checked }))}
+                                    />
+                                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                                </label>
+                            </div>
 
                             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                                 <div className="aspect-video bg-slate-100 dark:bg-slate-900 relative">

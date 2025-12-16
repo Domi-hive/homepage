@@ -3,7 +3,7 @@ import { Property, PropertyType } from '@/types/api';
 
 export const propertyService = {
     async getPropertyTypes(): Promise<PropertyType[]> {
-        return apiClient.get<PropertyType[]>('/properties/types/all');
+        return apiClient.get<PropertyType[]>('/properties/types/all', { skipAuth: true });
     },
 
     async getProperties(filters?: Record<string, any>): Promise<Property[]> {

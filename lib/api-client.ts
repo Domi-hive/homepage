@@ -50,7 +50,10 @@ class ApiClient {
             return responseData as T;
         } catch (error: any) {
             // Rethrow or handle commonly
-            console.error(`API Request Failed: ${endpoint}`, error);
+            const isAuthError = error.message?.includes('Unauthorized') || error.message?.includes('401');
+            if (!isAuthError) {
+                console.error(`API Request Failed: ${endpoint}`, error);
+            }
             throw error;
         }
     }

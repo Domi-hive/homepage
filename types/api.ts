@@ -36,11 +36,6 @@ export interface PropertyRequestPayload {
     tenure: string;
     budgetRange: string;
     additionalInfo: string;
-    // Defaulted fields in frontend logic
-    furnishing: string;
-    propertyStructure: string;
-    locationType: string;
-    moveInDate: string;
 }
 
 // Based on the discrepancy, we define what the backend *should* return or what we currently ignore

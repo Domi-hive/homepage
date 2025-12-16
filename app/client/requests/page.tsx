@@ -29,8 +29,11 @@ function ClientRequestsContent() {
         // Assuming getUserRequests returns active requests or we filter them
         // For now, we use the responses as is
         setActiveRequests(Array.isArray(requests) ? requests : []);
-      } catch (error) {
-        console.error('Failed to fetch requests', error);
+      } catch (error: any) {
+        // Silently handle auth errors
+        if (!error.message?.includes('Unauthorized')) {
+          console.error('Failed to fetch requests', error);
+        }
       } finally {
         setIsLoading(false);
       }

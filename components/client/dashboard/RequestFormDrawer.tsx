@@ -61,7 +61,7 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 const types = await propertyService.getPropertyTypes();
                 setPropertyTypes(types);
             } catch (err) {
-                console.error('Failed to fetch property types', err);
+                // console.warn('Failed to fetch property types, using fallback', err);
                 setPropertyTypes(FALLBACK_PROPERTY_TYPES);
             } finally {
                 setIsLoadingTypes(false);
@@ -194,10 +194,6 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 tenure,
                 budgetRange: formattedBudgetRange,
                 additionalInfo: details,
-                furnishing: 'Unfurnished',
-                propertyStructure: 'Standard',
-                locationType: 'Urban',
-                moveInDate: new Date().toISOString().split('T')[0],
             });
 
             setSuccess(true);

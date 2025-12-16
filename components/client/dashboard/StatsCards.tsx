@@ -18,7 +18,12 @@ export default function StatsCards({ onOpenDrawer }: StatsCardsProps) {
                 if (Array.isArray(requests)) {
                     setRequestCount(requests.length);
                 }
-            } catch (error) {
+            } catch (error: any) {
+                // Silently handle auth errors by showing 0 or default state
+                if (error.message?.includes('Unauthorized') || error.message?.includes('401')) {
+                    setRequestCount(0);
+                    return;
+                }
                 console.error('Failed to fetch stats', error);
             }
         };
