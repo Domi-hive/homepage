@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { ThemeProvider } from "next-themes"
 import Script from "next/script"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -46,6 +47,7 @@ export default function RootLayout({
         </ThemeProvider>
 
         <Analytics />
+        <Toaster />
       </body>
     </html>
   )

@@ -1,10 +1,12 @@
 "use client"
 
-import { X, MapPin, DollarSign, Home, Clock, Users, Search, Plus, Trash2, AlertCircle, MessageSquare, ExternalLink } from "lucide-react"
+import { X, MapPin, DollarSign, Home, Clock, Users, Search, Plus, Trash2, AlertCircle, MessageSquare, ExternalLink, Loader2, RefreshCcw } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import MarketplaceOverlay from "./marketplace-overlay"
+import { requestService } from "@/services/request.service"
 
 interface RequestDrawerProps {
   request: {
@@ -22,13 +24,15 @@ interface RequestDrawerProps {
   } | null
   isOpen: boolean
   onClose: () => void
+  onSuccess?: () => void
 }
 
-export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawerProps) {
+export default function RequestDrawer({ request, isOpen, onClose, onSuccess }: RequestDrawerProps) {
   const [isAnimating, setIsAnimating] = useState(false)
   const [selectedProperties, setSelectedProperties] = useState<any[]>([])
   const [message, setMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<"my-listings" | "selected">("my-listings")
   const [searchQuery, setSearchQuery] = useState("")
   const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false)
@@ -133,13 +137,33 @@ export default function RequestDrawer({ request, isOpen, onClose }: RequestDrawe
     setActiveTab("selected")
   }
 
+
+
   const handleSubmit = async () => {
-    if (selectedProperties.length === 0) return
+    if (selectedProperties.length === 0 || !request) return
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    onClose()
+    setError(null)
+
+    try {
+      const payload = {
+        agentId: "current-agent-id", // TODO: Replace with actual agent ID from auth context
+        propertyIds: selectedProperties.map(p => p.id.toString()),
+        message: message
+      }
+
+      await requestService.sendRequestResponse(request.id, payload)
+
+      toast.success(`Response sent to ${request.clientName}!`)
+
+      if (onSuccess) onSuccess()
+      onClose()
+    } catch (error) {
+      console.error("Failed to send response:", error)
+      setError("Failed to send response. Please try again.")
+      toast.error("Failed to send response")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen && !isVisible) return null

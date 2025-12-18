@@ -411,6 +411,12 @@ export default function ClientRequests() {
                 request={selectedRequest}
                 isOpen={selectedRequest !== null}
                 onClose={() => setSelectedRequest(null)}
+                onSuccess={() => {
+                  if (selectedRequest) {
+                    setRequests(prev => prev.map(r => r.id === selectedRequest.id ? { ...r, status: 'responded' } : r))
+                    setSelectedRequest(null)
+                  }
+                }}
               />
             </>
           ) : (
