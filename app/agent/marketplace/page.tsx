@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter, X, Bell, ChevronLeft, ChevronRight } from "lucide-react"
+import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter, X, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
 import FilterSidebar from "@/components/agent/filter-sidebar"
+import Pagination from "@/components/ui/pagination"
 
 interface Listing {
   id: string
@@ -102,6 +103,8 @@ const MOCK_LISTINGS: Listing[] = [
   },
 ]
 
+const ITEMS_PER_PAGE = 12;
+
 import { listingService } from "@/services/listing.service"
 import { Loader2 } from "lucide-react"
 import { useEffect } from "react"
@@ -110,6 +113,7 @@ export default function MarketplacePage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [listings, setListings] = useState<Listing[]>(MOCK_LISTINGS) // Initial Mock, replace if API success
   const [isLoading, setIsLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -345,40 +349,40 @@ export default function MarketplacePage() {
             </div>
 
             {/* Active Filters Chips */}
-            <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-              {filters.updatedIn24h && (
-                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 text-sm">
-                  Updated in 24h
-                  <button onClick={() => setFilters({ ...filters, updatedIn24h: false })} className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              {filters.referralOnly && (
-                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-sm">
-                  Referral Only
-                  <button onClick={() => setFilters({ ...filters, referralOnly: false })} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              {sidebarFilters.priority !== "all" && (
-                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-sm">
-                  Priority: {sidebarFilters.priority}
-                  <button onClick={() => handleSidebarFilterChange("priority", "all")} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              {sidebarFilters.location && (
-                <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 text-sm">
-                  Location: {sidebarFilters.location}
-                  <button onClick={() => handleSidebarFilterChange("location", null)} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              {(filters.updatedIn24h || filters.referralOnly || sidebarFilters.priority !== "all" || sidebarFilters.location) && (
+            {(filters.updatedIn24h || filters.referralOnly || sidebarFilters.priority !== "all" || sidebarFilters.location) && (
+              <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+                {filters.updatedIn24h && (
+                  <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 text-sm">
+                    Updated in 24h
+                    <button onClick={() => setFilters({ ...filters, updatedIn24h: false })} className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+                {filters.referralOnly && (
+                  <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-sm">
+                    Referral Only
+                    <button onClick={() => setFilters({ ...filters, referralOnly: false })} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+                {sidebarFilters.priority !== "all" && (
+                  <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-sm">
+                    Priority: {sidebarFilters.priority}
+                    <button onClick={() => handleSidebarFilterChange("priority", "all")} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+                {sidebarFilters.location && (
+                  <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 text-sm">
+                    Location: {sidebarFilters.location}
+                    <button onClick={() => handleSidebarFilterChange("location", null)} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
                 <button
                   onClick={() => {
                     setFilters({ updatedIn24h: false, referralOnly: false });
@@ -388,8 +392,8 @@ export default function MarketplacePage() {
                 >
                   Clear all
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredListings.map((listing) => (
@@ -453,19 +457,12 @@ export default function MarketplacePage() {
             </div>
 
             {/* Pagination */}
-            <div className="mt-8 flex justify-center items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
-              <span className="text-slate-500 dark:text-slate-400">...</span>
-              <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
-              <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalItems={filteredListings.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </main>
       </div>

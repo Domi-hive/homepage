@@ -92,7 +92,7 @@ function ClientRequestsContent() {
                     </div>
                   ) : activeRequests.length > 0 ? (
                     <>
-                      <ActiveRequestCard />
+                      <ActiveRequestCard request={activeRequests[0]} />
                       <InfoBanner />
                     </>
                   ) : (

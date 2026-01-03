@@ -177,17 +177,17 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
         setIsLoading(true);
 
         try {
-            const formattedBudgetRange = `₦${budgetRange.min.toLocaleString()} - ₦${budgetRange.max.toLocaleString()}`;
-            const propertyTypeString = Array.from(selectedTypes)
-                .map(id => displayOptions.find(opt => opt.id === id)?.label)
-                .filter(Boolean)
-                .join(', ');
+            // const formattedBudgetRange = `₦${budgetRange.min.toLocaleString()} - ₦${budgetRange.max.toLocaleString()}`;
+            // const propertyTypeString = Array.from(selectedTypes)
+            //     .map(id => displayOptions.find(opt => opt.id === id)?.label)
+            //     .filter(Boolean)
+            //     .join(', ');
 
-            // Use selectedLocations if available, otherwise check if user typed one but didn't add it
-            const finalLocations = selectedLocations.length > 0 ? selectedLocations : (location ? [location] : []);
-            const locationString = finalLocations.join(', ');
+            // // Use selectedLocations if available, otherwise check if user typed one but didn't add it
+            // const finalLocations = selectedLocations.length > 0 ? selectedLocations : (location ? [location] : []);
+            // const locationString = finalLocations.join(', ');
 
-            if (!locationString || !propertyTypeString || bedrooms === '' || !offerType) {
+            if (/* !locationString || !propertyTypeString || */ bedrooms === '' || !offerType) {
                 throw new Error('Please fill in all required fields.');
             }
 
@@ -197,15 +197,17 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                 throw new Error('You must be logged in to create a request.');
             }
 
-            await requestService.createPropertyRequest({
-                location: locationString,
-                propertyType: propertyTypeString,
-                bedrooms,
-                bathrooms,
-                offerType,
-                budgetRange: formattedBudgetRange,
-                additionalInfo: details,
-            });
+            // Temporary payload for testing
+            const testPayload = {
+                bedrooms: Number(bedrooms),
+                bathrooms: Number(bathrooms),
+                cities: selectedLocations.length > 0 ? selectedLocations : (location ? [location] : []),
+                state: "Lagos",
+                minPrice: budgetRange.min,
+                maxPrice: budgetRange.max
+            };
+
+            await requestService.createPropertyRequest(testPayload as any);
 
             setSuccess(true);
             setTimeout(() => {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { Bell, Search, MapPin, Filter, X, Zap, ChevronLeft, ChevronRight } from "lucide-react"
+import { Bell, Search, MapPin, Filter, X, Zap } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import RequestRow from "@/components/agent/request-row"
 import RequestDrawer from "@/components/agent/request-drawer"
 import FilterSidebar from "@/components/agent/filter-sidebar"
 import ResponseView from "@/components/agent/responses/ResponseView"
+import Pagination from "@/components/ui/pagination"
 
 
 type Request = {
@@ -27,108 +28,88 @@ type Request = {
   status: "incoming" | "responded"
 }
 
-const MOCK_REQUESTS: Request[] = [
-  {
-    id: "1",
-    clientName: "Sarah Johnson",
-    location: "Downtown District",
-    budget: "450k - 550k",
-    bedrooms: "3-4",
-    preferences: "Modern, near schools",
-    timeline: "2 weeks",
-    timestamp: "5 minutes ago",
-    priority: "high",
-    respondentsCount: 3,
-    status: "incoming",
-  },
-  {
-    id: "2",
-    clientName: "Michael Chen",
-    location: "Riverside Area",
-    budget: "600k - 750k",
-    bedrooms: "4-5",
-    preferences: "Waterfront, garden",
-    timeline: "1 month",
-    timestamp: "25 minutes ago",
-    priority: "medium",
-    respondentsCount: 5,
-    status: "incoming",
-  },
-  {
-    id: "3",
-    clientName: "Emma Rodriguez",
-    location: "Tech Park District",
-    budget: "350k - 450k",
-    bedrooms: "2-3",
-    preferences: "Investment property, quiet",
-    timeline: "ASAP",
-    timestamp: "1 hour ago",
-    priority: "high",
-    respondentsCount: 7,
-    status: "responded",
-  },
-  {
-    id: "4",
-    clientName: "David Kim",
-    location: "Suburban Heights",
-    budget: "700k - 900k",
-    bedrooms: "4+",
-    preferences: "Large lot, family home",
-    timeline: "3 weeks",
-    timestamp: "2 hours ago",
-    priority: "medium",
-    respondentsCount: 2,
-    status: "responded",
-  },
-  {
-    id: "5",
-    clientName: "Lisa Wang",
-    location: "Heritage Village",
-    budget: "500k - 650k",
-    bedrooms: "3",
-    preferences: "Historic charm, walkable",
-    timeline: "1 month",
-    timestamp: "3 hours ago",
-    priority: "low",
-    respondentsCount: 1,
-    status: "responded",
-  },
-]
-
 import { requestService } from "@/services/request.service";
 import { Loader2 } from "lucide-react";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function ClientRequests() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [requests, setRequests] = useState<Request[]>(MOCK_REQUESTS) // Initial with Mock, will replace
+  const [requests, setRequests] = useState<Request[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // Helper to format price
+  const formatPrice = (price: number) => {
+    if (price >= 1000000) {
+      return `₦${(price / 1000000).toFixed(1)}M`;
+    }
+    return `₦${(price / 1000).toFixed(0)}k`;
+  };
+
+  // Helper to calculate time ago
+  const getTimeAgo = (dateString: string) => {
+    const created = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - created.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffMins > 0) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    return 'just now';
+  };
 
   // Fetch requests
   useEffect(() => {
     const fetchRequests = async () => {
       try {
         const data = await requestService.getAllRequests();
-        const mappedData = data.map((item: any) => ({
-          id: item.id || Math.random().toString(),
-          clientName: item.firstName ? `${item.firstName} ${item.lastName}` : 'Unknown Client',
-          location: item.state || 'Unknown Location',
-          budget: item.minPrice ? `${(item.minPrice / 1000)}k - ${(item.maxPrice / 1000)}k` : 'N/A',
-          bedrooms: item.bedrooms?.toString() || 'N/A',
-          preferences: 'N/A', // API might need to provide this
-          timeline: 'ASAP', // API might need to provide this
-          timestamp: new Date(item.createdAt || Date.now()).toLocaleDateString(),
-          priority: "medium" as "high" | "medium" | "low", // Explicit cast
-          respondentsCount: 0,
-          status: "incoming" as const
-        }));
 
-        // Merge or replace mock data. For now, replacing MOCK if data comes back, else keep mock for demo
-        if (mappedData.length > 0) {
-          setRequests(mappedData);
-        }
+        // Filter for active requests only and map to our Request type
+        const activeRequests = data
+          .filter((item: any) => item.isActive === true)
+          .map((item: any) => {
+            // Build client name from user object
+            const firstName = item.user?.firstName || '';
+            const lastName = item.user?.lastName || '';
+            const clientName = firstName || lastName
+              ? `${firstName} ${lastName}`.trim()
+              : 'Anonymous Client';
+
+            // Build location from cities array
+            const cities = item.cities || [];
+            const location = cities.length > 0
+              ? cities.join(', ')
+              : item.state || 'Unknown Location';
+
+            // Build budget string
+            const budget = item.minPrice !== undefined && item.maxPrice !== undefined
+              ? `${formatPrice(item.minPrice)} - ${formatPrice(item.maxPrice)}`
+              : 'N/A';
+
+            return {
+              id: item.id,
+              clientName,
+              location,
+              budget,
+              bedrooms: item.bedrooms?.toString() || 'Any',
+              preferences: item.propertyType || 'Any property type',
+              timeline: 'ASAP',
+              timestamp: getTimeAgo(item.createdAt),
+              priority: "medium" as const,
+              respondentsCount: 0,
+              status: "incoming" as const
+            };
+          });
+
+        setRequests(activeRequests);
       } catch (err) {
         console.error("Failed to fetch requests", err);
+        setRequests([]);
       } finally {
         setIsLoading(false);
       }
@@ -174,7 +155,7 @@ export default function ClientRequests() {
       const matchesStatus = request.status === activeTab
       return matchesSearch && matchesPriority && matchesLocation && matchesStatus
     })
-  }, [searchQuery, filters, activeTab])
+  }, [searchQuery, filters, activeTab, requests])
 
   // Calculate counts for sidebar
   const counts = useMemo(() => {
@@ -191,8 +172,8 @@ export default function ClientRequests() {
       statusCounts[req.status]++
     })
 
-    return { priority: priorityCounts, location: locationCounts }
-  }, [])
+    return { priority: priorityCounts, location: locationCounts, status: statusCounts }
+  }, [requests])
 
   const locations = Array.from(new Set(requests.map((r) => r.location)))
 
@@ -267,7 +248,7 @@ export default function ClientRequests() {
               ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
               : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}>
-              {MOCK_REQUESTS.filter(r => r.status === 'incoming').length}
+              {counts.status?.incoming ?? 0}
             </span>
           </button>
           <button
@@ -282,7 +263,7 @@ export default function ClientRequests() {
               ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
               : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}>
-              {MOCK_REQUESTS.filter(r => r.status === 'responded').length}
+              {counts.status?.responded ?? 0}
             </span>
           </button>
         </div>
@@ -326,7 +307,7 @@ export default function ClientRequests() {
                   <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
                     <input
-                      className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
+                      className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 text-slate-900 dark:text-white"
                       placeholder="Search by client name or location..."
                       type="text"
                       value={searchQuery}
@@ -336,36 +317,40 @@ export default function ClientRequests() {
                 </div>
 
                 {/* Active Filters Chips */}
-                <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-
-                  {filters.priority !== "all" && (
-                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
-                      Priority: {filters.priority}
-                      <button onClick={() => handleFilterChange("priority", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {filters.location && (
-                    <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
-                      Location: {filters.location}
-                      <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  {(filters.priority !== "all" || filters.location) && (
+                {(filters.priority !== "all" || filters.location) && (
+                  <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
+                    {filters.priority !== "all" && (
+                      <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-500/20 dark:text-blue-300">
+                        Priority: {filters.priority}
+                        <button onClick={() => handleFilterChange("priority", "all")} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    )}
+                    {filters.location && (
+                      <Badge variant="secondary" className="gap-1 pl-2 pr-1 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-300">
+                        Location: {filters.location}
+                        <button onClick={() => handleFilterChange("location", null)} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    )}
                     <button
                       onClick={() => setFilters({ priority: "all", location: null })}
                       className="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 underline"
                     >
                       Clear all
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Requests List */}
-                {filteredRequests.length > 0 ? (
+                {isLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin text-purple-500 mb-4" />
+                    <p className="text-slate-500 dark:text-slate-400">Loading requests...</p>
+                  </div>
+                ) : filteredRequests.length > 0 ? (
                   <div className="flex flex-col gap-4">
                     {filteredRequests.map((request) => (
                       <RequestRow
@@ -391,19 +376,12 @@ export default function ClientRequests() {
                 )}
 
                 {/* Pagination */}
-                <div className="mt-8 flex justify-center items-center gap-2">
-                  <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
-                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
-                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
-                  <span className="text-slate-500 dark:text-slate-400">...</span>
-                  <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
-                  <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={filteredRequests.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setCurrentPage}
+                />
               </div>
 
               {/* Request Drawer */}

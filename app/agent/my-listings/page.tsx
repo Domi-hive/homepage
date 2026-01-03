@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Bell, PlusCircle, ChevronLeft, ChevronRight, Filter, Search, X, ToggleRight, ToggleLeft, RefreshCw } from 'lucide-react';
+import { Bell, PlusCircle, Filter, Search, X, ToggleRight, ToggleLeft, RefreshCw, Loader2, Building2 } from 'lucide-react';
 import StatsBanner from '@/components/agent/my-listings/StatsBanner';
 import ListingCard from '@/components/agent/my-listings/ListingCard';
 import MyListingsFilterSidebar from '@/components/agent/my-listings/MyListingsFilterSidebar';
@@ -12,6 +12,7 @@ import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { listingService } from "@/services/listing.service"
 import { Listing } from "@/types/api"
+import Pagination from "@/components/ui/pagination"
 
 // Placeholder for MOCK_LISTINGS. In a real app, this would be defined elsewhere or removed.
 const MOCK_LISTINGS: Listing[] = [
@@ -86,6 +87,8 @@ const MOCK_LISTINGS: Listing[] = [
     }
 ];
 
+const ITEMS_PER_PAGE = 12;
+
 export default function MyListingsPage() {
     const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
     const [isAddPropertyOpen, setIsAddPropertyOpen] = useState(false)
@@ -103,15 +106,13 @@ export default function MyListingsPage() {
     // New state for fetched listings and loading
     const [listings, setListings] = useState<Listing[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Fetch listings on component mount
     useEffect(() => {
         const fetchListings = async () => {
             try {
-                // TODO: Get actual logged in agent ID. For now using 'me' or a placeholder if API supports it, 
-                // or we'd need to decode info from local storage
-                const agentId = 'me';
-                const data = await listingService.getAgentListings(agentId);
+                const data = await listingService.getMyListings();
                 setListings(data);
             } catch (error: any) {
                 if (!error.message?.includes('Unauthorized')) {
@@ -353,26 +354,45 @@ export default function MyListingsPage() {
                         </div>
 
                         {/* Listings Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredListings.map((listing) => (
-                                <ListingCard key={listing.id} listing={listing} />
-                            ))}
-                        </div>
+                        {loading ? (
+                            <div className="flex flex-col items-center justify-center py-16">
+                                <Loader2 className="h-8 w-8 animate-spin text-purple-500 mb-4" />
+                                <p className="text-slate-500 dark:text-slate-400">Loading your listings...</p>
+                            </div>
+                        ) : filteredListings.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredListings.map((listing) => (
+                                    <ListingCard key={listing.id} listing={listing} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white/30 dark:bg-slate-900/30">
+                                <Building2 className="h-12 w-12 text-slate-400 mb-4" />
+                                <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">
+                                    {listings.length === 0 ? 'No listings yet' : 'No listings match your filters'}
+                                </h3>
+                                <p className="text-slate-500 dark:text-slate-400 mb-4">
+                                    {listings.length === 0 ? 'Create your first property listing to get started' : 'Try adjusting your search or filters'}
+                                </p>
+                                {listings.length === 0 && (
+                                    <button
+                                        onClick={() => setIsAddPropertyOpen(true)}
+                                        className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-opacity shadow-lg shadow-purple-500/30"
+                                    >
+                                        <PlusCircle className="w-4 h-4" />
+                                        Add Your First Property
+                                    </button>
+                                )}
+                            </div>
+                        )}
 
                         {/* Pagination */}
-                        <div className="mt-8 flex justify-center items-center gap-2">
-                            <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                                <ChevronLeft className="w-5 h-5" />
-                            </button>
-                            <button className="w-10 h-10 rounded-lg bg-blue-500 text-white font-semibold text-sm shadow">1</button>
-                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">2</button>
-                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">3</button>
-                            <span className="text-slate-500 dark:text-slate-400">...</span>
-                            <button className="w-10 h-10 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-colors">8</button>
-                            <button className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400">
-                                <ChevronRight className="w-5 h-5" />
-                            </button>
-                        </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalItems={filteredListings.length}
+                            itemsPerPage={ITEMS_PER_PAGE}
+                            onPageChange={setCurrentPage}
+                        />
                     </div>
                 </main>
             </div>

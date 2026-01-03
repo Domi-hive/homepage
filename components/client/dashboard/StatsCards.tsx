@@ -37,7 +37,9 @@ export default function StatsCards({ onOpenDrawer }: StatsCardsProps) {
                     <div className="flex-1 min-w-0 pr-2">
                         <h3 className="text-xs md:text-base font-medium text-slate-600 leading-tight md:leading-6 m-0 mb-1 md:mb-2 truncate">Active Requests</h3>
                         <div className="text-lg md:text-2xl font-bold text-slate-900 leading-tight md:leading-8">
-                            {requestCount !== null && requestCount > 0 ? (
+                            {requestCount === null ? (
+                                <div className="h-6 md:h-8 w-16 bg-slate-200 rounded animate-pulse" />
+                            ) : requestCount > 0 ? (
                                 requestCount
                             ) : (
                                 <div className="flex flex-col items-start gap-1">
@@ -50,7 +52,9 @@ export default function StatsCards({ onOpenDrawer }: StatsCardsProps) {
                         <ClipboardList className="w-4 h-4 md:w-6 md:h-6 text-slate-700" />
                     </div>
                 </div>
-                {requestCount !== null && requestCount > 0 ? (
+                {requestCount === null ? (
+                    <div className="h-5 w-24 bg-slate-200 rounded animate-pulse" />
+                ) : requestCount > 0 ? (
                     <Link href="/client/requests?tab=active" className="text-xs md:text-sm font-semibold text-[#1567c3] no-underline inline-block transition-colors hover:text-[#1567c3]/80">
                         View details →
                     </Link>

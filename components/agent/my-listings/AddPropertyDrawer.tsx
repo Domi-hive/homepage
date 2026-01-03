@@ -1,8 +1,10 @@
 "use client"
 
 import React, { useState } from 'react';
-import { X, Upload, MapPin, CheckCircle, ChevronRight, ChevronLeft, Calendar, DollarSign, Edit3, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, MapPin, CheckCircle, ChevronRight, ChevronLeft, Calendar, DollarSign, Edit3, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { listingService } from "@/services/listing.service";
+import { toast } from "sonner";
 
 interface AddPropertyDrawerProps {
     isOpen: boolean;
@@ -32,6 +34,7 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
     const [inspectionPoints, setInspectionPoints] = useState<string[]>([]);
     const [isLoadingPoints, setIsLoadingPoints] = useState(false);
     const [pointsError, setPointsError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const isLastStep = currentStep === 5;
 
@@ -88,6 +91,94 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
 
     const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 5));
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
+
+    // Map offerType to API expected format
+    const mapOfferType = (type: string): string => {
+        switch (type) {
+            case 'rent': return 'for_rent';
+            case 'sale': return 'for_sale';
+            case 'shortlet': return 'for_rent'; // shortlet is a type of rent
+            default: return 'for_rent';
+        }
+    };
+
+    // Temporary property type ID mapping (until we have proper API)
+    const getPropertyTypeId = (type: string): string => {
+        // TODO: Replace with actual API lookup or proper mapping
+        const typeMap: Record<string, string> = {
+            'apartment': 'f570b5b5-8940-4864-a89b-261db3ce1ade',
+            'duplex': 'f570b5b5-8940-4864-a89b-261db3ce1ade',
+            'penthouse': 'f570b5b5-8940-4864-a89b-261db3ce1ade',
+            'bungalow': 'f570b5b5-8940-4864-a89b-261db3ce1ade',
+        };
+        return typeMap[type] || 'f570b5b5-8940-4864-a89b-261db3ce1ade';
+    };
+
+    // Generate inspection dates from available days (next 2 weeks)
+    const generateInspectionDates = (days: string[]): string[] => {
+        if (!days || days.length === 0) return [];
+
+        const dayMap: Record<string, number> = {
+            'Sunday': 0, 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3,
+            'Thursday': 4, 'Friday': 5, 'Saturday': 6
+        };
+
+        const dates: string[] = [];
+        const today = new Date();
+
+        // Generate dates for the next 14 days that match selected days
+        for (let i = 1; i <= 14 && dates.length < 5; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dayName = Object.keys(dayMap).find(key => dayMap[key] === date.getDay());
+
+            if (dayName && days.includes(dayName)) {
+                date.setHours(10, 0, 0, 0); // Default to 10 AM
+                dates.push(date.toISOString());
+            }
+        }
+
+        return dates;
+    };
+
+    const handlePublish = async () => {
+        setIsSubmitting(true);
+
+        try {
+            const payload = {
+                property: {
+                    propertyTypeId: getPropertyTypeId(formData.propertyType),
+                    address: formData.address,
+                    city: formData.neighborhood, // neighborhood maps to city
+                    state: formData.state,
+                    country: "Nigeria",
+                    bedrooms: Number(formData.beds) || 0,
+                    bathrooms: Number(formData.baths) || 0,
+                    squareMeters: Number(formData.sqm) || 0,
+                    description: formData.description || `${formData.title} - A beautiful property in ${formData.neighborhood}, ${formData.state}`,
+                    imageUrls: [], // TODO: Implement media upload
+                    features: [] // TODO: Add features selection to form
+                },
+                listing: {
+                    type: mapOfferType(formData.offerType),
+                    price: Number(formData.price.replace(/,/g, '')) || 0,
+                    listingPeriod: 'yearly', // API only accepts: daily, weekly, monthly, yearly
+                    meetingPoint: formData.meetingPoint || 'To be confirmed',
+                    inspectionDates: generateInspectionDates(formData.availableDays)
+                }
+            };
+
+            await listingService.createListing(payload as any);
+
+            toast.success('Property listed successfully!');
+            onClose();
+        } catch (error: any) {
+            console.error('Failed to create listing:', error);
+            toast.error(error.message || 'Failed to create listing. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -499,10 +590,18 @@ export default function AddPropertyDrawer({ isOpen, onClose }: AddPropertyDrawer
                             </button>
                         ) : (
                             <button
-                                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg shadow-green-500/30 hover:opacity-90 transition-opacity"
-                                onClick={onClose}
+                                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg shadow-green-500/30 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                onClick={handlePublish}
+                                disabled={isSubmitting}
                             >
-                                Publish Listing
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        Publishing...
+                                    </>
+                                ) : (
+                                    'Publish Listing'
+                                )}
                             </button>
                         )}
                     </div>
