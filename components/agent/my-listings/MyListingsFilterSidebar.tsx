@@ -114,51 +114,7 @@ export default function MyListingsFilterSidebar({
 
                 <ScrollArea className="flex-1">
                     <div className="p-6 space-y-8">
-                        {/* Presets Section */}
-                        <div className="space-y-3">
-                            <div className="flex justify-between items-center">
-                                <label className="font-medium text-slate-600 dark:text-slate-300">Saved Presets</label>
-                                <button
-                                    onClick={() => setIsSavingPreset(!isSavingPreset)}
-                                    className="text-xs text-purple-600 dark:text-purple-400 hover:underline flex items-center gap-1"
-                                >
-                                    <Save className="w-3 h-3" />
-                                    Save Current
-                                </button>
-                            </div>
 
-                            {isSavingPreset && (
-                                <div className="flex gap-2 mb-2 animate-in fade-in slide-in-from-top-2">
-                                    <input
-                                        type="text"
-                                        value={newPresetName}
-                                        onChange={(e) => setNewPresetName(e.target.value)}
-                                        placeholder="Preset name..."
-                                        className="flex-1 bg-slate-100 dark:bg-slate-700/60 rounded-lg py-2 px-3 text-sm border-transparent focus:ring-2 focus:ring-purple-400 outline-none"
-                                    />
-                                    <Button size="sm" onClick={handleSavePreset} disabled={!newPresetName.trim()} className="h-9 px-3 bg-purple-500 hover:bg-purple-600">
-                                        <Check className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                            )}
-
-                            <div className="flex flex-wrap gap-2">
-                                {presets.map((preset, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => onApplyPreset(preset.filters)}
-                                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors border border-purple-100 dark:border-purple-800"
-                                    >
-                                        {preset.name}
-                                    </button>
-                                ))}
-                                {presets.length === 0 && (
-                                    <p className="text-xs text-slate-400 italic">No saved presets</p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="h-px bg-slate-200 dark:bg-slate-800" />
 
                         {/* Sort By Section */}
                         <div className="space-y-3">
@@ -166,7 +122,7 @@ export default function MyListingsFilterSidebar({
                             <select
                                 value={filters.sortBy}
                                 onChange={(e) => onFilterChange("sortBy", e.target.value)}
-                                className="w-full bg-slate-100 dark:bg-slate-700/60 rounded-lg py-2 px-3 text-sm border-transparent focus:ring-2 focus:ring-purple-400 outline-none"
+                                className="w-full bg-slate-100 dark:bg-slate-700/60 rounded-lg py-2 px-3 text-sm text-slate-700 dark:text-slate-200 border-transparent focus:ring-2 focus:ring-purple-400 outline-none"
                             >
                                 <option value="last-updated">Last Updated</option>
                                 <option value="price-high-low">Price (High-Low)</option>
@@ -203,34 +159,7 @@ export default function MyListingsFilterSidebar({
                             )}
                         </div>
 
-                        {/* Update Status Section */}
-                        <div className="space-y-3">
-                            <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection("updateStatus")}>
-                                <label className="font-medium text-slate-600 dark:text-slate-300">Update Status</label>
-                                {expandedSections.updateStatus ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
-                            </div>
 
-                            {expandedSections.updateStatus && (
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[
-                                        { value: "all", label: "All" },
-                                        { value: "up-to-date", label: "Up-to-date" },
-                                        { value: "stale", label: "Stale" },
-                                    ].map((option) => (
-                                        <button
-                                            key={option.value}
-                                            onClick={() => onFilterChange("updateStatus", option.value)}
-                                            className={`py-2 px-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center ${filters.updateStatus === option.value
-                                                ? "bg-purple-500 text-white shadow-md shadow-purple-500/30"
-                                                : "bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                                                }`}
-                                        >
-                                            {option.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
 
                         {/* Availability Section */}
                         <div className="space-y-3">

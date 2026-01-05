@@ -70,7 +70,7 @@ function transformListing(apiListing: ApiListing): Listing {
         baths: property.bathrooms,
         lastUpdated: updatedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         isStale,
-        isAvailable: apiListing.isActive && apiListing.status === 'active',
+        isAvailable: apiListing.status === 'active', // 'active' = available, 'rented' = unavailable
         referralsOn: false, // Not in API yet
         activeResponses: 0, // Not in API yet
     };
@@ -94,5 +94,22 @@ export const listingService = {
 
     async getAllListings(): Promise<Listing[]> {
         return apiClient.get<Listing[]>('/listing');
+    },
+
+    /**
+     * Update listing status (availability)
+     * Frontend: 'available' | 'unavailable' -> Backend: 'active' | 'rented'
+     * Note: Backend uses 'rented' instead of 'unavailable' - see todo.md for future update
+     */
+    async updateListingStatus(listingId: string, isAvailable: boolean): Promise<any> {
+        const status = isAvailable ? 'active' : 'rented';
+        return apiClient.patch<any>(`/listing/${listingId}/status`, { status });
+    },
+
+    /**
+     * Delete a listing
+     */
+    async deleteListing(listingId: string): Promise<void> {
+        return apiClient.delete<void>(`/listing/${listingId}`);
     }
 };

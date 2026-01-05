@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { Bell, PlusCircle, Filter, Search, X, ToggleRight, ToggleLeft, RefreshCw, Loader2, Building2 } from 'lucide-react';
+import { toast } from 'sonner';
 import StatsBanner from '@/components/agent/my-listings/StatsBanner';
 import ListingCard from '@/components/agent/my-listings/ListingCard';
 import MyListingsFilterSidebar from '@/components/agent/my-listings/MyListingsFilterSidebar';
@@ -107,6 +108,7 @@ export default function MyListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedListings, setSelectedListings] = useState<Set<string>>(new Set());
 
     // Fetch listings on component mount
     useEffect(() => {
@@ -124,6 +126,95 @@ export default function MyListingsPage() {
         };
         fetchListings();
     }, []); // Empty dependency array means this runs once on mount
+
+    // Handle listing status update
+    const handleStatusUpdate = async (listingId: string, isAvailable: boolean) => {
+        try {
+            await listingService.updateListingStatus(listingId, isAvailable);
+            // Update local state
+            setListings(prev => prev.map(listing =>
+                listing.id === listingId
+                    ? { ...listing, isAvailable, status: isAvailable ? 'active' : 'sold' as const }
+                    : listing
+            ));
+            toast.success(isAvailable ? 'Listing marked as available' : 'Listing marked as unavailable');
+        } catch (error: any) {
+            console.error('Failed to update listing status:', error);
+            toast.error(error.message || 'Failed to update status. Please try again.');
+            throw error; // Re-throw so ListingCard knows it failed
+        }
+    };
+
+    // Handle individual referral toggle
+    const handleReferralToggle = async (listingId: string, referralsOn: boolean) => {
+        // Update local state immediately (optimistic update)
+        setListings(prev => prev.map(listing =>
+            listing.id === listingId
+                ? { ...listing, referralsOn }
+                : listing
+        ));
+        toast.success(referralsOn ? 'Referrals enabled' : 'Referrals disabled');
+    };
+
+    // Handle listing selection
+    const handleSelect = (listingId: string, selected: boolean) => {
+        setSelectedListings(prev => {
+            const next = new Set(prev);
+            if (selected) {
+                next.add(listingId);
+            } else {
+                next.delete(listingId);
+            }
+            return next;
+        });
+    };
+
+    // Handle Select All
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            setSelectedListings(new Set(filteredListings.map(l => l.id)));
+        } else {
+            setSelectedListings(new Set());
+        }
+    };
+
+    // Handle bulk referral toggle
+    const handleBulkReferralToggle = () => {
+        if (selectedListings.size === 0) {
+            toast.error('Please select at least one listing');
+            return;
+        }
+        // Toggle referrals for all selected listings
+        setListings(prev => prev.map(listing =>
+            selectedListings.has(listing.id)
+                ? { ...listing, referralsOn: !listing.referralsOn }
+                : listing
+        ));
+        toast.success(`Toggled referrals for ${selectedListings.size} listing${selectedListings.size > 1 ? 's' : ''}`);
+    };
+
+    // Handle listing delete
+    const handleDelete = async (listingId: string) => {
+        try {
+            await listingService.deleteListing(listingId);
+            setListings(prev => prev.filter(l => l.id !== listingId));
+            setSelectedListings(prev => {
+                const next = new Set(prev);
+                next.delete(listingId);
+                return next;
+            });
+            toast.success('Listing deleted successfully');
+        } catch (error: any) {
+            console.error('Failed to delete listing:', error);
+            toast.error(error.message || 'Failed to delete listing. Please try again.');
+            throw error;
+        }
+    };
+
+    // Handle edit (placeholder - will open drawer/modal)
+    const handleEdit = (listing: Listing) => {
+        toast.info('Edit functionality coming soon');
+    };
 
     const handleFilterChange = (key: string, value: any) => {
         setFilters((prev) => ({ ...prev, [key]: value }))
@@ -253,7 +344,7 @@ export default function MyListingsPage() {
 
                 <main className="flex-1 h-full overflow-y-auto flex flex-col">
                     <div className="px-10 pb-20 pt-2 space-y-6">
-                        <StatsBanner />
+                        <StatsBanner staleCount={counts.updateStatus?.stale || 0} />
 
                         {/* Controls Bar */}
                         <div className="hidden md:flex flex-row gap-4 justify-between items-center">
@@ -336,17 +427,25 @@ export default function MyListingsPage() {
                         {/* Bulk Actions (from original design) */}
                         <div className="flex flex-wrap items-center gap-4">
                             <label className="flex items-center gap-3 cursor-pointer">
-                                <input className="h-5 w-5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500" type="checkbox" />
-                                <span className="font-semibold text-slate-600 dark:text-slate-300">Select All</span>
+                                <input
+                                    className="h-5 w-5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+                                    type="checkbox"
+                                    checked={selectedListings.size === filteredListings.length && filteredListings.length > 0}
+                                    onChange={(e) => handleSelectAll(e.target.checked)}
+                                />
+                                <span className="font-semibold text-slate-600 dark:text-slate-300">
+                                    {selectedListings.size > 0 ? `${selectedListings.size} Selected` : 'Select All'}
+                                </span>
                             </label>
-                            <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
-                                <ToggleRight className="w-5 h-5 text-green-500" /> Enable Referrals
+                            <button
+                                onClick={handleBulkReferralToggle}
+                                disabled={selectedListings.size === 0}
+                                className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <ToggleRight className="w-5 h-5 text-blue-500" /> Toggle Referrals
                             </button>
                             <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
-                                <ToggleLeft className="w-5 h-5 text-red-500" /> Disable Referrals
-                            </button>
-                            <button className="flex items-center gap-2 text-sm font-semibold bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 px-4 rounded-xl transition-colors shadow-sm">
-                                <RefreshCw className="w-5 h-5" /> Update Selected
+                                <RefreshCw className="w-5 h-5" /> Confirm Availability
                             </button>
                             <p className="ml-auto text-sm font-semibold text-slate-500 dark:text-slate-400">
                                 Showing {filteredListings.length} of {listings.length} properties
@@ -362,7 +461,16 @@ export default function MyListingsPage() {
                         ) : filteredListings.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredListings.map((listing) => (
-                                    <ListingCard key={listing.id} listing={listing} />
+                                    <ListingCard
+                                        key={listing.id}
+                                        listing={listing}
+                                        isSelected={selectedListings.has(listing.id)}
+                                        onSelect={handleSelect}
+                                        onStatusUpdate={handleStatusUpdate}
+                                        onReferralToggle={handleReferralToggle}
+                                        onEdit={handleEdit}
+                                        onDelete={handleDelete}
+                                    />
                                 ))}
                             </div>
                         ) : (

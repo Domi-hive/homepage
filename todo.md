@@ -60,3 +60,79 @@
 - [ ] **yearBuilt**: API accepts this but form doesn't have it. Optional, can add later.
 - [ ] **features**: API accepts array of strings, form doesn't have amenities/features checklist. Need to:
     - Add features/amenities multi-select or checkboxes
+
+---
+
+# Listing Status API Nomenclature
+
+## Current Implementation (Temporary)
+- **Frontend displays**: "Available" / "Unavailable"
+- **Backend expects**: "active" / "rented"
+- The `updateListingStatus` service method maps `isAvailable: true` → `{ status: 'active' }` and `isAvailable: false` → `{ status: 'rented' }`
+
+## Future Update
+- [ ] Request backend team to add proper "available" / "unavailable" status values
+- [ ] Once backend supports it, update `listing.service.ts` to use proper status values
+- The current mapping works but "rented" doesn't semantically cover all unavailable scenarios (e.g., property taken off market, under maintenance, etc.)
+
+---
+
+# Referrals Toggle API
+
+## Current Implementation (Frontend Only)
+- Referrals toggle works on individual cards and via bulk action
+- Currently using **optimistic updates** (local state only)
+- No API endpoint exists yet
+
+## When API is Available
+- [ ] Add `updateListingReferrals(listingId, referralsOn)` to `listing.service.ts`
+- [ ] Update `handleReferralToggle` in `my-listings/page.tsx` to call API
+- [ ] Update `handleBulkReferralToggle` to call API for each selected listing (or batch endpoint)
+- [ ] Add proper error handling with rollback on failure
+
+---
+
+# Listing Card Actions UX
+
+## Decided: Options Menu Approach
+- Put Edit and Delete inside the MoreVertical (⋮) options menu
+- Reasons:
+  - Cleaner cards with less visual clutter
+  - Delete is destructive, menu adds natural barrier
+  - Consistent with common patterns (Gmail, Trello, etc.)
+  - Mobile-friendly with fewer touch targets
+
+## To Implement
+- [x] Create dropdown menu from MoreVertical button
+- [x] Add menu items: Edit, Delete, View Details
+- [x] Add confirmation dialog for Delete action
+- [x] Add delete API integration
+
+---
+
+# KYC Document Type Workaround
+
+## Current Issue
+- **Backend document types**: `nin` and `voter's card`
+- **Frontend needs**: `nin` and `selfie`
+- **Workaround**: Using voter's card ID for selfie uploads
+
+## When Backend is Updated
+- [ ] Backend team to add `selfie` document type and remove `voter's card` requirement
+- [ ] Update `kyc.service.ts` to use proper `selfie` document type name
+- [ ] Remove DOCUMENT_TYPE_NAMES mapping workaround
+
+---
+
+# KYC File Upload Implementation
+
+## Current State
+- KYCTab accepts file selection and validates files
+- Uses placeholder URL for document submission
+- API integration is ready, just needs real file URLs
+
+## To Implement
+- [ ] Implement file upload to S3/Cloudinary/Supabase Storage
+- [ ] Get back permanent URL after upload
+- [ ] Pass real URL to KYC document submission API
+- [ ] Add upload progress indicator
