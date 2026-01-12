@@ -136,3 +136,30 @@
 - [ ] Get back permanent URL after upload
 - [ ] Pass real URL to KYC document submission API
 - [ ] Add upload progress indicator
+
+---
+
+# Two-Step Funnel (Recommended)
+
+## Concept
+Replace the current full form with a multi-step process to reduce friction and increase commitment.
+
+**Flow:**
+1.  **Step 1 (Landing Page)**: "What type of property are you looking for?"
+    -   Options: Apartment, House, Duplex, Land (Visual buttons)
+    -   *Goal: Low initial friction, micro-commitment.*
+2.  **Step 2 (Next Screen)**: Location + Budget.
+3.  **Step 3**: Create account + finalize request.
+
+## Why This Works
+-   **Lower Friction**: One simple visual choice is easier/faster than 9 form fields.
+-   **Psychological Commitment**: Users who start are more likely to finish (`Foot-in-the-door` technique).
+-   **Better Data**: Capture intent even if they drop off later.
+-   **Mobile Experience**: Much better for small screens (tap vs type).
+-   **Simpler Tech**: No pre-account storage complexity needed immediately.
+
+## Action Items
+-   [ ] Remove full form from hero section.
+-   [ ] Implement Step 1 Component (Property Type Buttons) in Hero.
+-   [ ] Create Step 2 form for Location & Budget.
+-   [ ] Wire up flow: Step 1 -> Step 2 -> Signup/Login.

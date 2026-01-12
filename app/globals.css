@@ -76,8 +76,19 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", "Inter Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", "Inter", "Inter Fallback";
+  --font-display: var(--font-outfit), "Outfit", sans-serif;
+  --color-navy-800: #1E293B;
+  --color-navy-900: #0F172A;
+  --color-navy-950: #020617;
+  --color-charcoal: #1E293B;
+  --color-coral: #F59E0B;
+  --color-coral-hover: #D97706;
+  --color-coral-light: #FFFBEB;
+  --color-lavender: #818CF8;
+  --color-lavender-light: #C7D2FE;
+  --color-lavender-soft: #EEF2FF;
+  --color-surface: #F8FAFC;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -2959,4 +2970,21 @@ body {
   .site-footer__bottom p {
     font-size: 13px;
   }
+}
+/* Scrolling Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
 }

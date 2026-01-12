@@ -1,5 +1,5 @@
 import type React from "react"
-import { Inter } from "next/font/google"
+import { Inter, Outfit, Plus_Jakarta_Sans } from "next/font/google"
 import type { Metadata } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
@@ -7,7 +7,9 @@ import { ThemeProvider } from "next-themes"
 import Script from "next/script"
 import { Toaster } from "@/components/ui/sonner"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" })
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta" })
 
 export const metadata: Metadata = {
   title: "DomiHive - Real Estate Platform",
@@ -25,7 +27,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} ${jakarta.variable} font-sans antialiased`}>
 
         {/* ⬇️ REQUIRED ROOT ELEMENT */}
         <div id="react-grab-root"></div>

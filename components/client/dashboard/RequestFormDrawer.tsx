@@ -293,9 +293,16 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                             {/* Location */}
                             <div className="space-y-2">
                                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Location(s) <span className="text-red-500">*</span>
+                                    Neighbourhood(s) <span className="text-red-500">*</span>
                                 </label>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">You can add up to 3 locations.</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    You can add up to 3 neighbourhoods.
+                                    {selectedLocations.length < 3 ? (
+                                        <span className="text-coral ml-1 font-medium">({3 - selectedLocations.length} remaining)</span>
+                                    ) : (
+                                        <span className="text-green-600 ml-1 font-medium">Max reached</span>
+                                    )}
+                                </p>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div>
                                         <select className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 py-2.5 pl-3 pr-10 text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center]">
@@ -306,28 +313,39 @@ export default function RequestFormDrawer({ isOpen, onClose }: RequestFormDrawer
                                             <option>Rivers</option>
                                         </select>
                                     </div>
-                                    <div className="relative">
-                                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xl">search</span>
-                                        <input
-                                            type="text"
-                                            value={location}
-                                            onChange={(e) => setLocation(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    e.preventDefault();
-                                                    handleAddLocation();
-                                                }
-                                            }}
-                                            className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 pl-10 p-2.5 text-slate-900 dark:text-white"
-                                            placeholder="Search locations in Lagos"
-                                        />
+                                    <div className="relative flex gap-2">
+                                        <div className="relative flex-1">
+                                            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-xl">search</span>
+                                            <input
+                                                type="text"
+                                                value={location}
+                                                onChange={(e) => setLocation(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        handleAddLocation();
+                                                    }
+                                                }}
+                                                disabled={selectedLocations.length >= 3}
+                                                className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-lg shadow-sm focus:ring-purple-500 focus:border-purple-500 pl-10 p-2.5 text-slate-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                                placeholder={selectedLocations.length >= 3 ? "Max locations added" : "Search neighbourhoods in Lagos"}
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleAddLocation}
+                                            disabled={!location || selectedLocations.length >= 3}
+                                            className="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            Add
+                                        </button>
                                     </div>
                                 </div>
 
                                 {selectedLocations.length > 0 && (
                                     <div className="pt-3 space-y-2">
                                         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                                            {selectedLocations.length} of 3 locations selected
+                                            {selectedLocations.length} of 3 neighbourhoods selected
                                         </p>
                                         {selectedLocations.map((loc, index) => (
                                             <div key={index} className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/50 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-2 rounded-lg flex items-center justify-between">
