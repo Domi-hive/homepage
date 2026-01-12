@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Logo from "@/components/ui/Logo";
+import AgentsSection from "@/components/landing/AgentsSection";
 
 
 export default function Home() {
@@ -134,7 +135,7 @@ export default function Home() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-20">
                         <h2 className="font-display text-4xl md:text-5xl font-bold text-navy-900 mb-6 tracking-tight">
-                            Concierge Service, <br /><span className="text-coral">Digitally Reimagined</span>
+                            Expert Matching, <br /><span className="text-coral">Zero Searching</span>
                         </h2>
                         <p className="text-slate-500 text-lg leading-relaxed">We've stripped away the noise of public listings. Here, the market comes to you through a curated, private channel.</p>
                     </div>
@@ -384,6 +385,9 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* Agents Section */}
+            <AgentsSection />
 
             {/* CTA Section */}
             <section className="py-24 relative overflow-hidden bg-navy-900">
