@@ -3,9 +3,9 @@
 import {
   Wallet,
   Bell,
-  Banknote,
+
   Calendar,
-  Users,
+
   Star,
   Phone,
   Check,
@@ -65,15 +65,7 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
-              <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-slate-600 dark:text-slate-300">Total Earnings</h3>
-                <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <Banknote className="text-green-500 w-6 h-6" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">₦1.2M</p>
-            </div>
+
             <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Upcoming Inspections</h3>
@@ -83,15 +75,7 @@ export default function Dashboard() {
               </div>
               <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">5</p>
             </div>
-            <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
-              <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-slate-600 dark:text-slate-300">Active Leads</h3>
-                <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-                  <Users className="text-purple-500 w-6 h-6" />
-                </div>
-              </div>
-              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">12</p>
-            </div>
+
             <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
                 <h3 className="font-semibold text-slate-600 dark:text-slate-300">Agent Rating</h3>

@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { ArrowLeft, ChevronDown, MessageCircle, X, Bell } from "lucide-react"
+import { useState, useEffect } from "react"
+import { ArrowLeft, ChevronDown, MessageCircle, X, Bell, Loader2 } from "lucide-react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import AgentSidebar from "@/components/client/responses/AgentSidebar"
@@ -11,6 +12,7 @@ import PropertyCard from "@/components/client/responses/PropertyCard"
 import PropertyModal from "@/components/client/responses/PropertyModal"
 import ScheduleInspectionDrawer from "@/components/client/responses/ScheduleInspectionDrawer"
 import RecommendedPropertiesTab from "@/components/client/responses/RecommendedPropertiesTab"
+import { requestService } from "@/services/request.service"
 
 // ... (imports)
 
@@ -31,133 +33,101 @@ interface Property {
   title: string
   image: string
   location: string
-  price: number
+  price: number | string
   bedrooms: number
   bathrooms: number
-  sqft: number
+  sqft: number | string
   qas: number
   description: string
   amenities: string[]
 }
 
 export default function ResponsesPage() {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const [activeTab, setActiveTab] = useState<"responses" | "recommendations">("responses")
-  const [selectedAgentId, setSelectedAgentId] = useState("1")
+  const [selectedAgentId, setSelectedAgentId] = useState("")
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [recommendationFavorites, setRecommendationFavorites] = useState<Set<number>>(new Set())
   const [showAgentDropdown, setShowAgentDropdown] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showQADrawer, setShowQADrawer] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+  const [agents, setAgents] = useState<Agent[]>([])
+  const [properties, setProperties] = useState<Record<string, Property[]>>({})
+  const [loading, setLoading] = useState(true)
+  const [requestDetails, setRequestDetails] = useState<any>(null)
 
-  const agents: Agent[] = [
-    {
-      id: "1",
-      name: "John Doe",
-      photo: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-k2rexJ46kuUgtoTwnnGLtQ-TgSjVW0eflv0jKEuihkVo2gM2g5ryxZKplfaX7h0PM4wmPNrS4zCg801ev9LnrrnDXbgmPrqcz9huy_fJKUcUby6FMLxkb0v0A0QNw-f2_GIMa7FrqEiVvUQNbg_ek29sJp-yCNbmPef7daNyMqgBlK-_U0oBPTSXVPFz2HOM6oC4Fn2ji0HA_1M49EA2xEAN2D40p-JF0FiqY0nMHvLHfBmEs1gGpR3tpCH_ScwGqoDHaKmUGA",
-      rating: 4.8,
-      reviews: 124,
-      specialty: "Luxury properties in Lekki & VI",
-      respondedAt: "2 hours ago",
-      propertyCount: 5,
-      qas: 2,
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      photo: "https://lh3.googleusercontent.com/aida-public/AB6AXuBmv9NHx6HTb5k2CIE4jVFkU9UYVFJA8xwEqmeqA9YGvJE2bx0Do9JwduvfHXnwNHiDRpFTNfWuN009vayDKFNwIJ5J_MNyU9wHJp9P6WGWdX0eLEguvNKSIvio9vGi7Q0sNDoyqUoK78ALBb0DsTJw24zcKYuQkWrZI-svssYFCQLqyxeAouLnewmhmuxHco2Ar2QR63AcQMeBU5uShTCt6gx39CIzTuTwndn38OUKJEp8IkRlS_mHhg57dlf_4t-w0uSULfOmgA",
-      rating: 4.9,
-      reviews: 156,
-      specialty: "Waterfront properties",
-      respondedAt: "1 hour ago",
-      propertyCount: 4,
-      qas: 1,
-    },
-    {
-      id: "3",
-      name: "Michael Johnson",
-      photo: "https://lh3.googleusercontent.com/aida-public/AB6AXuApwz1HzKfzmiTi2UQsUJcW888s0VDgItEm-xhw7ioi7hzA5iXKdTooAJNi23OxGQOc6EdcnvtCqsPqCQtjebd3RrTQ3rU70soZYB989rU0V2xwU10nXOPhJp5OauflT4w4YdPaLYgvCUKTcmK4ileUe50q8glR9EXw6QSKFjXo4SAzVB2v_Ww33PACuP1RMXVBUxYrJwx_w9fhdfO5zk7wDg-oMOyLfPFNKy9AS6x9TgXe8AO1vmZTW9s3Ba9EcmOU1xeAqW6q8A",
-      rating: 4.7,
-      reviews: 98,
-      specialty: "Family homes",
-      respondedAt: "30 minutes ago",
-      propertyCount: 6,
-      qas: 3,
-    },
-  ]
+  const params = useParams()
 
-  const properties: Record<string, Property[]> = {
-    "1": [
-      {
-        id: "1",
-        title: "3-Bedroom Duplex in Maitama",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAeWUGzqGBYCfM-jQAcmRwVKfBbPwXNwCTW1tZgMQUB3phLaZjYejyYa7g1mAJ-QRS67sClRP60c9sDvQe1zdoI3lCT8YflVvuMjjoV5PGpKgy00M04mm5DICtkIbhGcEyhB51RlKOIWhNJl5ctiDpHnXnz2bSBXzftNjEsrr1VE_Dyg9GW346VwFDFGMl1u94ZXGUW0jHJ5B4pkLJj2OYndjssyNbdzSh5bo_ot_Q6abu3fA3GWsDSOetSDfXTYBhgLP7xFhu_Vg",
-        location: "Maitama, Abuja",
-        price: 3500000,
-        bedrooms: 3,
-        bathrooms: 2,
-        sqft: 150,
-        qas: 2,
-        description:
-          "Duplex in Maitama, Abuja. 2 matches found. Recently renovated with modern finishes and premium amenities. Perfect for families or professionals seeking luxury living in a prime location.",
-        amenities: ["Air Conditioning", "24/7 Security", "Generator", "Parking Space"],
-      },
-      {
-        id: "2",
-        title: "Luxury Penthouse",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBVDx9PQM_FTiyrf3Br30k5xAOYzgxVXTTOcKj7iXp0gPUnf1pWMNayJWfr7j4MmAunTVHoTy6qLXjHV_UkKU2k1qpP_0VSm9CSKT3no3PF4G7UkKJs8xs26g3_5f7WBFJsGn4Z7Y43Au3rFhRjy-35M0hE6Qcl38V9tpR3ywZ8Kv0SYG4T36pBAWlX0GSrLbWO4EWeJmHT9LsaHYoSIcNIuVpSvfmfPTGMqznttQxcYfQX21ZR-D3Mnnr7zc3gTLW5JsZYCM2zcQ",
-        location: "Victoria Island",
-        price: 5500000,
-        bedrooms: 4,
-        bathrooms: 3,
-        sqft: 220,
-        qas: 0,
-        description: "Stunning penthouse with panoramic city views and high-end finishes throughout.",
-        amenities: ["Rooftop Terrace", "Smart Home", "Wine Cellar", "Home Theatre"],
-      },
-      {
-        id: "3",
-        title: "Cozy Apartment",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4Rq8dE8yALqfjM2qssKX6GEbEtWlXddD9VKgW2SYbaTgjtcwOFFxzwYrf-_ud76MFbF9mwvAmz79NJN6nLass0mCCg-Tv1np6gXqNJHm44JsUrSs0sBfxsT5m4VYgsd-LShdlB8PNFigPHq85IC_oJNHDwLPF13KXdZ9MI8rkKn5UlqlDfbssMAz_8LTaB4iFxYx7ygYmys5F_hHmI6CWMiln5FE9S4oDM4NwUrc9OemS7AdVC9GZTRbbJ20wpYfB1H1-nTCulw",
-        location: "Ikoyi",
-        price: 2800000,
-        bedrooms: 2,
-        bathrooms: 1,
-        sqft: 120,
-        qas: 1,
-        description: "Intimate apartment perfect for young professionals or couples.",
-        amenities: ["Gym Access", "Pool", "Concierge", "Pet Friendly"],
-      },
-      {
-        id: "4",
-        title: "Garden Home",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCNRGjOyVNKHJNtg_Gsdfkyx0LH4FbuhUTVprtfjh5gvIvcSmFVMUYeCU25WlR4NOJrAEONK9HJbV46GLpFMKye4PEdmuMO11ryohyZkLwAkfFfBqNxV5lGgIhGC3ZM0CtArkhfLe-s_w4usneo79TWX90PQ2dBYLILP-TcSwHI_bDOMxKl0OisGDX5BTFK0Ag_CM4Xs6wtakV1ZaRxr1AwK9cZ4ZFgeWYvIohcfbeZDvjk38osCjBavnUrdOKZzNKZWJ0IYrX2Cg",
-        location: "Lekki Phase 1",
-        price: 4200000,
-        bedrooms: 4,
-        bathrooms: 2,
-        sqft: 180,
-        qas: 0,
-        description: "Spacious home with beautiful garden and outdoor living spaces.",
-        amenities: ["Garden", "BBQ Area", "Gate House", "Solar Power"],
-      },
-      {
-        id: "5",
-        title: "Studio Apartment",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDf7ApyftcnbSARo_6exCIa_-5pV6pfoDFfi8dgh6Lbm6Lg27BnBbFn_StXrDyyoYA0PvbFSOwoKmmGs-Ca-6tOx6JIt4dhnYtKbRojlZLDTEqHsS8KaWCCijgq1psomQe9aoFhlPKi7lkANmYvI0xEOnv_PZPz4vpJjcxak7-7gt6hfIUK8dvMslliumxBqqrcGzN30NnoXKHXRdJdunbEbZceXpPYJutYsjr1bJnf2q7x1rZStB_24qkqWhrlLTJC_6GFkp8-6Q",
-        location: "Downtown Lagos",
-        price: 1800000,
-        bedrooms: 1,
-        bathrooms: 1,
-        sqft: 80,
-        qas: 3,
-        description: "Modern studio in the heart of Lagos with easy access to amenities.",
-        amenities: ["Furnished", "WiFi", "Laundry", "Mini Kitchen"],
-      },
-    ],
-    "2": [],
-    "3": [],
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!params?.id) return
+
+      try {
+        setLoading(true)
+        const [requestData, responseData] = await Promise.all([
+          requestService.getRequest(params.id as string),
+          requestService.getRequestResponses(params.id as string)
+        ])
+
+        setRequestDetails(requestData)
+
+        const newAgents: Agent[] = []
+        const newProperties: Record<string, Property[]> = {}
+
+        responseData.forEach((res: any) => {
+          const agent = res.agent
+          // Handle potential data structure variations
+          const listings = res.listing || res.listings || []
+
+          // Handle agent name construction safely
+          const firstName = agent?.firstName || agent?.user?.firstName || "Unknown"
+          const lastName = agent?.lastName || agent?.user?.lastName || "Agent"
+          const agentName = `${firstName} ${lastName}`.trim()
+
+          if (!newAgents.find(a => a.id === agent.id)) {
+            newAgents.push({
+              id: agent.id,
+              name: agentName,
+              photo: agent.profileImage || agent?.user?.profileImage || "/placeholder.svg",
+              rating: agent.rating || 5,
+              reviews: agent.reviewCount || 0,
+              specialty: "Real Estate Agent",
+              respondedAt: new Date(res.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              propertyCount: listings.length,
+              qas: 0
+            })
+          }
+
+          newProperties[agent.id] = listings.map((listing: any) => ({
+            id: listing.id,
+            title: listing.name || listing.title || "Untitled Property",
+            image: listing.images?.[0] || listing.image || "/placeholder.svg",
+            location: listing.location || `${listing.lga || ''}, ${listing.state || ''}`.replace(/^, /, '') || "Location not specified",
+            price: listing.price,
+            bedrooms: listing.bedrooms || 0,
+            bathrooms: listing.bathrooms || 0,
+            sqft: listing.sqft || 0,
+            qas: 0,
+            description: listing.description || "",
+            amenities: listing.amenities || []
+          }))
+        })
+
+        setAgents(newAgents)
+        setProperties(newProperties)
+        if (newAgents.length > 0) {
+          setSelectedAgentId(newAgents[0].id)
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [params?.id])
 
   const selectedAgent = agents.find((a) => a.id === selectedAgentId)
   const selectedProperties = properties[selectedAgentId] || []
@@ -187,9 +157,7 @@ export default function ResponsesPage() {
   }
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]"
-    >
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-75 pointer-events-none z-0"
         style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
@@ -207,9 +175,9 @@ export default function ResponsesPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-slate-900">
-                2-3 bed in Lekki, Victoria Island, Ikoyi
+                {requestDetails?.bedrooms || "?"} bed {requestDetails?.propertyType || "Property"} in {requestDetails?.location || "Unspecified Location"}
               </h1>
-              <p className="text-sm text-slate-500">Budget: ₦2-4M</p>
+              <p className="text-sm text-slate-500">Budget: {requestDetails?.budgetRange || "Not specified"}</p>
             </div>
           </div>
 
@@ -257,10 +225,15 @@ export default function ResponsesPage() {
           </div>
         </div>
 
-        {activeTab === "responses" ? (
-          <div className="flex flex-col md:flex-row gap-6 px-10 pb-[50px] h-full overflow-hidden">
-            {/* Desktop Agent Sidebar */}
-            <div className="hidden md:block h-full overflow-y-auto pr-2 custom-scrollbar">
+        {/* Content */}
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center min-h-[50vh]">
+            <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
+          </div>
+        ) : activeTab === "responses" ? (
+          <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+            {/* Sidebar List */}
+            <div className="hidden md:block h-full overflow-y-auto border-r border-slate-200/60 dark:border-slate-700/60 bg-white/30 backdrop-blur-sm p-6 w-[22rem]">
               <AgentSidebar
                 agents={agents}
                 selectedAgentId={selectedAgentId}
@@ -269,7 +242,7 @@ export default function ResponsesPage() {
             </div>
 
             {/* Mobile Agent Dropdown */}
-            <div className="md:hidden pb-4">
+            <div className="md:hidden px-4 pb-4">
               <div className="relative">
                 <button
                   onClick={() => setShowAgentDropdown(!showAgentDropdown)}
@@ -309,14 +282,9 @@ export default function ResponsesPage() {
                           />
                           <div className="text-left">
                             <div className="font-medium text-sm">{agent.name}</div>
-                            <div className="text-xs text-slate-500">
-                              ⭐ {agent.rating} ({agent.reviews})
-                            </div>
+                            <div className="text-xs text-slate-500">⭐ {agent.rating}</div>
                           </div>
                         </div>
-                        {selectedAgentId === agent.id && (
-                          <div className="h-2 w-2 rounded-full bg-purple-600" />
-                        )}
                       </button>
                     ))}
                   </div>
@@ -324,11 +292,10 @@ export default function ResponsesPage() {
               </div>
             </div>
 
-            {/* Main Content Area */}
-            <div className="flex-1 h-full overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 md:p-10 relative">
               {agents.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                  <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center">
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center space-y-4 px-6">
+                  <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center shadow-sm">
                     <MessageCircle className="w-8 h-8 text-slate-400" />
                   </div>
                   <div>
@@ -339,7 +306,7 @@ export default function ResponsesPage() {
                   </div>
                   <Button
                     onClick={() => setActiveTab("recommendations")}
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/30"
                   >
                     View Recommendations
                   </Button>
@@ -390,12 +357,12 @@ export default function ResponsesPage() {
 
       {selectedAgent && (
         <ScheduleInspectionDrawer
-          isOpen={isScheduleModalOpen}
+          show={isScheduleModalOpen}
           onClose={() => setIsScheduleModalOpen(false)}
           agent={selectedAgent}
           properties={selectedProperties}
         />
       )}
-    </div >
+    </div>
   )
 }

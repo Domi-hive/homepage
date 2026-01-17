@@ -8,10 +8,10 @@ interface Property {
     title: string;
     image: string;
     location: string;
-    price: number;
+    price: number | string;
     bedrooms: number;
     bathrooms: number;
-    sqft: number;
+    sqft: number | string;
     qas: number;
     description: string;
     amenities: string[];
@@ -32,8 +32,10 @@ export default function PropertyModal({ property, isOpen, onClose }: PropertyMod
 
     if (!isOpen || !property) return null;
 
-    const formatPrice = (price: number) => {
-        return `₦${price.toLocaleString()}`;
+    const formatPrice = (price: number | string) => {
+        const numPrice = Number(price);
+        if (isNaN(numPrice)) return price;
+        return `₦${numPrice.toLocaleString()}`;
     };
 
     return (

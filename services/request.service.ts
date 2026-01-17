@@ -16,7 +16,15 @@ export const requestService = {
         return apiClient.get<any[]>('/requests');
     },
 
-    async sendRequestResponse(requestId: string, payload: { agentId: string, propertyIds: string[], message: string }): Promise<any> {
+    async sendRequestResponse(requestId: string, payload: { listingIds: string[], message: string }): Promise<any> {
         return apiClient.post<any>(`/request-response/${requestId}/respond`, payload);
+    },
+
+    async getRequestResponses(requestId: string): Promise<any> {
+        return apiClient.get<any>(`/request-response/request/${requestId}`);
+    },
+
+    async getRequest(requestId: string): Promise<any> {
+        return apiClient.get<any>(`/requests/${requestId}`);
     }
 };

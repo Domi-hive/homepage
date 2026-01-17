@@ -13,81 +13,45 @@ interface Property {
     title: string;
     image: string;
     location: string;
-    price: number;
+    price: number | string;
     bedrooms: number;
     bathrooms: number;
-    sqft: number;
+    sqft: number | string;
 }
 
+const formatPrice = (price: number | string) => {
+    const numPrice = Number(price);
+    if (isNaN(numPrice)) return price;
+    return `₦${(numPrice / 1000000).toFixed(1)}M`;
+};
+
+const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+};
+
 interface ScheduleInspectionDrawerProps {
-    isOpen: boolean;
+    show: boolean;
     onClose: () => void;
     agent: Agent;
     properties: Property[];
 }
 
-// Mock availability status for 'Soft Warning' logic
-type AvailabilityStatus = 'available' | 'busy' | 'full';
-
-interface DayAvailability {
-    date: Date;
-    status: AvailabilityStatus;
-    inspectionCount: number;
-}
-
-export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, properties }: ScheduleInspectionDrawerProps) {
-    const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
-    const [show, setShow] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
+export default function ScheduleInspectionDrawer({ show, onClose, agent, properties }: ScheduleInspectionDrawerProps) {
     const [step, setStep] = useState<'selection' | 'date'>('selection');
-    const [inspectionType, setInspectionType] = useState<'in-person' | 'video'>('in-person');
+    const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [inspectionType, setInspectionType] = useState<'in_person' | 'video'>('in_person');
 
-    // Generate next 7 days with mock availability
-    const [availableDays, setAvailableDays] = useState<DayAvailability[]>([]);
-
-    useEffect(() => {
-        // Generate next 7 days
-        const days: DayAvailability[] = Array.from({ length: 7 }, (_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() + i + 1); // Start from tomorrow
-
-            // Randomly assign status for demo purposes
-            const rand = Math.random();
-            let status: AvailabilityStatus = 'available';
-            let count = 0;
-
-            // Force the 3rd day to be busy for demo purposes, or random
-            if (i === 2 || rand > 0.8) {
-                status = 'busy';
-                count = Math.floor(Math.random() * 3) + 1; // 1-3 existing inspections
-            }
-
-            return { date, status, inspectionCount: count };
-        });
-        setAvailableDays(days);
-    }, []);
-
-    useEffect(() => {
-        if (isOpen) {
-            setIsVisible(true);
-            const timer = setTimeout(() => {
-                setShow(true);
-                document.body.style.overflow = 'hidden';
-            }, 10);
-            setStep('selection'); // Reset step on open
-            return () => clearTimeout(timer);
-        } else {
-            setShow(false);
-            const timer = setTimeout(() => {
-                setIsVisible(false);
-                document.body.style.overflow = 'unset';
-            }, 300);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen]);
-
-    if (!isVisible && !isOpen) return null;
+    // Mock available days for the next 5 days
+    const availableDays = Array.from({ length: 5 }).map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() + i + 1);
+        return {
+            date,
+            status: Math.random() > 0.7 ? 'busy' : 'available',
+            inspectionCount: Math.floor(Math.random() * 3)
+        };
+    });
 
     const toggleProperty = (id: string) => {
         const newSelected = new Set(selectedPropertyIds);
@@ -99,14 +63,6 @@ export default function ScheduleInspectionDrawer({ isOpen, onClose, agent, prope
             }
         }
         setSelectedPropertyIds(newSelected);
-    };
-
-    const formatPrice = (price: number) => {
-        return `₦${(price / 1000000).toFixed(1)}M`;
-    };
-
-    const formatDate = (date: Date) => {
-        return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
     };
 
     const handleBack = () => {

@@ -21,14 +21,14 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 interface Property {
-    id: number
+    id: number | string
     title: string
     price: string
     location: string
     image: string
     beds: number
     baths: number
-    sqft: string
+    sqft: string | number
     matchScore?: number
     trend?: string
 }

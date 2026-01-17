@@ -6,10 +6,10 @@ interface Property {
     title: string;
     image: string;
     location: string;
-    price: number;
+    price: number | string;
     bedrooms: number;
     bathrooms: number;
-    sqft: number;
+    sqft: number | string;
     qas: number;
 }
 
@@ -21,11 +21,13 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property, isFavorite, onToggleFavorite, onClick }: PropertyCardProps) {
-    const formatPrice = (price: number) => {
-        if (price >= 1000000) {
-            return `₦${(price / 1000000).toFixed(1)}M`;
+    const formatPrice = (price: number | string) => {
+        const numPrice = Number(price);
+        if (isNaN(numPrice)) return price; // Return as is if not a number
+        if (numPrice >= 1000000) {
+            return `₦${(numPrice / 1000000).toFixed(1)}M`;
         }
-        return `₦${price.toLocaleString()}`;
+        return `₦${numPrice.toLocaleString()}`;
     };
 
     return (

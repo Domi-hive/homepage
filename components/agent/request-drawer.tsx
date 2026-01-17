@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react"
 import MarketplaceOverlay from "./marketplace-overlay"
 import { requestService } from "@/services/request.service"
+import { listingService } from "@/services/listing.service"
 
 interface RequestDrawerProps {
   request: {
@@ -66,38 +67,36 @@ export default function RequestDrawer({ request, isOpen, onClose, onSuccess }: R
 
 
   // Mock Data from ResponseModal
-  const myListings = [
-    {
-      id: 1,
-      title: "Modern Downtown Loft",
-      location: "Downtown District",
-      price: "$480k",
-      image: "/modern-loft.jpg",
-      matchScore: 92,
-      agent: "You",
-      isOwn: true,
-    },
-    {
-      id: 2,
-      title: "Riverside Townhouse",
-      location: "Riverside Area",
-      price: "$650k",
-      image: "/riverside-townhouse.jpg",
-      matchScore: 88,
-      agent: "You",
-      isOwn: true,
-    },
-    {
-      id: 3,
-      title: "Park View Apartment",
-      location: "Downtown District",
-      price: "$520k",
-      image: "/park-view.jpg",
-      matchScore: 85,
-      agent: "You",
-      isOwn: true,
-    },
-  ]
+  const [myListings, setMyListings] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const listings = await listingService.getMyListings()
+        const formattedListings = listings.map(l => ({
+          id: l.id,
+          title: l.title,
+          location: l.location,
+          price: l.price,
+          image: l.image || "/placeholder.svg",
+          beds: l.beds,
+          baths: l.baths,
+          sqft: l.sqft,
+          matchScore: undefined,
+          agent: "You",
+          isOwn: true
+        }))
+        setMyListings(formattedListings)
+      } catch (error) {
+        console.error("Failed to fetch listings:", error)
+        toast.error("Failed to load your listings")
+      }
+    }
+
+    if (isOpen) {
+      fetchListings()
+    }
+  }, [isOpen])
 
   const getFilteredProperties = (properties: any[]) => {
     return properties.filter((p) => {
@@ -122,7 +121,7 @@ export default function RequestDrawer({ request, isOpen, onClose, onSuccess }: R
     })
   }
 
-  const removeProperty = (propertyId: number) => {
+  const removeProperty = (propertyId: number | string) => {
     setSelectedProperties((prev) => prev.filter((p) => p.id !== propertyId))
   }
 
@@ -146,8 +145,7 @@ export default function RequestDrawer({ request, isOpen, onClose, onSuccess }: R
 
     try {
       const payload = {
-        agentId: "current-agent-id", // TODO: Replace with actual agent ID from auth context
-        propertyIds: selectedProperties.map(p => p.id.toString()),
+        listingIds: selectedProperties.map(p => p.id.toString()),
         message: message
       }
 
