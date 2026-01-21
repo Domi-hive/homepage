@@ -29,7 +29,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
       <div
-        className="absolute inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
+        className="fixed inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
         style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
       />
 

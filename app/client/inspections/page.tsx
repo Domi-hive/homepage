@@ -221,8 +221,8 @@ function InspectionsContent() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                             <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                                <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
-                                                    <MapPin className="w-6 h-6 text-purple-600" />
+                                                <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center shrink-0">
+                                                    <MapPin className="w-6 h-6 text-coral" />
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-0.5">Meeting Point</p>
@@ -230,8 +230,8 @@ function InspectionsContent() {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                                                    <Clock className="w-6 h-6 text-blue-600" />
+                                                <div className="w-12 h-12 rounded-full bg-coral/10 flex items-center justify-center shrink-0">
+                                                    <Clock className="w-6 h-6 text-coral" />
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-0.5">Meeting Time</p>
@@ -246,7 +246,7 @@ function InspectionsContent() {
                                                     setOutcomeModalStep('selection');
                                                     setIsOutcomeModalOpen(true);
                                                 }}
-                                                className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30"
+                                                className="bg-coral hover:bg-coral-hover border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-coral/30"
                                             >
                                                 <CheckCircle className="w-5 h-5" />
                                                 <span>Mark as Complete</span>

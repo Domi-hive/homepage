@@ -95,7 +95,7 @@ export default function ActiveRequestCard({ request }: ActiveRequestCardProps) {
                 ))}
             </div>
             <div className="flex flex-wrap items-center gap-3">
-                <Link href={`/client/requests/${request.id}/responses`} className="bg-gradient-to-br from-purple-500 to-blue-500 border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-500/30">
+                <Link href={`/client/requests/${request.id}/responses`} className="bg-coral hover:bg-coral-hover border-none rounded-xl px-6 py-3 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-coral/30">
                     <span>View Responses</span>
                     <ArrowRight className="w-4 h-4" />
                 </Link>

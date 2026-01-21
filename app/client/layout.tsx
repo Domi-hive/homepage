@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { LayoutDashboard, FolderOpen, Menu, X, LogOut, Eye, Bell, MessageSquare } from "lucide-react"
 import { useState } from "react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Logo from "@/components/ui/Logo"
 
 export default function ClientLayout({
   children,
@@ -53,8 +54,7 @@ export default function ClientLayout({
 
               return (
                 <>
-                  <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
-                  <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+                  <Logo />
                 </>
               )
             })()}
@@ -87,22 +87,25 @@ export default function ClientLayout({
           fixed md:static inset-y-0 left-0 z-50
           flex flex-col 
           w-64 md:w-20 md:hover:w-64 
-          bg-sidebar border-r border-sidebar-border 
+          bg-sidebar border-r border-sidebar-border
+          dark:bg-navy-900 dark:border-white/10 
           transition-all duration-300 ease-in-out 
           group overflow-hidden
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
         {/* Logo Area */}
-        <div className="h-16 md:h-auto p-6 border-b border-sidebar-border flex items-center justify-between md:justify-start gap-3 whitespace-nowrap overflow-hidden">
+        <div className="h-16 md:h-auto p-6 border-b border-sidebar-border dark:border-white/10 flex items-center justify-between md:justify-start gap-3 whitespace-nowrap overflow-hidden text-navy-900 dark:text-white">
           <div className="flex items-center gap-3">
-            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8 flex-shrink-0" />
-            <h1 className="text-xl font-bold text-sidebar-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">DomiHive</h1>
+            <Logo
+              color="auto"
+              textClassName="md:w-0 md:opacity-0 md:group-hover:w-auto md:group-hover:opacity-100 transition-all duration-300 overflow-hidden whitespace-nowrap"
+            />
           </div>
           {/* Mobile Close Button */}
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden p-1 rounded-lg hover:bg-slate-100 text-slate-500"
+            className="md:hidden p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400"
           >
             <X className="h-5 w-5" />
           </button>
@@ -118,8 +121,8 @@ export default function ClientLayout({
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 md:py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
-                  ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent"
+                  ? "bg-coral/10 text-coral dark:bg-coral dark:text-white dark:shadow-lg dark:shadow-coral/20 font-medium"
+                  : "text-sidebar-foreground dark:text-slate-400 hover:bg-sidebar-accent dark:hover:bg-white/5 dark:hover:text-white"
                   }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
@@ -130,10 +133,10 @@ export default function ClientLayout({
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-sidebar-border p-4">
+        <div className="border-t border-sidebar-border dark:border-white/10 p-4">
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap overflow-hidden group/logout"
+            className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors whitespace-nowrap overflow-hidden group/logout"
             aria-label="Log out"
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />

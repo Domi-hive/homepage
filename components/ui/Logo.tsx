@@ -2,15 +2,19 @@ import React from 'react';
 
 interface LogoProps {
     className?: string;
+    textClassName?: string;
     variant?: 'icon' | 'full';
-    color?: 'default' | 'white';
+    color?: 'default' | 'white' | 'auto';
 }
 
-export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full', color = 'default' }) => {
-    const navyColor = color === 'white' ? '#FFFFFF' : '#1E293B';
+export const Logo: React.FC<LogoProps> = ({ className = '', textClassName = '', variant = 'full', color = 'default' }) => {
+    // If color is 'auto', use currentColor for the main parts, allowing CSS classes to control it (e.g. dark:text-white)
+    const isAuto = color === 'auto';
+
+    const navyColor = isAuto ? 'currentColor' : (color === 'white' ? '#FFFFFF' : '#1E293B');
     const yellowColor = '#F59E0B';
-    const textColor = color === 'white' ? '#FFFFFF' : '#1E293B';
-    const subtextColor = color === 'white' ? '#F59E0B' : '#F59E0B';
+    const textColor = isAuto ? 'currentColor' : (color === 'white' ? '#FFFFFF' : '#1E293B');
+    const subtextColor = '#F59E0B'; // Always keep subtext yellow/coral based on design, or match logic if needed
 
     return (
         <div className={`flex items-center gap-3 ${className}`}>
@@ -21,7 +25,7 @@ export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full', co
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-10 h-10"
+                className="w-10 h-10 shrink-0"
             >
                 {/* House Outline */}
                 <path
@@ -59,7 +63,7 @@ export const Logo: React.FC<LogoProps> = ({ className = '', variant = 'full', co
 
             {/* Text */}
             {variant === 'full' && (
-                <div className="flex flex-col justify-center">
+                <div className={`flex flex-col justify-center ${textClassName}`}>
                     <span className="font-display font-bold text-2xl tracking-tight leading-none" style={{ color: textColor }}>
                         Domihive
                     </span>

@@ -61,7 +61,7 @@ export default function StatsCards({ onOpenDrawer }: StatsCardsProps) {
                 ) : (
                     <button
                         onClick={onOpenDrawer}
-                        className="mt-2 w-full bg-gradient-to-r from-purple-500 to-blue-500 shadow-md shadow-purple-500/20 border-none rounded-xl px-3 py-2 text-white text-xs md:text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-purple-500/40 hover:-translate-y-0.5"
+                        className="mt-2 w-full bg-coral shadow-md shadow-coral/20 border-none rounded-xl px-3 py-2 text-white text-xs md:text-sm font-semibold cursor-pointer flex items-center justify-center gap-1.5 transition-all duration-200 hover:shadow-coral/40 hover:-translate-y-0.5 hover:bg-coral-hover"
                     >
                         <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         <span>Create Request</span>

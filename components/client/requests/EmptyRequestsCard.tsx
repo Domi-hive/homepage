@@ -19,7 +19,7 @@ export default function EmptyRequestsCard({ onCreateRequest }: EmptyRequestsCard
 
             <button
                 onClick={onCreateRequest}
-                className="bg-gradient-to-r from-purple-500 to-blue-500 shadow-lg shadow-purple-500/30 border-none rounded-2xl px-8 py-3.5 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:scale-105 hover:shadow-purple-500/40"
+                className="bg-coral shadow-lg shadow-coral/30 border-none rounded-2xl px-8 py-3.5 text-white text-base font-semibold cursor-pointer flex items-center gap-2 transition-all hover:scale-105 hover:shadow-coral/40 hover:bg-coral-hover"
             >
                 <Plus className="w-5 h-5" />
                 <span>Create Request</span>
