@@ -81,3 +81,16 @@ export interface Listing extends Property {
     activeResponses?: number;
 }
 
+
+export interface UploadResponse {
+    message: string;
+    data: {
+        publicId: string;
+        url: string;
+        format: string;
+        width: number;
+        height: number;
+        bytes: number;
+        createdAt: string;
+    };
+}

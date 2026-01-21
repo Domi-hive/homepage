@@ -17,8 +17,10 @@ class ApiClient {
     private async request<T>(endpoint: string, method: RequestMethod, data?: any, options?: RequestOptions): Promise<T> {
         const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
+        const isFormData = data instanceof FormData;
+
         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
+            ...(!isFormData && { 'Content-Type': 'application/json' }),
             ...(options?.headers as Record<string, string>),
         };
 
@@ -36,7 +38,7 @@ class ApiClient {
         };
 
         if (data) {
-            config.body = JSON.stringify(data);
+            config.body = isFormData ? data : JSON.stringify(data);
         }
 
         try {
