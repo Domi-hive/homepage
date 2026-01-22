@@ -1,222 +1,256 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import Logo from "@/components/ui/Logo";
+import { useRouter } from "next/navigation";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function AgentSignupPage() {
-    const router = useRouter();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+  const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    // Simple password strength logic for visualization
-    const getStrength = (pass: string) => {
-        let strength = 0;
-        if (pass.length > 5) strength++;
-        if (pass.length > 8) strength++;
-        if (/[A-Z]/.test(pass)) strength++;
-        if (/[0-9]/.test(pass)) strength++;
-        return strength;
-    };
+  // Simple password strength logic for visualization
+  const getStrength = (pass: string) => {
+    let strength = 0;
+    if (pass.length > 5) strength++;
+    if (pass.length > 8) strength++;
+    if (/[A-Z]/.test(pass)) strength++;
+    if (/[0-9]/.test(pass)) strength++;
+    return strength;
+  };
 
-    const strength = getStrength(password);
+  const strength = getStrength(password);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-        try {
-            const response = await fetch('https://s-dev.domihive.com/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    role: 'agent',
-                    phoneNumber,
-                    firstName,
-                    lastName,
-                }),
-            });
+    try {
+      const response = await fetch("https://s-dev.domihive.com/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          role: "agent",
+          phoneNumber,
+          firstName,
+          lastName,
+        }),
+      });
 
-            const data = await response.json();
+      const data = await response.json();
 
-            if (response.ok) {
-                // Store in localStorage for API calls
-                localStorage.setItem('authToken', data.accessToken);
-                localStorage.setItem('refreshToken', data.refreshToken);
-                localStorage.setItem('userRole', 'agent'); // Explicitly set role
-                localStorage.setItem('userData', JSON.stringify(data.user));
+      if (response.ok) {
+        // Store in localStorage for API calls
+        localStorage.setItem("authToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("userRole", "agent"); // Explicitly set role
+        localStorage.setItem("userData", JSON.stringify(data.user));
 
-                // Set cookie for middleware
-                document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
-                document.cookie = `userRole=agent; path=/; max-age=86400; SameSite=Strict`;
+        // Set cookie for middleware
+        document.cookie = `authToken=${data.accessToken}; path=/; max-age=86400; SameSite=Strict`;
+        document.cookie = `userRole=agent; path=/; max-age=86400; SameSite=Strict`;
 
-                router.push('/agent/dashboard');
-            } else {
-                setError(data.message || 'Signup failed');
-            }
-        } catch (err) {
-            setError('An error occurred. Please try again.');
-            console.error('Signup error:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+        router.push("/agent/dashboard");
+      } else {
+        setError(data.message || "Signup failed");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+      console.error("Signup error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-violet-200 to-blue-200 dark:from-violet-900 dark:to-blue-900">
-            <div className="w-full max-w-6xl mx-auto">
-                <main className="grid lg:grid-cols-2 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden">
-                    <div className="relative hidden lg:block rounded-l-2xl overflow-hidden">
-                        <img
-                            alt="An illustration of a real estate agent presenting a house key to a happy couple."
-                            className="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU0-MyqkxJtcsq7_0C_cq3J990l_Jbpvq0q-Ju7kaxYYNJcutXb_ALwL6wGKOzusWkzfJlUXfnM13DXYPu_l-6nkGNLjM-FVbqZKip6LOgqr3AYhUCDIOMIR-iCuAZyMY3-jOG4nd4TY5V3vwREK6YE_Rsn1kQL_Pt8bY5M8Y2GfV9JRXJHHgsQ59ddPyLG-OdD6COIvCUWaN1J7KKfjUglhda_o_ovLUCnY43O_MwM1eijS045QR5OJiSTG59KNHPrufUCwg7Zw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 p-10 text-white">
-                            <h2 className="text-4xl font-bold mb-3">Join DomiHive Agents</h2>
-                            <p className="text-lg text-gray-200">Connect with clients, manage your listings, and grow your real estate business with our powerful tools.</p>
-                        </div>
-                    </div>
-                    <div className="w-full p-6 sm:p-8 flex flex-col justify-center bg-white h-full overflow-y-auto">
-                        <div className="flex items-center justify-center gap-3 mb-8">
-                            <img
-                                alt="DomiHive Logo"
-                                className="w-10 h-10 rounded-lg"
-                                src="/landing/logo.png"
-                            />
-                            <span className="text-2xl font-bold text-slate-900">DomiHive</span>
-                        </div>
-                        <div className="text-center mb-6">
-                            <h1 className="text-2xl font-bold text-slate-900">Create your Agent Account</h1>
-                            <p className="text-slate-500 text-sm mt-1">Let's get you started on growing your business.</p>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            {error && (
-                                <div className="p-3 text-sm text-red-500 bg-red-50 rounded-lg border border-red-100">
-                                    {error}
-                                </div>
-                            )}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="first-name">First Name</label>
-                                    <input
-                                        className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
-                                        id="first-name"
-                                        name="first-name"
-                                        placeholder="John"
-                                        type="text"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="last-name">Last Name</label>
-                                    <input
-                                        className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
-                                        id="last-name"
-                                        name="last-name"
-                                        placeholder="Doe"
-                                        type="text"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="email">Email</label>
-                                <input
-                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
-                                    id="email"
-                                    name="email"
-                                    placeholder="you@example.com"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="phone-number">Phone Number</label>
-                                <input
-                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
-                                    id="phone-number"
-                                    name="phone-number"
-                                    placeholder="0801 234 5678"
-                                    type="tel"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1" htmlFor="password">Password</label>
-                                <input
-                                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-purple-600 focus:border-purple-600 text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <div className="flex items-center justify-between mt-1.5">
-                                    <span className={`text-xs font-medium ${strength > 2 ? 'text-green-500' : strength > 1 ? 'text-yellow-500' : 'text-slate-400'}`}>
-                                        {strength > 3 ? 'Strong' : strength > 1 ? 'Medium' : 'Weak'}
-                                    </span>
-                                    <div className="flex items-center space-x-1">
-                                        {[1, 2, 3, 4].map((i) => (
-                                            <div
-                                                key={i}
-                                                className={`w-8 h-1 rounded-full transition-colors ${strength >= i ? (strength > 2 ? 'bg-green-500' : 'bg-yellow-500') : 'bg-slate-200'}`}
-                                            ></div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <input
-                                    className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                                    id="terms"
-                                    name="terms"
-                                    type="checkbox"
-                                    required
-                                />
-                                <label className="ml-2 block text-xs text-slate-500" htmlFor="terms">
-                                    I agree to the <a className="font-medium text-purple-600 hover:text-purple-700" href="#">Terms & Privacy</a>
-                                </label>
-                            </div>
-                            <div>
-                                <button
-                                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-[#C084FC] to-[#8B5CF6] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    type="submit"
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Creating Account...' : 'Create Account & Verify'}
-                                </button>
-                            </div>
-                            <p className="text-center text-xs text-slate-500">
-                                Already have an account? <Link className="font-medium text-purple-600 hover:text-purple-700" href="/login">Log in</Link>
-                            </p>
-                        </form>
-                    </div>
-                </main>
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] relative">
+      <div
+        className="fixed inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
+        style={{ backgroundImage: "url('/assets/full_page_background.png')" }}
+      />
+      <div className="w-full max-w-md mx-auto relative z-10">
+        <main className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="w-full p-6 sm:p-8 flex flex-col justify-center bg-white">
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <Logo />
             </div>
-        </div>
-    );
+            <div className="text-center mb-6">
+              <h1 className="text-2xl font-bold text-slate-900">
+                Create your Agent Account
+              </h1>
+              <p className="text-slate-500 text-sm mt-1">
+                Let's get you started on growing your business.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="p-3 text-sm text-red-500 bg-red-50 rounded-lg border border-red-100">
+                  {error}
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block text-xs font-medium text-slate-500 mb-1"
+                    htmlFor="first-name"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                    id="first-name"
+                    name="first-name"
+                    placeholder="John"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-xs font-medium text-slate-500 mb-1"
+                    htmlFor="last-name"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                    id="last-name"
+                    name="last-name"
+                    placeholder="Doe"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  className="block text-xs font-medium text-slate-500 mb-1"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                  id="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-xs font-medium text-slate-500 mb-1"
+                  htmlFor="phone-number"
+                >
+                  Phone Number
+                </label>
+                <input
+                  className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                  id="phone-number"
+                  name="phone-number"
+                  placeholder="0801 234 5678"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-xs font-medium text-slate-500 mb-1"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+                <input
+                  className="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] text-slate-900 placeholder-slate-400 outline-none transition-all text-sm"
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <div className="flex items-center justify-between mt-1.5">
+                  <span
+                    className={`text-xs font-medium ${strength > 2 ? "text-green-500" : strength > 1 ? "text-yellow-500" : "text-slate-400"}`}
+                  >
+                    {strength > 3 ? "Strong" : strength > 1 ? "Medium" : "Weak"}
+                  </span>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div
+                        key={i}
+                        className={`w-8 h-1 rounded-full transition-colors ${strength >= i ? (strength > 2 ? "bg-green-500" : "bg-[#0F172A]") : "bg-slate-200"}`}
+                      ></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <input
+                  className="h-4 w-4 rounded border-gray-300 text-[#0F172A] focus:ring-[#0F172A]"
+                  id="terms"
+                  name="terms"
+                  type="checkbox"
+                  required
+                />
+                <label
+                  className="ml-2 block text-xs text-slate-500"
+                  htmlFor="terms"
+                >
+                  I agree to the{" "}
+                  <a
+                    className="font-medium text-[#0F172A] hover:text-[#1E293B]"
+                    href="#"
+                  >
+                    Terms & Privacy
+                  </a>
+                </label>
+              </div>
+              <div>
+                <button
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-[#0F172A] hover:bg-[#1E293B] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0F172A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "Creating Account..." : "Create Account & Verify"}
+                </button>
+              </div>
+              <p className="text-center text-xs text-slate-500">
+                Already have an account?{" "}
+                <Link
+                  className="font-medium text-[#0F172A] hover:text-[#1E293B]"
+                  href="/login"
+                >
+                  Log in
+                </Link>
+              </p>
+            </form>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }
