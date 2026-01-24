@@ -438,7 +438,7 @@ export default function MyListingsPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                  className="bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-[#0F172A] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:text-white"
+                  className="bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800 dark:hover:bg-amber-900/40"
                 >
                   <Filter className="w-4 h-4 mr-2" />
                   Filters

@@ -213,7 +213,7 @@ export default function ClientRequests() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
           <input
-            className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white placeholder:text-slate-400"
+            className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0F172A] dark:text-white placeholder:text-slate-400"
             placeholder="Search..."
             type="text"
             value={searchQuery}
@@ -264,7 +264,7 @@ export default function ClientRequests() {
             onClick={() => setActiveTab("incoming")}
             className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 ${
               activeTab === "incoming"
-                ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                 : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
             }`}
           >
@@ -272,7 +272,7 @@ export default function ClientRequests() {
             <span
               className={`ml-2 px-1.5 py-0.5 rounded-md text-xs ${
                 activeTab === "incoming"
-                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                  ? "bg-[#0F172A] text-white"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}
             >
@@ -283,7 +283,7 @@ export default function ClientRequests() {
             onClick={() => setActiveTab("responded")}
             className={`px-4 py-3 text-sm font-semibold transition-all duration-200 border-b-2 ${
               activeTab === "responded"
-                ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                 : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
             }`}
           >
@@ -291,7 +291,7 @@ export default function ClientRequests() {
             <span
               className={`ml-2 px-1.5 py-0.5 rounded-md text-xs ${
                 activeTab === "responded"
-                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                  ? "bg-[#0F172A] text-white"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
               }`}
             >
@@ -330,7 +330,7 @@ export default function ClientRequests() {
                     <Button
                       variant="outline"
                       onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                      className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                      className="bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800 dark:hover:bg-amber-900/40"
                     >
                       <Filter className="w-4 h-4 mr-2" />
                       Filters
@@ -341,7 +341,7 @@ export default function ClientRequests() {
                   <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
                     <input
-                      className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 text-slate-900 dark:text-white"
+                      className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-[#0F172A] shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 text-slate-900 dark:text-white"
                       placeholder="Search by client name or location..."
                       type="text"
                       value={searchQuery}
@@ -424,7 +424,7 @@ export default function ClientRequests() {
                       onClick={() =>
                         setFilters({ priority: "all", location: null })
                       }
-                      className="mt-2 text-purple-600 dark:text-purple-400"
+                      className="mt-2 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                     >
                       Clear all filters
                     </Button>
