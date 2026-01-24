@@ -8,11 +8,9 @@ import {
   CheckCircle,
   ChevronRight,
   ChevronLeft,
-  Calendar,
-  DollarSign,
-  Edit3,
   Image as ImageIcon,
   Loader2,
+  Edit3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingService } from "@/services/listing.service";
@@ -51,7 +49,7 @@ export default function AddPropertyDrawer({
   const [pointsError, setPointsError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isLastStep = currentStep === 5;
+  const isLastStep = currentStep === 4;
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -102,13 +100,7 @@ export default function AddPropertyDrawer({
     }
   };
 
-  React.useEffect(() => {
-    if (currentStep === 3) {
-      fetchInspectionPoints();
-    }
-  }, [currentStep]);
-
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 5));
+  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   // Map offerType to API expected format
@@ -245,44 +237,45 @@ export default function AddPropertyDrawer({
 
           {/* Progress Bar */}
           <div>
-            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full">
               <div
-                className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(currentStep / 5) * 100}%` }}
+                className="bg-[#0F172A] h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(currentStep / 4) * 100}%` }}
               ></div>
             </div>
             <div className="flex justify-between text-xs font-medium text-slate-500 mt-1.5">
               <span
                 className={
-                  currentStep >= 1 ? "text-purple-600 dark:text-purple-400" : ""
+                  currentStep >= 1
+                    ? "text-[#0F172A] dark:text-white font-bold"
+                    : ""
                 }
               >
                 Basic Information
               </span>
               <span
                 className={
-                  currentStep >= 2 ? "text-purple-600 dark:text-purple-400" : ""
+                  currentStep >= 2
+                    ? "text-[#0F172A] dark:text-white font-bold"
+                    : ""
                 }
               >
                 Property Details
               </span>
               <span
                 className={
-                  currentStep >= 3 ? "text-purple-600 dark:text-purple-400" : ""
-                }
-              >
-                Inspections
-              </span>
-              <span
-                className={
-                  currentStep >= 4 ? "text-purple-600 dark:text-purple-400" : ""
+                  currentStep >= 3
+                    ? "text-[#0F172A] dark:text-white font-bold"
+                    : ""
                 }
               >
                 Media
               </span>
               <span
                 className={
-                  currentStep >= 5 ? "text-purple-600 dark:text-purple-400" : ""
+                  currentStep >= 4
+                    ? "text-[#0F172A] dark:text-white font-bold"
+                    : ""
                 }
               >
                 Publish
@@ -297,7 +290,7 @@ export default function AddPropertyDrawer({
           {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
-                <Edit3 className="w-5 h-5 text-purple-500" />
+                <Edit3 className="w-5 h-5 text-[#0F172A] dark:text-white" />
                 Basic Information
               </h3>
               <div>
@@ -308,7 +301,7 @@ export default function AddPropertyDrawer({
                   Property Title <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                  className="w-full bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                   id="title"
                   placeholder="e.g. Modern 3-Bedroom Duplex"
                   type="text"
@@ -325,7 +318,7 @@ export default function AddPropertyDrawer({
                     Offer Type <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
                     id="offerType"
                     value={formData.offerType}
                     onChange={handleInputChange}
@@ -343,7 +336,7 @@ export default function AddPropertyDrawer({
                     Property Type <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
                     id="propertyType"
                     value={formData.propertyType}
                     onChange={handleInputChange}
@@ -364,7 +357,7 @@ export default function AddPropertyDrawer({
                   </label>
                   <div className="flex">
                     <select
-                      className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 border-r-0 rounded-l-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-2 outline-none appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
+                      className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 border-r-0 rounded-l-lg shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-2 outline-none appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10 text-slate-900 dark:text-white"
                       id="currency"
                       value={formData.currency}
                       onChange={handleInputChange}
@@ -373,7 +366,7 @@ export default function AddPropertyDrawer({
                       <option value="$">$</option>
                     </select>
                     <input
-                      className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-r-lg shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                      className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-r-lg shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                       id="price"
                       placeholder="3,500,000"
                       type="text"
@@ -391,7 +384,7 @@ export default function AddPropertyDrawer({
                   Location / Address <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                   id="address"
                   placeholder="Enter street address"
                   type="text"
@@ -408,7 +401,7 @@ export default function AddPropertyDrawer({
                     State <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
                     id="state"
                     value={formData.state}
                     onChange={handleInputChange}
@@ -427,7 +420,7 @@ export default function AddPropertyDrawer({
                     Neighborhood <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
                     id="neighborhood"
                     value={formData.neighborhood}
                     onChange={handleInputChange}
@@ -446,7 +439,7 @@ export default function AddPropertyDrawer({
           {currentStep === 2 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-purple-500" />
+                <CheckCircle className="w-5 h-5 text-[#0F172A] dark:text-white" />
                 Property Details
               </h3>
               <div className="grid grid-cols-3 gap-4">
@@ -462,7 +455,7 @@ export default function AddPropertyDrawer({
                     id="beds"
                     value={formData.beds}
                     onChange={handleInputChange}
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -477,7 +470,7 @@ export default function AddPropertyDrawer({
                     id="baths"
                     value={formData.baths}
                     onChange={handleInputChange}
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -492,7 +485,7 @@ export default function AddPropertyDrawer({
                     id="sqm"
                     value={formData.sqm}
                     onChange={handleInputChange}
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -509,124 +502,19 @@ export default function AddPropertyDrawer({
                   onChange={handleInputChange}
                   rows={4}
                   placeholder="Describe the key features and selling points..."
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white resize-none"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-[#0F172A] focus:border-[#0F172A] px-4 py-2 outline-none text-slate-900 dark:text-white resize-none"
                 />
               </div>
             </div>
           )}
 
           {/* Step 3: Inspections */}
+
+          {/* Step 4: Media */}
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-purple-500" />
-                Inspection Details
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-                    htmlFor="meetingPoint"
-                  >
-                    Meeting Point <span className="text-red-500">*</span>
-                  </label>
-
-                  {isLoadingPoints ? (
-                    <div className="flex items-center gap-2 text-slate-500 text-sm py-2.5 px-4 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-transparent">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-500 border-t-transparent"></div>
-                      <span>Loading inspection points...</span>
-                    </div>
-                  ) : pointsError ? (
-                    <div className="flex items-center justify-between text-red-500 text-sm py-2 px-4 bg-red-50 dark:bg-red-900/10 rounded-2xl border border-red-200 dark:border-red-800">
-                      <span>{pointsError}</span>
-                      <button
-                        onClick={fetchInspectionPoints}
-                        className="text-red-600 dark:text-red-400 font-semibold hover:underline"
-                        type="button"
-                      >
-                        Retry
-                      </button>
-                    </div>
-                  ) : (
-                    <select
-                      id="meetingPoint"
-                      value={formData.meetingPoint}
-                      onChange={handleInputChange}
-                      className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 px-4 py-2 outline-none text-slate-900 dark:text-white appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-no-repeat bg-[right_0.75rem_center] pr-10"
-                    >
-                      <option value="">Select a meeting point</option>
-                      {inspectionPoints.map((point) => (
-                        <option key={point} value={point}>
-                          {point}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Available Days for Inspections{" "}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <div className="border border-slate-300 dark:border-slate-700 rounded-2xl p-4 bg-white dark:bg-slate-800">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {[
-                        "Monday",
-                        "Tuesday",
-                        "Wednesday",
-                        "Thursday",
-                        "Friday",
-                        "Saturday",
-                        "Sunday",
-                      ].map((day) => (
-                        <label
-                          key={day}
-                          className="flex items-center gap-3 cursor-pointer group"
-                        >
-                          <div
-                            className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${
-                              formData.availableDays?.includes(day)
-                                ? "bg-purple-500 border-purple-500"
-                                : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 group-hover:border-purple-400"
-                            }`}
-                          >
-                            {formData.availableDays?.includes(day) && (
-                              <CheckCircle className="w-3.5 h-3.5 text-white" />
-                            )}
-                          </div>
-                          <input
-                            type="checkbox"
-                            className="hidden"
-                            checked={formData.availableDays?.includes(day)}
-                            onChange={() => handleDayToggle(day)}
-                          />
-                          <span
-                            className={`text-sm ${
-                              formData.availableDays?.includes(day)
-                                ? "text-purple-700 dark:text-purple-300 font-medium"
-                                : "text-slate-600 dark:text-slate-400"
-                            }`}
-                          >
-                            {day}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500 flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 p-2 rounded-lg">
-                    <span className="text-lg">💡</span> Clients will coordinate
-                    exact times with you directly
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Media */}
-          {currentStep === 4 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
-                <ImageIcon className="w-5 h-5 text-purple-500" />
+                <ImageIcon className="w-5 h-5 text-[#0F172A] dark:text-white" />
                 Media Upload
               </h3>
               <div>
@@ -665,21 +553,21 @@ export default function AddPropertyDrawer({
           )}
 
           {/* Step 5: Publish */}
-          {currentStep === 5 && (
+          {currentStep === 4 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-purple-500" />
+                <CheckCircle className="w-5 h-5 text-[#0F172A] dark:text-white" />
                 Review & Publish
               </h3>
 
-              <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/10 rounded-2xl border border-purple-100 dark:border-purple-800">
+              <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <div>
                   <h4 className="font-semibold text-slate-800 dark:text-white">
                     Enable Referrals
                   </h4>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
                     Allow other agents to find clients.{" "}
-                    <span className="text-purple-600 dark:text-purple-400 font-medium">
+                    <span className="text-[#0F172A] dark:text-white font-medium">
                       Referral agents receive a 40% commission split.
                     </span>
                   </p>
@@ -696,7 +584,7 @@ export default function AddPropertyDrawer({
                       }))
                     }
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0F172A]/20 dark:peer-focus:ring-slate-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#0F172A]"></div>
                 </label>
               </div>
 
@@ -756,21 +644,19 @@ export default function AddPropertyDrawer({
 
             {!isLastStep ? (
               <button
-                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl shadow-lg shadow-purple-500/30 hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#0F172A] hover:bg-slate-800 rounded-2xl shadow-lg shadow-slate-900/20 hover:opacity-90 transition-opacity"
                 onClick={nextStep}
               >
                 Next:{" "}
                 {currentStep === 1
                   ? "Property Details"
                   : currentStep === 2
-                    ? "Inspections"
-                    : currentStep === 3
-                      ? "Media"
-                      : "Publish"}
+                    ? "Media"
+                    : "Publish"}
               </button>
             ) : (
               <button
-                className="px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg shadow-green-500/30 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#0F172A] hover:bg-slate-800 rounded-2xl shadow-lg shadow-slate-900/20 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 onClick={handlePublish}
                 disabled={isSubmitting}
               >
