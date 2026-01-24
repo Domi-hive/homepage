@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, MessageSquare, ChevronDown } from "lucide-react";
+import { Bell, MessageSquare, ChevronDown, User } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import ProfileTab from "@/components/agent/profile/ProfileTab";
@@ -43,8 +43,8 @@ export default function AgentProfilePage() {
             </div>
             <div className="hidden md:flex items-center gap-3">
               <Link href="/agent/profile">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
-                  <span className="header-user-initials">U</span>
+                <div className="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-300 transition-colors">
+                  <User className="w-6 h-6 fill-current" />
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">
@@ -66,7 +66,7 @@ export default function AgentProfilePage() {
               onClick={() => setActiveTab("profile")}
               className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 ${
                 activeTab === "profile"
-                  ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -76,7 +76,7 @@ export default function AgentProfilePage() {
               onClick={() => setActiveTab("kyc")}
               className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 ${
                 activeTab === "kyc"
-                  ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -86,7 +86,7 @@ export default function AgentProfilePage() {
               onClick={() => setActiveTab("wallet")}
               className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 ${
                 activeTab === "wallet"
-                  ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -96,7 +96,7 @@ export default function AgentProfilePage() {
               onClick={() => setActiveTab("business")}
               className={`px-4 py-3 text-sm font-semibold transition-all border-b-2 ${
                 activeTab === "business"
-                  ? "text-slate-800 dark:text-slate-100 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >

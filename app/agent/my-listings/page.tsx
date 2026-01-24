@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Loader2,
   Building2,
+  User,
 } from "lucide-react";
 import { toast } from "sonner";
 import StatsBanner from "@/components/agent/my-listings/StatsBanner";
@@ -364,7 +365,7 @@ export default function MyListingsPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
           <input
-            className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white placeholder:text-slate-400"
+            className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0F172A] dark:text-white placeholder:text-slate-400"
             placeholder="Search..."
             type="text"
             value={searchQuery}
@@ -394,8 +395,8 @@ export default function MyListingsPage() {
             </div>
             <div className="hidden md:flex items-center gap-3">
               <Link href="/agent/profile">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
-                  <span className="header-user-initials">U</span>
+                <div className="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-300 transition-colors">
+                  <User className="w-6 h-6 fill-current" />
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">
@@ -437,7 +438,7 @@ export default function MyListingsPage() {
                 <Button
                   variant="outline"
                   onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-                  className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40"
+                  className="bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-[#0F172A] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 dark:hover:text-white"
                 >
                   <Filter className="w-4 h-4 mr-2" />
                   Filters
@@ -448,7 +449,7 @@ export default function MyListingsPage() {
                 <div className="relative w-full md:w-96">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
                   <input
-                    className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-purple-500 shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
+                    className="w-full pl-12 pr-4 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl border-0 focus:ring-2 focus:ring-[#0F172A] shadow-[0_8px_32px_0_rgba(100,100,150,0.15)] placeholder:text-slate-400 dark:text-white"
                     placeholder="Search by title or address..."
                     type="text"
                     value={searchQuery}
@@ -457,7 +458,7 @@ export default function MyListingsPage() {
                 </div>
                 <button
                   onClick={() => setIsAddPropertyOpen(true)}
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-opacity shadow-lg shadow-purple-500/30 shrink-0"
+                  className="bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-slate-900/20 shrink-0"
                 >
                   <PlusCircle className="w-5 h-5" />
                   <span>Add New Property</span>
@@ -620,7 +621,7 @@ export default function MyListingsPage() {
                 {listings.length === 0 && (
                   <button
                     onClick={() => setIsAddPropertyOpen(true)}
-                    className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-semibold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-opacity shadow-lg shadow-purple-500/30"
+                    className="bg-[#0F172A] hover:bg-[#1E293B] text-white font-semibold py-2.5 px-5 rounded-xl flex items-center gap-2 transition-colors shadow-lg shadow-slate-900/20"
                   >
                     <PlusCircle className="w-4 h-4" />
                     Add Your First Property

@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   MessageSquare,
   Briefcase,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -51,8 +52,8 @@ export default function Dashboard() {
             </div>
             <div className="hidden md:flex items-center gap-3">
               <Link href="/agent/profile">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
-                  <span className="header-user-initials">U</span>
+                <div className="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-300 transition-colors">
+                  <User className="w-6 h-6 fill-current" />
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">
@@ -146,7 +147,7 @@ export default function Dashboard() {
                   </h3>
                   <Link
                     href="/agent/activity"
-                    className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                    className="text-sm font-semibold text-[#F59E0B] hover:text-[#D97706] dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
                   >
                     View All
                   </Link>
@@ -161,7 +162,7 @@ export default function Dashboard() {
                         2 Pending inspection confirmations
                       </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                    <button className="text-sm font-semibold text-[#0F172A] hover:underline">
                       View
                     </button>
                   </div>
@@ -174,7 +175,7 @@ export default function Dashboard() {
                         5 Unanswered Q&As
                       </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                    <button className="text-sm font-semibold text-[#0F172A] hover:underline">
                       Reply
                     </button>
                   </div>
@@ -187,7 +188,7 @@ export default function Dashboard() {
                         1 New high-match request
                       </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                    <button className="text-sm font-semibold text-[#0F172A] hover:underline">
                       Match
                     </button>
                   </div>
@@ -205,13 +206,13 @@ export default function Dashboard() {
                 </h3>
                 <div className="space-y-3">
                   <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                    <Plus className="text-[#2E6BFF] w-6 h-6" />
+                    <Plus className="text-[#F59E0B] w-6 h-6" />
                     <span className="font-semibold text-slate-700 dark:text-slate-200">
                       Upload New Property
                     </span>
                   </button>
                   <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                    <Home className="text-[#2E6BFF] w-6 h-6" />
+                    <Home className="text-[#F59E0B] w-6 h-6" />
                     <span className="font-semibold text-slate-700 dark:text-slate-200">
                       My Listings
                     </span>

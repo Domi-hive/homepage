@@ -14,6 +14,7 @@ import {
   Filter,
   X,
   Bell,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -314,8 +315,8 @@ export default function MarketplacePage() {
             </div>
             <div className="hidden md:flex items-center gap-3">
               <Link href="/agent/profile">
-                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-semibold text-base cursor-pointer hover:opacity-90 transition-opacity">
-                  <span className="header-user-initials">U</span>
+                <div className="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-300 transition-colors">
+                  <User className="w-6 h-6 fill-current" />
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">

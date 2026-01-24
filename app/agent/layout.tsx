@@ -1,20 +1,33 @@
-"use client"
+"use client";
 
-import type React from "react"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { LayoutDashboard, FolderOpen, ShoppingBag, Menu, X, LogOut, Bell, MessageSquare, Eye, Home } from "lucide-react"
-import { useState } from "react"
-import { ThemeToggle } from "@/components/theme-toggle"
+import type React from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  LayoutDashboard,
+  FolderOpen,
+  ShoppingBag,
+  Menu,
+  X,
+  LogOut,
+  Bell,
+  MessageSquare,
+  Eye,
+  Home,
+  User,
+} from "lucide-react";
+import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/ui/Logo";
 
 export default function AgentLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = usePathname();
+  const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
     {
@@ -43,9 +56,9 @@ export default function AgentLayout({
       href: "/agent/marketplace",
       icon: ShoppingBag,
     },
-  ]
+  ];
 
-  const isActive = (href: string) => pathname === href
+  const isActive = (href: string) => pathname === href;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -63,36 +76,48 @@ export default function AgentLayout({
             {/* Actually user wants Title to replace Logo when menu is closed. */}
             {(() => {
               const getTitle = () => {
-                if (pathname === '/agent/dashboard') return 'Dashboard'
-                if (pathname === '/agent/client-requests') return 'Client Requests'
-                if (pathname === '/agent/marketplace') return 'Listings Marketplace'
+                if (pathname === "/agent/dashboard") return "Dashboard";
+                if (pathname === "/agent/client-requests")
+                  return "Client Requests";
+                if (pathname === "/agent/marketplace")
+                  return "Listings Marketplace";
                 // Check for sub-routes if necessary, or default
-                if (pathname?.startsWith('/agent/client-requests/')) return 'Response'
-                return null
-              }
-              const title = getTitle()
+                if (pathname?.startsWith("/agent/client-requests/"))
+                  return "Response";
+                return null;
+              };
+              const title = getTitle();
 
               if (title) {
-                return <span className="font-bold text-slate-800 text-xl">{title}</span>
+                return (
+                  <span className="font-bold text-slate-800 text-xl">
+                    {title}
+                  </span>
+                );
               }
 
               return (
                 <>
-                  <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8" />
-                  <span className="font-bold text-slate-800 text-lg">DomiHive</span>
+                  <>
+                    <Logo variant="full" className="h-8" />
+                  </>
                 </>
-              )
+              );
             })()}
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/agent/activity" className="text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+          <Link
+            href="/agent/activity"
+            className="text-slate-600 hover:text-slate-900 transition-colors"
+            aria-label="Notifications"
+          >
             <Bell className="w-5 h-5" />
           </Link>
           <ThemeToggle />
           <Link href="/agent/profile">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-              <span>JD</span>
+            <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-300 transition-colors">
+              <User className="w-5 h-5 fill-current" />
             </div>
           </Link>
         </div>
@@ -121,8 +146,11 @@ export default function AgentLayout({
         {/* Logo Area */}
         <div className="h-16 md:h-auto p-6 border-b border-sidebar-border flex items-center justify-between md:justify-start gap-3 whitespace-nowrap overflow-hidden">
           <div className="flex items-center gap-3">
-            <img src="/landing/logo.png" alt="DomiHive" className="w-8 h-8 flex-shrink-0" />
-            <h1 className="text-xl font-bold text-sidebar-foreground md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">DomiHive</h1>
+            <Logo
+              variant="full"
+              className="h-8 flex-shrink-0"
+              textClassName="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"
+            />
           </div>
           {/* Mobile Close Button */}
           <button
@@ -136,43 +164,46 @@ export default function AgentLayout({
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto dark:bg-black/20">
           {navItems.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 md:py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${isActive(item.href)
-                  ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 md:py-2 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${
+                  isActive(item.href)
+                    ? "bg-sidebar-primary/20 text-sidebar-primary font-medium"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent"
+                }`}
               >
                 <Icon className="h-5 w-5 flex-shrink-0" />
-                <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">{item.label}</span>
+                <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                  {item.label}
+                </span>
               </Link>
-            )
+            );
           })}
         </nav>
 
         {/* Footer */}
         <div className="border-t border-sidebar-border p-4">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             className="flex items-center gap-3 px-4 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap overflow-hidden group/logout"
             aria-label="Log out"
           >
             <LogOut className="h-5 w-5 flex-shrink-0" />
-            <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Log out</span>
+            <span className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+              Log out
+            </span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-full overflow-hidden pt-16 md:pt-0">
-        <div className="flex-1 overflow-y-auto">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </main>
     </div>
-  )
+  );
 }
