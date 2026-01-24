@@ -5,9 +5,9 @@ import AgentsSection from "@/components/landing/AgentsSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff]">
+    <div className="min-h-screen relative bg-gradient-to-br from-[#fff7ed] to-[#e3eeff]">
       <div
-        className="fixed inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
+        className="fixed inset-0 bg-cover bg-top opacity-10 pointer-events-none z-0"
         style={{ backgroundImage: "url('/assets/full_page_background.png')" }}
       />
       {/* Navigation */}

@@ -1,25 +1,22 @@
-"use client"
+"use client";
 
-import React from 'react';
-import ClientHeader from '@/components/client/ClientHeader';
-import WelcomeCard from '@/components/client/dashboard/WelcomeCard';
-import StatsCards from '@/components/client/dashboard/StatsCards';
-import MatchedProperties from '@/components/client/dashboard/MatchedProperties';
+import React from "react";
+import ClientHeader from "@/components/client/ClientHeader";
+import WelcomeCard from "@/components/client/dashboard/WelcomeCard";
+import StatsCards from "@/components/client/dashboard/StatsCards";
+import MatchedProperties from "@/components/client/dashboard/MatchedProperties";
 
-
-import { useState } from 'react';
-import RequestFormDrawer from '@/components/client/dashboard/RequestFormDrawer';
+import { useState } from "react";
+import RequestFormDrawer from "@/components/client/dashboard/RequestFormDrawer";
 
 export default function ClientDashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
-    <div
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] flex flex-col"
-    >
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fff7ed] to-[#e3eeff] flex flex-col">
       <div
-        className="fixed inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
-        style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
+        className="fixed inset-0 bg-cover bg-top opacity-10 pointer-events-none z-0"
+        style={{ backgroundImage: "url(/assets/full_page_background.png)" }}
       />
 
       <div className="hidden md:block relative z-10 px-4 md:px-10 pt-6 md:pt-10 pb-0">
@@ -37,8 +34,10 @@ export default function ClientDashboard() {
             <MatchedProperties />
           </div>
 
-          <RequestFormDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
-
+          <RequestFormDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+          />
         </main>
       </div>
     </div>

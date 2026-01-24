@@ -1,11 +1,9 @@
-"use client"
+"use client";
 
 import {
   Wallet,
   Bell,
-
   Calendar,
-
   Star,
   Phone,
   Check,
@@ -17,30 +15,36 @@ import {
   Share2,
   CheckCircle2,
   MessageSquare,
-  Briefcase
-} from "lucide-react"
-import Link from "next/link"
+  Briefcase,
+} from "lucide-react";
+import Link from "next/link";
 
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "@/components/theme-toggle";
 
-import AgentWelcomeCard from "@/components/agent/dashboard/AgentWelcomeCard"
+import AgentWelcomeCard from "@/components/agent/dashboard/AgentWelcomeCard";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fff7ed] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
       <div
-        className="fixed inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
-        style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
+        className="fixed inset-0 bg-cover bg-top opacity-10 pointer-events-none z-0"
+        style={{ backgroundImage: "url(/assets/full_page_background.png)" }}
       />
 
       <div className="relative z-10 px-10 pt-10 pb-6">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">
+              Dashboard
+            </h1>
           </div>
           <div className="flex items-center gap-6 self-end md:self-auto">
             <div className="hidden md:flex items-center gap-6">
-              <Link href="/agent/activity" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+              <Link
+                href="/agent/activity"
+                className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors"
+                aria-label="Notifications"
+              >
                 <Bell className="w-6 h-6" />
               </Link>
               <ThemeToggle />
@@ -52,7 +56,9 @@ export default function Dashboard() {
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">
-                <div className="text-base font-semibold text-slate-900 leading-6">User</div>
+                <div className="text-base font-semibold text-slate-900 leading-6">
+                  User
+                </div>
               </div>
             </div>
           </div>
@@ -65,25 +71,32 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
             <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-slate-600 dark:text-slate-300">Upcoming Inspections</h3>
+                <h3 className="font-semibold text-slate-600 dark:text-slate-300">
+                  Upcoming Inspections
+                </h3>
                 <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <Calendar className="text-blue-500 w-6 h-6" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">5</p>
+              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">
+                5
+              </p>
             </div>
 
             <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50 flex flex-col justify-between">
               <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-slate-600 dark:text-slate-300">Agent Rating</h3>
+                <h3 className="font-semibold text-slate-600 dark:text-slate-300">
+                  Agent Rating
+                </h3>
                 <div className="w-10 h-10 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                   <Star className="text-yellow-500 w-6 h-6 fill-current" />
                 </div>
               </div>
-              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">4.85</p>
+              <p className="text-3xl font-bold text-slate-800 dark:text-white mt-4">
+                4.85
+              </p>
             </div>
           </div>
 
@@ -93,15 +106,25 @@ export default function Dashboard() {
               {/* Today's Schedule */}
               {/* Today's Schedule */}
               <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
-                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">Today's Schedule</h3>
+                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">
+                  Today's Schedule
+                </h3>
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 gap-4 sm:gap-0">
-                    <span className="font-semibold text-slate-700 dark:text-slate-200 w-28">09:00 AM</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200 w-28">
+                      09:00 AM
+                    </span>
                     <div className="sm:border-l border-slate-200 dark:border-slate-700 sm:pl-4 sm:ml-4 flex-1">
-                      <p className="font-semibold text-slate-800 dark:text-white">Inspection</p>
-                      <p className="text-sm text-slate-500">24, Maple Drive, Asokoro</p>
+                      <p className="font-semibold text-slate-800 dark:text-white">
+                        Inspection
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        24, Maple Drive, Asokoro
+                      </p>
                     </div>
-                    <span className="text-sm text-slate-500 mr-4">With Sarah J.</span>
+                    <span className="text-sm text-slate-500 mr-4">
+                      With Sarah J.
+                    </span>
                     <div className="flex items-center gap-2 ml-auto sm:ml-0">
                       <button className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-500 hover:bg-blue-200 transition-colors">
                         <Phone className="w-4 h-4" />
@@ -118,8 +141,13 @@ export default function Dashboard() {
               {/* Urgent Actions */}
               <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">Urgent Actions</h3>
-                  <Link href="/agent/activity" className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
+                  <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+                    Urgent Actions
+                  </h3>
+                  <Link
+                    href="/agent/activity"
+                    className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                  >
                     View All
                   </Link>
                 </div>
@@ -129,27 +157,39 @@ export default function Dashboard() {
                       <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center">
                         <Clock className="text-orange-500 w-5 h-5" />
                       </div>
-                      <p className="font-medium text-slate-700 dark:text-slate-200">2 Pending inspection confirmations</p>
+                      <p className="font-medium text-slate-700 dark:text-slate-200">
+                        2 Pending inspection confirmations
+                      </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">View</button>
+                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                      View
+                    </button>
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50/80 dark:bg-purple-900/20">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
                         <MessageCircle className="text-purple-500 w-5 h-5" />
                       </div>
-                      <p className="font-medium text-slate-700 dark:text-slate-200">5 Unanswered Q&As</p>
+                      <p className="font-medium text-slate-700 dark:text-slate-200">
+                        5 Unanswered Q&As
+                      </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">Reply</button>
+                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                      Reply
+                    </button>
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50/80 dark:bg-blue-900/20">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
                         <UserPlus className="text-blue-500 w-5 h-5" />
                       </div>
-                      <p className="font-medium text-slate-700 dark:text-slate-200">1 New high-match request</p>
+                      <p className="font-medium text-slate-700 dark:text-slate-200">
+                        1 New high-match request
+                      </p>
                     </div>
-                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">Match</button>
+                    <button className="text-sm font-semibold text-[#2E6BFF] hover:underline">
+                      Match
+                    </button>
                   </div>
                 </div>
               </div>
@@ -160,26 +200,30 @@ export default function Dashboard() {
               {/* Quick Actions */}
               {/* Quick Actions */}
               <div className="bg-white/60 backdrop-blur-md dark:bg-[#1A2233] p-6 rounded-[20px] md:rounded-[32px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white/50">
-                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">Quick Actions</h3>
+                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">
+                  Quick Actions
+                </h3>
                 <div className="space-y-3">
                   <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
                     <Plus className="text-[#2E6BFF] w-6 h-6" />
-                    <span className="font-semibold text-slate-700 dark:text-slate-200">Upload New Property</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">
+                      Upload New Property
+                    </span>
                   </button>
                   <button className="w-full flex items-center gap-3 p-4 rounded-lg bg-slate-100/80 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
                     <Home className="text-[#2E6BFF] w-6 h-6" />
-                    <span className="font-semibold text-slate-700 dark:text-slate-200">My Listings</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">
+                      My Listings
+                    </span>
                   </button>
-
                 </div>
               </div>
 
               {/* Recent Activity Feed */}
-
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

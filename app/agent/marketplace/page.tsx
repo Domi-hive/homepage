@@ -1,27 +1,40 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Heart, Star, Clock, MapPin, DollarSign, Home, Search, CheckCircle2, History, Filter, X, Bell } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
-import FilterSidebar from "@/components/agent/filter-sidebar"
-import Pagination from "@/components/ui/pagination"
+import { useState, useMemo } from "react";
+import {
+  Heart,
+  Star,
+  Clock,
+  MapPin,
+  DollarSign,
+  Home,
+  Search,
+  CheckCircle2,
+  History,
+  Filter,
+  X,
+  Bell,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
+import FilterSidebar from "@/components/agent/filter-sidebar";
+import Pagination from "@/components/ui/pagination";
 
 interface Listing {
-  id: string
-  title: string
-  location: string
-  price: number
-  bedrooms: number
-  image: string
-  agentName: string
-  agentRating: number
-  agentImage: string
-  referralEnabled: boolean
-  updatedAt: string
-  matchPercentage: number
-  propertyType: "House" | "Condo" | "Townhouse" | "Multi-Family"
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  bedrooms: number;
+  image: string;
+  agentName: string;
+  agentRating: number;
+  agentImage: string;
+  referralEnabled: boolean;
+  updatedAt: string;
+  matchPercentage: number;
+  propertyType: "House" | "Condo" | "Townhouse" | "Multi-Family";
 }
 
 // Mock data based on the provided HTML
@@ -32,10 +45,12 @@ const MOCK_LISTINGS: Listing[] = [
     location: "Downtown",
     price: 480000,
     bedrooms: 3,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBUZ6gSVxKaGPjtzu6GoNpzOytznBG5vXJoZVyc1W_Cmtk9J2GgXn1LJnCM2rYh3RTojIvnbKQ7Zkn-NdRBY-8HTTa2gvvQ7gWiN-TMHWt-WA5ahXwPVtNhD_qX4exce-8Fn2qQaE35aEBaqfQoBhiG6VBYztugSHO3n9zZXPuNydntm_4ciWu5LxCskB4KDiFbllIlaxKE0VNrOqCUmUjzMJatmfIIfmuj2FcgQT9azNfnysUBpFxTwiWMsERMsMstsVM8UFXM1w",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBUZ6gSVxKaGPjtzu6GoNpzOytznBG5vXJoZVyc1W_Cmtk9J2GgXn1LJnCM2rYh3RTojIvnbKQ7Zkn-NdRBY-8HTTa2gvvQ7gWiN-TMHWt-WA5ahXwPVtNhD_qX4exce-8Fn2qQaE35aEBaqfQoBhiG6VBYztugSHO3n9zZXPuNydntm_4ciWu5LxCskB4KDiFbllIlaxKE0VNrOqCUmUjzMJatmfIIfmuj2FcgQT9azNfnysUBpFxTwiWMsERMsMstsVM8UFXM1w",
     agentName: "John Doe",
     agentRating: 4.8,
-    agentImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxU5gW3L98_D8ix80TO9-xq-cCEtjupMyGDuhwnrJjEd6mWActSl7sywFPK0XriA7R9EccXrMISaMZosv-Qzw9KXcLKvMif1G65fFwEhTIsFDrFrnE_9NpNKRUsp6T73ZSKwjfQvT5-lK7df61JOk7ffJJ0DQtjPU9JWj-zbyfE49Rg-rLgRPds7ZrVttUqze4rJUaYCrFvV5DbZlPMxurGxLRvB_6CeWBLT2-RsLptKwbZ0bgCipLMjvbWiD6DOGJx1Ts9jj0Ig",
+    agentImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBxU5gW3L98_D8ix80TO9-xq-cCEtjupMyGDuhwnrJjEd6mWActSl7sywFPK0XriA7R9EccXrMISaMZosv-Qzw9KXcLKvMif1G65fFwEhTIsFDrFrnE_9NpNKRUsp6T73ZSKwjfQvT5-lK7df61JOk7ffJJ0DQtjPU9JWj-zbyfE49Rg-rLgRPds7ZrVttUqze4rJUaYCrFvV5DbZlPMxurGxLRvB_6CeWBLT2-RsLptKwbZ0bgCipLMjvbWiD6DOGJx1Ts9jj0Ig",
     referralEnabled: true,
     updatedAt: "2 hours ago",
     matchPercentage: 92,
@@ -47,10 +62,12 @@ const MOCK_LISTINGS: Listing[] = [
     location: "Riverside",
     price: 395000,
     bedrooms: 4,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAAx4vjUObzFDdsMUHhA8HWogI_VLggNbrHb92DZQpmrA9t-98REpRIyiQUXV-UzYCoIOMN_a76q0eXQmF0wCtMJiM83DxVwgJvYaj-kwSbkMsWeFFcqc1-Mdgy-rmOTbwzvN2XIbAsfmSkhEJDNBgzyMvn8P0S0bEk66AblxQtCEPCDlJuB_y3_ggX0rHDmnkOZd8XoLp-cEJyOnEslhgPhcs8qVxUjigeLSJ4SYH75x6jKEV2db8ziI2_OhWkNT56Bzf2SfBVrg",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAAx4vjUObzFDdsMUHhA8HWogI_VLggNbrHb92DZQpmrA9t-98REpRIyiQUXV-UzYCoIOMN_a76q0eXQmF0wCtMJiM83DxVwgJvYaj-kwSbkMsWeFFcqc1-Mdgy-rmOTbwzvN2XIbAsfmSkhEJDNBgzyMvn8P0S0bEk66AblxQtCEPCDlJuB_y3_ggX0rHDmnkOZd8XoLp-cEJyOnEslhgPhcs8qVxUjigeLSJ4SYH75x6jKEV2db8ziI2_OhWkNT56Bzf2SfBVrg",
     agentName: "Sarah Smith",
     agentRating: 4.6,
-    agentImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuA5Sr_wAHztXBPR9AA1E9uNaLbSTiSD6TKCFin057w6FVk9RpRj1JhoKMhRqdyjMh_LLQCrH-qN2-HAv5Wn63tJxiNqEbdawAD3c69pOt8wmJ2lqR0ZMYd8W74iFZCy21d3hhtEHysx2ujlYdhCKjhiwRgYcFcdyfQBkxzscSxWmLzi5nj24e6H2JeSbF9Ntz3yiKhvUVRidpX2coSbbsZ4nowe4ktr1zuQpJzFSY6seSfOvs1sWI_3ZQslp25TkhTr_PEgusMiww",
+    agentImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuA5Sr_wAHztXBPR9AA1E9uNaLbSTiSD6TKCFin057w6FVk9RpRj1JhoKMhRqdyjMh_LLQCrH-qN2-HAv5Wn63tJxiNqEbdawAD3c69pOt8wmJ2lqR0ZMYd8W74iFZCy21d3hhtEHysx2ujlYdhCKjhiwRgYcFcdyfQBkxzscSxWmLzi5nj24e6H2JeSbF9Ntz3yiKhvUVRidpX2coSbbsZ4nowe4ktr1zuQpJzFSY6seSfOvs1sWI_3ZQslp25TkhTr_PEgusMiww",
     referralEnabled: true,
     updatedAt: "5 hours ago",
     matchPercentage: 88,
@@ -62,10 +79,12 @@ const MOCK_LISTINGS: Listing[] = [
     location: "Central Park",
     price: 320000,
     bedrooms: 2,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCQTLa1u28nhu95bX9EUhKnBuebv9bKxeVdzwj5CFaZSYpC8AZMS9EHV0DqGR1ivHERPslQyywdeclkqc9_PsUTJIeK29-IvWxtccQ5lzSTCuVWs13wtZiPU5M_1MnvsN38cyW_OXm7OTy2e8QAw5D8CHKShSQhcfu_oTHUsECkSRQpTQDs3DqASJIlRI21wdG8rQqB_StxMcxaOSw3XvE8jcr0ZqCbaH-qA5olUSjqWeetoRf2gWmBMRMJEDmNT7MKP0wY6s4fjg",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuCQTLa1u28nhu95bX9EUhKnBuebv9bKxeVdzwj5CFaZSYpC8AZMS9EHV0DqGR1ivHERPslQyywdeclkqc9_PsUTJIeK29-IvWxtccQ5lzSTCuVWs13wtZiPU5M_1MnvsN38cyW_OXm7OTy2e8QAw5D8CHKShSQhcfu_oTHUsECkSRQpTQDs3DqASJIlRI21wdG8rQqB_StxMcxaOSw3XvE8jcr0ZqCbaH-qA5olUSjqWeetoRf2gWmBMRMJEDmNT7MKP0wY6s4fjg",
     agentName: "Mike Johnson",
     agentRating: 4.9,
-    agentImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAOCDmAvnvyDqm0d04JkF4miJJDbfJu9cPIe8cTZz4yCymUKZkVdXSlexVuLU2vvgBPg_DJSeG3FCkVLzPNWEAIVCEuRAMGyzz6Y8zOLBwMpOVoTSNP55i-5w2tYur1QO2PVXuwCpmHEfviaOSad6Kq-Sc_Iq2Oe5tJmwlFW4AdPS67bUJkFBXraDa3ghwWNOcU96K2c22EtVmAJoN6P1yEvi8Oi9YrprVEB_vwWQ6x6Gl5RGXLUXO-tX83SNWY22XEdGb21-gyhA",
+    agentImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAOCDmAvnvyDqm0d04JkF4miJJDbfJu9cPIe8cTZz4yCymUKZkVdXSlexVuLU2vvgBPg_DJSeG3FCkVLzPNWEAIVCEuRAMGyzz6Y8zOLBwMpOVoTSNP55i-5w2tYur1QO2PVXuwCpmHEfviaOSad6Kq-Sc_Iq2Oe5tJmwlFW4AdPS67bUJkFBXraDa3ghwWNOcU96K2c22EtVmAJoN6P1yEvi8Oi9YrprVEB_vwWQ6x6Gl5RGXLUXO-tX83SNWY22XEdGb21-gyhA",
     referralEnabled: false,
     updatedAt: "12 hours ago",
     matchPercentage: 75,
@@ -77,10 +96,12 @@ const MOCK_LISTINGS: Listing[] = [
     location: "Suburbs",
     price: 650000,
     bedrooms: 5,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAMT1vZ74s0e9_5CurlSf8yZkv037OHREphuv44dqTjHkgzOdhlSeIql7mmM9heErrSkgijOCa8J6OLtVL2IFuW3of-9-6sNSYql2C3mx4SdIMbxUDXMRzlGPwwGwDPXR2kr2n46YCVJaibAWBIO9WSjlePgQFYQ5wAsDX2ZGuNI0FuRmmAz9uz9cxhOyZFqUUAv2TVDNNgeJkRcMuTCB8LMy2bnka5bs1YI8bMnzBnNw7PH2BnNgyk7OhEyXTviMMSjLn5JAOcFw",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAMT1vZ74s0e9_5CurlSf8yZkv037OHREphuv44dqTjHkgzOdhlSeIql7mmM9heErrSkgijOCa8J6OLtVL2IFuW3of-9-6sNSYql2C3mx4SdIMbxUDXMRzlGPwwGwDPXR2kr2n46YCVJaibAWBIO9WSjlePgQFYQ5wAsDX2ZGuNI0FuRmmAz9uz9cxhOyZFqUUAv2TVDNNgeJkRcMuTCB8LMy2bnka5bs1YI8bMnzBnNw7PH2BnNgyk7OhEyXTviMMSjLn5JAOcFw",
     agentName: "Emma Wilson",
     agentRating: 4.7,
-    agentImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDcpPazOTKvzu52QUS8zvFp-763vOSYx_XKJ4gdPwRvoDMzFEhi4HWW1UGyZ4dNPQt6nFcUw1qpORiZFW1S0TSrCxBIl0c-bH6kdVl6-2MYfj3kfv8a5bnldSFCBnVw-_8MMKwGv33ecYzpt2sjdiBcBKztSohLp15H32_DDTwjFhcx5gMX-QCI5Xsy6qNtm8Q0SqUQvvLhqj_ATOEpycyaDFpaYB7cAqorjCJgwul_u_EMONKtXRtxhQLVWBEMat5EHXqnLrtzyA",
+    agentImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDcpPazOTKvzu52QUS8zvFp-763vOSYx_XKJ4gdPwRvoDMzFEhi4HWW1UGyZ4dNPQt6nFcUw1qpORiZFW1S0TSrCxBIl0c-bH6kdVl6-2MYfj3kfv8a5bnldSFCBnVw-_8MMKwGv33ecYzpt2sjdiBcBKztSohLp15H32_DDTwjFhcx5gMX-QCI5Xsy6qNtm8Q0SqUQvvLhqj_ATOEpycyaDFpaYB7cAqorjCJgwul_u_EMONKtXRtxhQLVWBEMat5EHXqnLrtzyA",
     referralEnabled: true,
     updatedAt: "1 day ago",
     matchPercentage: 85,
@@ -92,28 +113,30 @@ const MOCK_LISTINGS: Listing[] = [
     location: "Historic District",
     price: 720000,
     bedrooms: 6,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-blFXUD5D0RFW9HZuESSvauYdUm4-oqc5Yx7me2tl8BqJDkU__PYvpZGwZwFA8LzYSA_mUyMGLagNf7kKKNyNH02_Cyw9K7D_klp-Q09ZJIomnXfXkANWY5E4cKG6FFDnKh6Su0yo9vNVew8fK3AGwMoE1JjAiYCL5VJFTgrCaf2Pq79SIDoA6t-E0BHmzYVG1k4hlqa9NSm3nc3IQEg4DHlIybG6oT7NRCQIUHmpHXSWlx_saWLu2AmwKdtaz64An2uw9NAK8Q",
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuA-blFXUD5D0RFW9HZuESSvauYdUm4-oqc5Yx7me2tl8BqJDkU__PYvpZGwZwFA8LzYSA_mUyMGLagNf7kKKNyNH02_Cyw9K7D_klp-Q09ZJIomnXfXkANWY5E4cKG6FFDnKh6Su0yo9vNVew8fK3AGwMoE1JjAiYCL5VJFTgrCaf2Pq79SIDoA6t-E0BHmzYVG1k4hlqa9NSm3nc3IQEg4DHlIybG6oT7NRCQIUHmpHXSWlx_saWLu2AmwKdtaz64An2uw9NAK8Q",
     agentName: "David Brown",
     agentRating: 4.8,
-    agentImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDa_9F9FNrCi5TOkpgm0PuwB7OPObYxKpY5WUTh8zcKP8j_Kc5cn1vwJYHde7s_jKEfmHfP9Si6pBTixzcxqFEnI4HxE7qGEDJ1FDqfRFqL9MRXOkF-c7Ye8jJipYRRE7H553qOZ2WsqokLKkp_nfPDrU5SK4VQqEDiaZ6ymLbySFLMrn3O1MMhFpPA-JOq1cAi2fCrYfQOxriYha6fCC0NIM_paQanVo8nUwB8iFngw35oC9hLZuXWwmbdcH055rRUEImDzMR3mg",
+    agentImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDa_9F9FNrCi5TOkpgm0PuwB7OPObYxKpY5WUTh8zcKP8j_Kc5cn1vwJYHde7s_jKEfmHfP9Si6pBTixzcxqFEnI4HxE7qGEDJ1FDqfRFqL9MRXOkF-c7Ye8jJipYRRE7H553qOZ2WsqokLKkp_nfPDrU5SK4VQqEDiaZ6ymLbySFLMrn3O1MMhFpPA-JOq1cAi2fCrYfQOxriYha6fCC0NIM_paQanVo8nUwB8iFngw35oC9hLZuXWwmbdcH055rRUEImDzMR3mg",
     referralEnabled: true,
     updatedAt: "3 days ago",
     matchPercentage: 79,
     propertyType: "House",
   },
-]
+];
 
 const ITEMS_PER_PAGE = 12;
 
-import { listingService } from "@/services/listing.service"
-import { Loader2 } from "lucide-react"
-import { useEffect } from "react"
+import { listingService } from "@/services/listing.service";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 
 export default function MarketplacePage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [listings, setListings] = useState<Listing[]>(MOCK_LISTINGS) // Initial Mock, replace if API success
-  const [isLoading, setIsLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [listings, setListings] = useState<Listing[]>(MOCK_LISTINGS); // Initial Mock, replace if API success
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -121,18 +144,25 @@ export default function MarketplacePage() {
         const data = await listingService.getAllListings();
         const mappedListings = data.map((item: any) => ({
           id: item.id || Math.random().toString(),
-          title: item.title || 'Untitled Property',
-          location: item.location || item.address || 'Unknown Location',
+          title: item.title || "Untitled Property",
+          location: item.location || item.address || "Unknown Location",
           price: Number(item.price) || 0,
           bedrooms: Number(item.bedrooms) || 0, // Fallback
-          image: item.image || item.media?.[0]?.url || "https://images.unsplash.com/photo-1600596542815-2a4d04774c13?q=80&w=2000&auto=format&fit=crop", // Fallback image
+          image:
+            item.image ||
+            item.media?.[0]?.url ||
+            "https://images.unsplash.com/photo-1600596542815-2a4d04774c13?q=80&w=2000&auto=format&fit=crop", // Fallback image
           agentName: item.agent?.name || item.agentName || "Unknown Agent",
           agentRating: item.agent?.rating || 4.5, // Default/Mock
-          agentImage: item.agent?.image || "https://ui-avatars.com/api/?name=" + (item.agentName || "Agent"),
+          agentImage:
+            item.agent?.image ||
+            "https://ui-avatars.com/api/?name=" + (item.agentName || "Agent"),
           referralEnabled: item.referralEnabled || false,
-          updatedAt: new Date(item.updatedAt || Date.now()).toLocaleDateString(),
+          updatedAt: new Date(
+            item.updatedAt || Date.now(),
+          ).toLocaleDateString(),
           matchPercentage: 85, // Mock match %
-          propertyType: item.propertyType || "House"
+          propertyType: item.propertyType || "House",
         }));
 
         if (mappedListings.length > 0) {
@@ -147,48 +177,60 @@ export default function MarketplacePage() {
     fetchListings();
   }, []);
 
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState({
     updatedIn24h: false,
     referralOnly: false,
-  })
+  });
 
   // Filter Sidebar State
-  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [sidebarFilters, setSidebarFilters] = useState({
     priority: "all" as "all" | "high" | "medium" | "low",
     location: null as string | null,
-  })
-  const [presets, setPresets] = useState<{ name: string; filters: any }[]>([])
+  });
+  const [presets, setPresets] = useState<{ name: string; filters: any }[]>([]);
 
   const handleSidebarFilterChange = (key: string, value: any) => {
-    setSidebarFilters((prev) => ({ ...prev, [key]: value }))
-  }
+    setSidebarFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSavePreset = (name: string) => {
-    setPresets((prev) => [...prev, { name, filters: sidebarFilters }])
-  }
+    setPresets((prev) => [...prev, { name, filters: sidebarFilters }]);
+  };
 
   const handleApplyPreset = (presetFilters: any) => {
-    setSidebarFilters(presetFilters)
-  }
+    setSidebarFilters(presetFilters);
+  };
 
   // Mock counts and locations for sidebar
   const counts = {
     priority: { all: 5, high: 2, medium: 2, low: 1 },
-    location: { "Downtown": 1, "Riverside": 1, "Central Park": 1, "Suburbs": 1, "Historic District": 1 }
-  }
-  const locations = ["Downtown", "Riverside", "Central Park", "Suburbs", "Historic District"]
+    location: {
+      Downtown: 1,
+      Riverside: 1,
+      "Central Park": 1,
+      Suburbs: 1,
+      "Historic District": 1,
+    },
+  };
+  const locations = [
+    "Downtown",
+    "Riverside",
+    "Central Park",
+    "Suburbs",
+    "Historic District",
+  ];
 
   const toggleFavorite = (id: string) => {
-    const newFavorites = new Set(favorites)
+    const newFavorites = new Set(favorites);
     if (newFavorites.has(id)) {
-      newFavorites.delete(id)
+      newFavorites.delete(id);
     } else {
-      newFavorites.add(id)
+      newFavorites.add(id);
     }
-    setFavorites(newFavorites)
-  }
+    setFavorites(newFavorites);
+  };
 
   const filteredListings = useMemo(() => {
     return listings.filter((listing) => {
@@ -198,34 +240,34 @@ export default function MarketplacePage() {
         !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         !listing.location.toLowerCase().includes(searchQuery.toLowerCase())
       ) {
-        return false
+        return false;
       }
 
       // Referral enabled filter
       if (filters.referralOnly && !listing.referralEnabled) {
-        return false
+        return false;
       }
 
       // Updated in 24 hours filter
       if (filters.updatedIn24h) {
         if (listing.updatedAt.includes("day")) {
-          return false
+          return false;
         }
-        const hoursAgo = Number.parseInt(listing.updatedAt.split(" ")[0])
+        const hoursAgo = Number.parseInt(listing.updatedAt.split(" ")[0]);
         if (listing.updatedAt.includes("hours") && hoursAgo > 24) {
-          return false
+          return false;
         }
       }
 
-      return true
-    })
-  }, [searchQuery, filters])
+      return true;
+    });
+  }, [searchQuery, filters]);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f3e7ff] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fff7ed] to-[#e3eeff] dark:bg-[#121826] flex flex-col">
       <div
-        className="absolute inset-0 bg-cover bg-top opacity-75 pointer-events-none z-0"
-        style={{ backgroundImage: 'url(/assets/full_page_background.png)' }}
+        className="absolute inset-0 bg-cover bg-top opacity-10 pointer-events-none z-0"
+        style={{ backgroundImage: "url(/assets/full_page_background.png)" }}
       />
 
       {/* Mobile Secondary Header */}
@@ -255,11 +297,17 @@ export default function MarketplacePage() {
       <div className="relative z-10 px-10 pt-10 pb-6">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">Listings Marketplace</h1>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-white hidden md:block">
+              Listings Marketplace
+            </h1>
           </div>
           <div className="flex items-center gap-6 self-end md:self-auto">
             <div className="hidden md:flex items-center gap-6">
-              <Link href="/agent/activity" className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors" aria-label="Notifications">
+              <Link
+                href="/agent/activity"
+                className="w-6 h-[34px] border-none bg-transparent cursor-pointer flex items-center justify-center p-0 text-slate-600 hover:text-slate-900 transition-colors"
+                aria-label="Notifications"
+              >
                 <Bell className="w-6 h-6" />
               </Link>
               <ThemeToggle />
@@ -271,7 +319,9 @@ export default function MarketplacePage() {
                 </div>
               </Link>
               <div className="hidden md:flex flex-col">
-                <div className="text-base font-semibold text-slate-900 leading-6">User</div>
+                <div className="text-base font-semibold text-slate-900 leading-6">
+                  User
+                </div>
               </div>
             </div>
           </div>
@@ -291,7 +341,9 @@ export default function MarketplacePage() {
           onApplyPreset={handleApplyPreset}
         >
           <div className="space-y-3">
-            <label className="font-medium text-slate-600 dark:text-slate-300">Marketplace Filters</label>
+            <label className="font-medium text-slate-600 dark:text-slate-300">
+              Marketplace Filters
+            </label>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input
@@ -299,9 +351,13 @@ export default function MarketplacePage() {
                   id="updated-24h"
                   type="checkbox"
                   checked={filters.updatedIn24h}
-                  onChange={(e) => setFilters({ ...filters, updatedIn24h: e.target.checked })}
+                  onChange={(e) =>
+                    setFilters({ ...filters, updatedIn24h: e.target.checked })
+                  }
                 />
-                <label className="cursor-pointer" htmlFor="updated-24h">Updated in 24 hours</label>
+                <label className="cursor-pointer" htmlFor="updated-24h">
+                  Updated in 24 hours
+                </label>
               </div>
               <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input
@@ -309,9 +365,13 @@ export default function MarketplacePage() {
                   id="referral-only"
                   type="checkbox"
                   checked={filters.referralOnly}
-                  onChange={(e) => setFilters({ ...filters, referralOnly: e.target.checked })}
+                  onChange={(e) =>
+                    setFilters({ ...filters, referralOnly: e.target.checked })
+                  }
                 />
-                <label className="cursor-pointer" htmlFor="referral-only">Referral Only</label>
+                <label className="cursor-pointer" htmlFor="referral-only">
+                  Referral Only
+                </label>
               </div>
             </div>
           </div>
@@ -319,8 +379,6 @@ export default function MarketplacePage() {
 
         <main className="flex-1 h-full overflow-y-auto flex flex-col">
           <div className="px-10 pb-20 pt-2 space-y-6">
-
-
             {/* Controls Bar */}
             <div className="hidden md:flex flex-row gap-4 justify-between items-center">
               <div className="flex items-center gap-3 w-full md:w-auto">
@@ -349,12 +407,20 @@ export default function MarketplacePage() {
             </div>
 
             {/* Active Filters Chips */}
-            {(filters.updatedIn24h || filters.referralOnly || sidebarFilters.priority !== "all" || sidebarFilters.location) && (
+            {(filters.updatedIn24h ||
+              filters.referralOnly ||
+              sidebarFilters.priority !== "all" ||
+              sidebarFilters.location) && (
               <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
                 {filters.updatedIn24h && (
                   <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 text-sm">
                     Updated in 24h
-                    <button onClick={() => setFilters({ ...filters, updatedIn24h: false })} className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5">
+                    <button
+                      onClick={() =>
+                        setFilters({ ...filters, updatedIn24h: false })
+                      }
+                      className="hover:bg-purple-200 dark:hover:bg-purple-500/30 rounded-full p-0.5"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -362,7 +428,12 @@ export default function MarketplacePage() {
                 {filters.referralOnly && (
                   <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-sm">
                     Referral Only
-                    <button onClick={() => setFilters({ ...filters, referralOnly: false })} className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5">
+                    <button
+                      onClick={() =>
+                        setFilters({ ...filters, referralOnly: false })
+                      }
+                      className="hover:bg-blue-200 dark:hover:bg-blue-500/30 rounded-full p-0.5"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -370,7 +441,12 @@ export default function MarketplacePage() {
                 {sidebarFilters.priority !== "all" && (
                   <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-sm">
                     Priority: {sidebarFilters.priority}
-                    <button onClick={() => handleSidebarFilterChange("priority", "all")} className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5">
+                    <button
+                      onClick={() =>
+                        handleSidebarFilterChange("priority", "all")
+                      }
+                      className="hover:bg-emerald-200 dark:hover:bg-emerald-500/30 rounded-full p-0.5"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -378,7 +454,12 @@ export default function MarketplacePage() {
                 {sidebarFilters.location && (
                   <div className="flex items-center gap-1 pl-2 pr-1 py-1 rounded-full bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300 text-sm">
                     Location: {sidebarFilters.location}
-                    <button onClick={() => handleSidebarFilterChange("location", null)} className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5">
+                    <button
+                      onClick={() =>
+                        handleSidebarFilterChange("location", null)
+                      }
+                      className="hover:bg-orange-200 dark:hover:bg-orange-500/30 rounded-full p-0.5"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -407,10 +488,15 @@ export default function MarketplacePage() {
                       className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
                       src={listing.image}
                     />
-                    <div className={`absolute top-4 left-4 text-white text-sm font-bold px-3 py-1 rounded-full backdrop-blur-sm ${listing.matchPercentage >= 90 ? 'bg-green-500/80' :
-                      listing.matchPercentage >= 80 ? 'bg-green-500/80' :
-                        'bg-yellow-500/80'
-                      }`}>
+                    <div
+                      className={`absolute top-4 left-4 text-white text-sm font-bold px-3 py-1 rounded-full backdrop-blur-sm ${
+                        listing.matchPercentage >= 90
+                          ? "bg-green-500/80"
+                          : listing.matchPercentage >= 80
+                            ? "bg-green-500/80"
+                            : "bg-yellow-500/80"
+                      }`}
+                    >
                       {listing.matchPercentage}% match
                     </div>
                     <button
@@ -419,15 +505,22 @@ export default function MarketplacePage() {
                     >
                       <Heart
                         className="w-5 h-5"
-                        fill={favorites.has(listing.id) ? "currentColor" : "none"}
-                        color={favorites.has(listing.id) ? "#ef4444" : "currentColor"}
+                        fill={
+                          favorites.has(listing.id) ? "currentColor" : "none"
+                        }
+                        color={
+                          favorites.has(listing.id) ? "#ef4444" : "currentColor"
+                        }
                       />
                     </button>
                   </div>
                   <div className="p-5">
-                    <h3 className="text-xl font-bold text-slate-800 dark:text-white">{listing.title}</h3>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-white">
+                      {listing.title}
+                    </h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      {listing.location} • ${listing.price.toLocaleString()} • {listing.bedrooms} bed
+                      {listing.location} • ${listing.price.toLocaleString()} •{" "}
+                      {listing.bedrooms} bed
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                       <img
@@ -467,5 +560,5 @@ export default function MarketplacePage() {
         </main>
       </div>
     </div>
-  )
+  );
 }
