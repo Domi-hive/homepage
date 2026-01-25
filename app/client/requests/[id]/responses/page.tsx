@@ -245,7 +245,7 @@ export default function ResponsesPage() {
               onClick={() => setActiveTab("responses")}
               className={`px-4 py-3 font-medium transition-colors ${
                 activeTab === "responses"
-                  ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -255,7 +255,7 @@ export default function ResponsesPage() {
               onClick={() => setActiveTab("recommendations")}
               className={`px-4 py-3 font-medium transition-colors ${
                 activeTab === "recommendations"
-                  ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-purple-500"
+                  ? "text-slate-800 dark:text-slate-100 font-semibold border-b-2 border-[#0F172A]"
                   : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -272,79 +272,83 @@ export default function ResponsesPage() {
         ) : activeTab === "responses" ? (
           <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
             {/* Sidebar List */}
-            <div className="hidden md:block h-full overflow-y-auto border-r border-slate-200/60 dark:border-slate-700/60 bg-white/30 backdrop-blur-sm p-6 w-[22rem]">
-              <AgentSidebar
-                agents={agents}
-                selectedAgentId={selectedAgentId}
-                onSelectAgent={setSelectedAgentId}
-              />
-            </div>
+            {agents.length > 0 && (
+              <div className="hidden md:block h-full overflow-y-auto border-r border-slate-200/60 dark:border-slate-700/60 bg-white/30 backdrop-blur-sm p-6 w-[22rem]">
+                <AgentSidebar
+                  agents={agents}
+                  selectedAgentId={selectedAgentId}
+                  onSelectAgent={setSelectedAgentId}
+                />
+              </div>
+            )}
 
             {/* Mobile Agent Dropdown */}
-            <div className="md:hidden px-4 pb-4">
-              <div className="relative">
-                <button
-                  onClick={() => setShowAgentDropdown(!showAgentDropdown)}
-                  className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={selectedAgent?.photo || "/placeholder.svg"}
-                      alt={selectedAgent?.name}
-                      className="h-8 w-8 rounded-full object-cover"
-                    />
-                    <div className="text-left">
-                      <div className="font-medium text-sm">
-                        {selectedAgent?.name}
-                      </div>
-                      <div className="text-xs text-slate-500">
-                        ⭐ {selectedAgent?.rating}
+            {agents.length > 0 && (
+              <div className="md:hidden px-4 pb-4">
+                <div className="relative">
+                  <button
+                    onClick={() => setShowAgentDropdown(!showAgentDropdown)}
+                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg border border-white/50 bg-white/60 backdrop-blur-sm text-slate-800"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={selectedAgent?.photo || "/placeholder.svg"}
+                        alt={selectedAgent?.name}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                      <div className="text-left">
+                        <div className="font-medium text-sm">
+                          {selectedAgent?.name}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          ⭐ {selectedAgent?.rating}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <ChevronDown className="h-5 w-5 text-slate-500" />
-                </button>
+                    <ChevronDown className="h-5 w-5 text-slate-500" />
+                  </button>
 
-                {showAgentDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
-                    {agents.map((agent) => (
-                      <button
-                        key={agent.id}
-                        onClick={() => {
-                          setSelectedAgentId(agent.id);
-                          setShowAgentDropdown(false);
-                        }}
-                        className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${
-                          selectedAgentId === agent.id
-                            ? "bg-purple-50 text-purple-700"
-                            : "text-slate-800 hover:bg-slate-50"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={agent.photo || "/placeholder.svg"}
-                            alt={agent.name}
-                            className="h-8 w-8 rounded-full object-cover"
-                          />
-                          <div className="text-left">
-                            <div className="font-medium text-sm">
-                              {agent.name}
-                            </div>
-                            <div className="text-xs text-slate-500">
-                              ⭐ {agent.rating}
+                  {showAgentDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-2 border border-white/50 rounded-lg bg-white/90 backdrop-blur-md shadow-lg z-50 overflow-hidden">
+                      {agents.map((agent) => (
+                        <button
+                          key={agent.id}
+                          onClick={() => {
+                            setSelectedAgentId(agent.id);
+                            setShowAgentDropdown(false);
+                          }}
+                          className={`w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors ${
+                            selectedAgentId === agent.id
+                              ? "bg-purple-50 text-purple-700"
+                              : "text-slate-800 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={agent.photo || "/placeholder.svg"}
+                              alt={agent.name}
+                              className="h-8 w-8 rounded-full object-cover"
+                            />
+                            <div className="text-left">
+                              <div className="font-medium text-sm">
+                                {agent.name}
+                              </div>
+                              <div className="text-xs text-slate-500">
+                                ⭐ {agent.rating}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex-1 overflow-y-auto p-6 md:p-10 relative">
               {agents.length === 0 ? (
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center space-y-4 px-6">
+                <div className="h-full w-full flex flex-col items-center justify-center text-center space-y-4">
                   <div className="w-16 h-16 bg-white/50 rounded-full flex items-center justify-center shadow-sm">
                     <MessageCircle className="w-8 h-8 text-slate-400" />
                   </div>
@@ -359,7 +363,7 @@ export default function ResponsesPage() {
                   </div>
                   <Button
                     onClick={() => setActiveTab("recommendations")}
-                    className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/30"
+                    className="bg-[#0F172A] hover:opacity-90 text-white shadow-lg shadow-slate-900/20"
                   >
                     View Recommendations
                   </Button>

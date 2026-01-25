@@ -9,8 +9,33 @@ import MatchedProperties from "@/components/client/dashboard/MatchedProperties";
 import { useState } from "react";
 import RequestFormDrawer from "@/components/client/dashboard/RequestFormDrawer";
 
+import { requestService } from "@/services/request.service";
+
 export default function ClientDashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [requestCount, setRequestCount] = useState<number | null>(null);
+
+  const fetchRequestStats = async () => {
+    try {
+      const requests = await requestService.getUserRequests();
+      if (Array.isArray(requests)) {
+        setRequestCount(requests.length);
+      }
+    } catch (error: any) {
+      if (
+        error.message?.includes("Unauthorized") ||
+        error.message?.includes("401")
+      ) {
+        setRequestCount(0);
+        return;
+      }
+      console.error("Failed to fetch stats", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchRequestStats();
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fff7ed] to-[#e3eeff] flex flex-col">
@@ -30,13 +55,17 @@ export default function ClientDashboard() {
         <main className="flex-1 h-full overflow-y-auto flex flex-col">
           <div className="px-4 md:px-10 pb-[50px] pt-[30px] space-y-6">
             <WelcomeCard />
-            <StatsCards onOpenDrawer={() => setIsDrawerOpen(true)} />
+            <StatsCards
+              requestCount={requestCount}
+              onOpenDrawer={() => setIsDrawerOpen(true)}
+            />
             <MatchedProperties />
           </div>
 
           <RequestFormDrawer
             isOpen={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
+            onSuccess={fetchRequestStats}
           />
         </main>
       </div>

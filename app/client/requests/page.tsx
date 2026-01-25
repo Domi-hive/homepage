@@ -10,6 +10,7 @@ import EmptyRequestsCard from "@/components/client/requests/EmptyRequestsCard";
 import RequestFormDrawer from "@/components/client/dashboard/RequestFormDrawer";
 import { requestService } from "@/services/request.service";
 import { Loader2 } from "lucide-react";
+import DeleteConfirmationModal from "@/components/client/requests/DeleteConfirmationModal";
 
 function ClientRequestsContent() {
   const searchParams = useSearchParams();
@@ -20,25 +21,48 @@ function ClientRequestsContent() {
   const [activeTab, setActiveTab] = useState<"active" | "history">(initialTab);
   const [activeRequests, setActiveRequests] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [requestToDelete, setRequestToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  React.useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const requests = await requestService.getUserRequests();
-        // Assuming getUserRequests returns active requests or we filter them
-        // For now, we use the responses as is
-        setActiveRequests(Array.isArray(requests) ? requests : []);
-      } catch (error: any) {
-        // Silently handle auth errors
-        if (!error.message?.includes("Unauthorized")) {
-          console.error("Failed to fetch requests", error);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const handleDeleteRequest = async () => {
+    if (!requestToDelete) return;
 
+    try {
+      setIsDeleting(true);
+      await requestService.deleteRequest(requestToDelete);
+
+      // Update local state
+      setActiveRequests((prev) =>
+        prev.filter((req) => req.id !== requestToDelete),
+      );
+      setRequestToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete request:", error);
+      // Ideally show a toast here
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const fetchRequests = async () => {
+    try {
+      setIsLoading(true);
+      const requests = await requestService.getUserRequests();
+      // Assuming getUserRequests returns active requests or we filter them
+      // For now, we use the responses as is
+      setActiveRequests(Array.isArray(requests) ? requests : []);
+    } catch (error: any) {
+      // Silently handle auth errors
+      if (!error.message?.includes("Unauthorized")) {
+        console.error("Failed to fetch requests", error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
     fetchRequests();
   }, []);
 
@@ -92,7 +116,13 @@ function ClientRequestsContent() {
                     </div>
                   ) : activeRequests.length > 0 ? (
                     <>
-                      <ActiveRequestCard request={activeRequests[0]} />
+                      {activeRequests.map((req) => (
+                        <ActiveRequestCard
+                          key={req.id}
+                          request={req}
+                          onDelete={() => setRequestToDelete(req.id)}
+                        />
+                      ))}
                       <InfoBanner />
                     </>
                   ) : (
@@ -109,6 +139,14 @@ function ClientRequestsContent() {
             <RequestFormDrawer
               isOpen={isDrawerOpen}
               onClose={() => setIsDrawerOpen(false)}
+              onSuccess={fetchRequests}
+            />
+
+            <DeleteConfirmationModal
+              isOpen={!!requestToDelete}
+              onClose={() => !isDeleting && setRequestToDelete(null)}
+              onConfirm={handleDeleteRequest}
+              isDeleting={isDeleting}
             />
           </div>
         </main>

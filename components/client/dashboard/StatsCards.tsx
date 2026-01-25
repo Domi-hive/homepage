@@ -5,34 +5,14 @@ import { requestService } from "@/services/request.service";
 import { useEffect, useState } from "react";
 
 interface StatsCardsProps {
+  requestCount: number | null;
   onOpenDrawer: () => void;
 }
 
-export default function StatsCards({ onOpenDrawer }: StatsCardsProps) {
-  const [requestCount, setRequestCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const requests = await requestService.getUserRequests();
-        if (Array.isArray(requests)) {
-          setRequestCount(requests.length);
-        }
-      } catch (error: any) {
-        // Silently handle auth errors by showing 0 or default state
-        if (
-          error.message?.includes("Unauthorized") ||
-          error.message?.includes("401")
-        ) {
-          setRequestCount(0);
-          return;
-        }
-        console.error("Failed to fetch stats", error);
-      }
-    };
-    fetchRequests();
-  }, []);
-
+export default function StatsCards({
+  requestCount,
+  onOpenDrawer,
+}: StatsCardsProps) {
   return (
     <div className="grid grid-cols-2 gap-3 md:gap-5 mb-10">
       <div className="bg-white/60 border border-white/50 rounded-[20px] md:rounded-[32px] p-4 md:p-6 backdrop-blur-md h-full flex flex-col justify-between">

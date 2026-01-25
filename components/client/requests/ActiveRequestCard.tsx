@@ -19,9 +19,13 @@ interface ActiveRequestCardProps {
     propertyCount?: number;
     activeQAs?: number;
   };
+  onDelete?: () => void;
 }
 
-export default function ActiveRequestCard({ request }: ActiveRequestCardProps) {
+export default function ActiveRequestCard({
+  request,
+  onDelete,
+}: ActiveRequestCardProps) {
   // Build location string
   const locationList = request.cities || request.locations || [];
   const locationString =
@@ -98,7 +102,7 @@ export default function ActiveRequestCard({ request }: ActiveRequestCardProps) {
             <p className="text-xl md:text-2xl font-bold text-slate-900 leading-8 m-0">
               {stat.value}
             </p>
-            <p className="text-[10px] md:text-xs font-medium text-slate-500 uppercase tracking-wide m-0">
+            <p className="text-xl md:text-xs font-medium text-slate-500 uppercase tracking-wide m-0">
               {stat.label}
             </p>
           </div>
@@ -120,9 +124,10 @@ export default function ActiveRequestCard({ request }: ActiveRequestCardProps) {
         </button>
         <button
           type="button"
-          className="bg-white border border-slate-200 rounded-xl px-6 py-3 text-slate-700 text-base font-medium cursor-pointer transition-colors hover:bg-slate-50 hover:text-slate-900"
+          onClick={onDelete}
+          className="bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl px-6 py-3 text-red-600 text-base font-medium cursor-pointer transition-colors"
         >
-          Archive
+          Delete
         </button>
       </div>
     </div>

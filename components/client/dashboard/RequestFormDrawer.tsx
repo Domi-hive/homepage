@@ -47,11 +47,13 @@ const offerTypeOptions = [
 interface RequestFormDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 export default function RequestFormDrawer({
   isOpen,
   onClose,
+  onSuccess,
 }: RequestFormDrawerProps) {
   const [location, setLocation] = useState("");
   const [budgetRange, setBudgetRange] = useState({
@@ -234,6 +236,7 @@ export default function RequestFormDrawer({
       setTimeout(() => {
         setSuccess(false);
         onClose();
+        if (onSuccess) onSuccess();
         // Reset form
         setLocation("");
         setSelectedLocations([]);
