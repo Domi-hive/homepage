@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { kycService, KYCDocument, DocumentType } from "@/services/kyc.service";
+import { uploadService } from "@/services/upload.service";
 
 interface DocumentUpload {
   file: File | null;
@@ -177,21 +178,25 @@ export default function KYCTab() {
     setIsSubmitting(true);
 
     try {
-      // For now, using placeholder URLs since we don't have file upload to storage yet
-      // TODO: Implement actual file upload to S3/Cloudinary first
-      const placeholderUrl = "https://placeholder.domihive.com/kyc-document";
-
       // Upload NIN document only if needed
-      if (needsNinUpload) {
+      if (needsNinUpload && ninDocument.file) {
         setNinDocument((prev) => ({ ...prev, status: "uploading" }));
-        await kycService.uploadNIN(placeholderUrl);
+        const uploadRes = await uploadService.uploadFile(
+          ninDocument.file,
+          "KYC-DOCUMENTS",
+        );
+        await kycService.uploadNIN(uploadRes.data.url);
         setNinDocument((prev) => ({ ...prev, status: "pending" }));
       }
 
       // Upload Selfie document only if needed
-      if (needsSelfieUpload) {
+      if (needsSelfieUpload && selfieDocument.file) {
         setSelfieDocument((prev) => ({ ...prev, status: "uploading" }));
-        await kycService.uploadSelfie(placeholderUrl);
+        const uploadRes = await uploadService.uploadFile(
+          selfieDocument.file,
+          "KYC-DOCUMENTS",
+        );
+        await kycService.uploadSelfie(uploadRes.data.url);
         setSelfieDocument((prev) => ({ ...prev, status: "pending" }));
       }
 

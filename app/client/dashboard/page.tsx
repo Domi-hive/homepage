@@ -13,20 +13,23 @@ import { requestService } from "@/services/request.service";
 
 export default function ClientDashboard() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [requestCount, setRequestCount] = useState<number | null>(null);
+  const [activeRequest, setActiveRequest] = useState<any | null>(null);
 
   const fetchRequestStats = async () => {
     try {
       const requests = await requestService.getUserRequests();
-      if (Array.isArray(requests)) {
-        setRequestCount(requests.length);
+      if (Array.isArray(requests) && requests.length > 0) {
+        // Assuming the most recent or first one is the active one
+        setActiveRequest(requests[0]);
+      } else {
+        setActiveRequest(null);
       }
     } catch (error: any) {
       if (
         error.message?.includes("Unauthorized") ||
         error.message?.includes("401")
       ) {
-        setRequestCount(0);
+        setActiveRequest(null);
         return;
       }
       console.error("Failed to fetch stats", error);
@@ -56,7 +59,7 @@ export default function ClientDashboard() {
           <div className="px-4 md:px-10 pb-[50px] pt-[30px] space-y-6">
             <WelcomeCard />
             <StatsCards
-              requestCount={requestCount}
+              activeRequest={activeRequest}
               onOpenDrawer={() => setIsDrawerOpen(true)}
             />
             <MatchedProperties />

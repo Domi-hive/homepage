@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listingService } from "@/services/listing.service";
+import { uploadService } from "@/services/upload.service";
 import { toast } from "sonner";
 
 interface AddPropertyDrawerProps {
@@ -44,12 +45,91 @@ export default function AddPropertyDrawer({
     referralEnabled: false,
   });
 
-  const [inspectionPoints, setInspectionPoints] = useState<string[]>([]);
-  const [isLoadingPoints, setIsLoadingPoints] = useState(false);
-  const [pointsError, setPointsError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<
+    { url: string; preview: string; id: string }[]
+  >([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const isLastStep = currentStep === 4;
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setIsUploading(true);
+      const files = Array.from(e.target.files);
+
+      try {
+        // Create local previews immediately for mapping
+        const filePreviews = files.map((file) => ({
+          file,
+          preview: URL.createObjectURL(file),
+        }));
+
+        const results = await uploadService.uploadMultipleFiles(
+          files,
+          "LISTING-IMAGES",
+        );
+
+        const newImages: { url: string; preview: string; id: string }[] = [];
+        let failedCount = 0;
+
+        results.forEach((result, index) => {
+          if (result.status === "fulfilled") {
+            const response = result.value;
+            const preview = filePreviews[index]?.preview || "";
+            newImages.push({
+              url: response.data.url,
+              preview: preview,
+              id: response.data.publicId,
+            });
+          } else {
+            failedCount++;
+            console.error(
+              `Upload failed for file ${files[index].name}:`,
+              result.reason,
+            );
+          }
+        });
+
+        if (newImages.length > 0) {
+          setUploadedImages((prev) => [...prev, ...newImages]);
+        }
+
+        if (failedCount === 0) {
+          toast.success(`Successfully uploaded all ${newImages.length} images`);
+        } else if (newImages.length > 0) {
+          toast.warning(
+            `Uploaded ${newImages.length} images. ${failedCount} failed.`,
+          );
+        } else {
+          toast.error("Failed to upload images. Please try different files.");
+        }
+      } catch (error) {
+        toast.error("Unexpected error during upload");
+        console.error("Upload error:", error);
+      } finally {
+        setIsUploading(false);
+        e.target.value = "";
+      }
+    }
+  };
+
+  const removeImage = async (id: string) => {
+    const imageToDelete = uploadedImages.find((img) => img.id === id);
+    if (!imageToDelete) return;
+
+    const toastId = toast.loading("Deleting image...");
+
+    try {
+      await uploadService.deleteFile(id);
+
+      setUploadedImages((prev) => prev.filter((img) => img.id !== id));
+      toast.success("Image deleted successfully", { id: toastId });
+    } catch (error) {
+      console.error("Failed to delete image:", error);
+      toast.error("Failed to delete image", { id: toastId });
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -60,44 +140,6 @@ export default function AddPropertyDrawer({
     // Handle select elements that might use name instead of id if needed, but HTML uses id
     const key = id || e.target.name;
     setFormData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleDayToggle = (day: string) => {
-    setFormData((prev) => {
-      const currentDays = prev.availableDays || [];
-      if (currentDays.includes(day)) {
-        return { ...prev, availableDays: currentDays.filter((d) => d !== day) };
-      } else {
-        return { ...prev, availableDays: [...currentDays, day] };
-      }
-    });
-  };
-
-  const fetchInspectionPoints = async () => {
-    setIsLoadingPoints(true);
-    setPointsError("");
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // In a real app, this would use formData.state and formData.neighborhood
-      // const response = await fetch(`/api/inspection-points?state=${formData.state}&neighborhood=${formData.neighborhood}`);
-
-      // Mock response
-      const mockPoints = [
-        "Estate Main Gate",
-        "Community Center",
-        "Police Station Junction",
-        "Market Square",
-        "Mall Entrance",
-      ];
-
-      setInspectionPoints(mockPoints);
-    } catch (err) {
-      setPointsError("Failed to load inspection points");
-    } finally {
-      setIsLoadingPoints(false);
-    }
   };
 
   const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
@@ -129,41 +171,12 @@ export default function AddPropertyDrawer({
     return typeMap[type] || "f570b5b5-8940-4864-a89b-261db3ce1ade";
   };
 
-  // Generate inspection dates from available days (next 2 weeks)
-  const generateInspectionDates = (days: string[]): string[] => {
-    if (!days || days.length === 0) return [];
-
-    const dayMap: Record<string, number> = {
-      Sunday: 0,
-      Monday: 1,
-      Tuesday: 2,
-      Wednesday: 3,
-      Thursday: 4,
-      Friday: 5,
-      Saturday: 6,
-    };
-
-    const dates: string[] = [];
-    const today = new Date();
-
-    // Generate dates for the next 14 days that match selected days
-    for (let i = 1; i <= 14 && dates.length < 5; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const dayName = Object.keys(dayMap).find(
-        (key) => dayMap[key] === date.getDay(),
-      );
-
-      if (dayName && days.includes(dayName)) {
-        date.setHours(10, 0, 0, 0); // Default to 10 AM
-        dates.push(date.toISOString());
-      }
+  const handlePublish = async () => {
+    if (uploadedImages.length < 3) {
+      toast.error("Please upload at least 3 images");
+      return;
     }
 
-    return dates;
-  };
-
-  const handlePublish = async () => {
     setIsSubmitting(true);
 
     try {
@@ -180,7 +193,7 @@ export default function AddPropertyDrawer({
           description:
             formData.description ||
             `${formData.title} - A beautiful property in ${formData.neighborhood}, ${formData.state}`,
-          imageUrls: [], // TODO: Implement media upload
+          imageUrls: uploadedImages.map((img) => img.url),
           features: [], // TODO: Add features selection to form
         },
         listing: {
@@ -188,7 +201,7 @@ export default function AddPropertyDrawer({
           price: Number(formData.price.replace(/,/g, "")) || 0,
           listingPeriod: "yearly", // API only accepts: daily, weekly, monthly, yearly
           meetingPoint: formData.meetingPoint || "To be confirmed",
-          inspectionDates: generateInspectionDates(formData.availableDays),
+          // inspectionDates: generateInspectionDates(formData.availableDays),
         },
       };
 
@@ -251,7 +264,7 @@ export default function AddPropertyDrawer({
                     : ""
                 }
               >
-                Basic Information
+                Basic
               </span>
               <span
                 className={
@@ -260,7 +273,7 @@ export default function AddPropertyDrawer({
                     : ""
                 }
               >
-                Property Details
+                Details
               </span>
               <span
                 className={
@@ -508,15 +521,44 @@ export default function AddPropertyDrawer({
             </div>
           )}
 
-          {/* Step 3: Inspections */}
-
-          {/* Step 4: Media */}
+          {/* Step 3: Media */}
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
                 <ImageIcon className="w-5 h-5 text-[#0F172A] dark:text-white" />
                 Media Upload
               </h3>
+
+              {/* Image Preview Grid */}
+              {uploadedImages.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                  {uploadedImages.map((img, index) => (
+                    <div
+                      key={img.id || index}
+                      className="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700"
+                    >
+                      <img
+                        src={img.preview}
+                        alt={`Upload ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => removeImage(img.id)}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        type="button"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                      {index === 0 && (
+                        <div className="absolute bottom-2 left-2 bg-[#0F172A]/80 text-white text-xs px-2 py-1 rounded-md">
+                          Cover Photo
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Property Images <span className="text-red-500">*</span>
@@ -527,24 +569,39 @@ export default function AddPropertyDrawer({
                 </p>
                 <div className="flex items-center justify-center w-full">
                   <label
-                    className="flex flex-col items-center justify-center w-full h-48 border-2 border-slate-300 dark:border-slate-700 border-dashed rounded-2xl cursor-pointer bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className={`flex flex-col items-center justify-center w-full h-48 border-2 border-slate-300 dark:border-slate-700 border-dashed rounded-2xl cursor-pointer bg-slate-100/50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
                     htmlFor="dropzone-file"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
-                      <Upload className="w-10 h-10 text-slate-400 dark:text-slate-500 mb-2" />
-                      <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                      </p>
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="w-10 h-10 text-purple-500 mb-2 animate-spin" />
+                          <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+                            Uploading images...
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-10 h-10 text-slate-400 dark:text-slate-500 mb-2" />
+                          <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            SVG, PNG, JPG or GIF (MAX. 800x400px)
+                          </p>
+                        </>
+                      )}
                     </div>
                     <input
                       className="hidden"
                       id="dropzone-file"
                       multiple
                       type="file"
+                      onChange={handleFileSelect}
+                      disabled={isUploading}
                     />
                   </label>
                 </div>
@@ -552,7 +609,7 @@ export default function AddPropertyDrawer({
             </div>
           )}
 
-          {/* Step 5: Publish */}
+          {/* Step 4: Publish */}
           {currentStep === 4 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
               <h3 className="text-lg font-semibold text-slate-800 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center gap-3">
