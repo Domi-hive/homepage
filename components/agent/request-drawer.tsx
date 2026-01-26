@@ -18,6 +18,7 @@ import {
   Calendar,
   CheckCircle,
   Info,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import { useEffect, useState } from "react";
 import MarketplaceOverlay from "./marketplace-overlay";
 import { requestService } from "@/services/request.service";
 import { listingService } from "@/services/listing.service";
+import AddPropertyDrawer from "./my-listings/AddPropertyDrawer";
 
 interface RequestDrawerProps {
   request: {
@@ -62,9 +64,12 @@ export default function RequestDrawer({
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false);
+  const [isAddListingOpen, setIsAddListingOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [meetingPoint, setMeetingPoint] = useState("");
   const [availableDays, setAvailableDays] = useState<string[]>([]);
+  const [showStaleConfirmation, setShowStaleConfirmation] = useState(false);
+  const [isConfirmingStale, setIsConfirmingStale] = useState(false);
 
   const [show, setShow] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -114,6 +119,8 @@ export default function RequestDrawer({
           matchScore: undefined,
           agent: "You",
           isOwn: true,
+          isStale: l.isStale,
+          lastUpdated: l.lastUpdated,
         }));
         setMyListings(formattedListings);
       } catch (error) {
@@ -137,6 +144,45 @@ export default function RequestDrawer({
   };
 
   const filteredMyListings = getFilteredProperties(myListings);
+
+  const fetchListings = async () => {
+    try {
+      const listings = await listingService.getMyListings();
+      const formattedListings = listings.map((l) => ({
+        id: l.id,
+        title: l.title,
+        location: l.location,
+        price: l.price,
+        image: l.image || "/placeholder.svg",
+        beds: l.beds,
+        baths: l.baths,
+        sqft: l.sqft,
+        matchScore: undefined,
+        agent: "You",
+        isOwn: true,
+        isStale: l.isStale,
+        lastUpdated: l.lastUpdated,
+      }));
+      setMyListings(formattedListings);
+    } catch (error) {
+      console.error("Failed to fetch listings:", error);
+      toast.error("Failed to load your listings");
+    }
+  };
+
+  const handleAddListingSuccess = async (newListing: any) => {
+    setIsAddListingOpen(false);
+    await fetchListings();
+
+    // Auto-select the new listing if possible (we assume format matches or we find it in refreshed list)
+    // Since fetchListings is async and we just called it, we might need to rely on the newListing data directly
+    // to add it to selection if we want instant feedback, but refreshing list + selecting by ID is safer.
+    // For now, let's just toast and refresh. The user can find it at the top of their list (if sorted) or search.
+    // If we want to auto-select, we'd need to ensure the ID matches what fetchListings returns.
+
+    // Optimized: Optimistically add to selection if it matches our shape, or wait for fetch.
+    toast.success("New listing added and list refreshed!");
+  };
 
   const toggleProperty = (property: any) => {
     setSelectedProperties((prev) => {
@@ -193,8 +239,7 @@ export default function RequestDrawer({
     });
   };
 
-  const handleSubmit = async () => {
-    if (selectedProperties.length === 0 || !request) return;
+  const submitResponse = async () => {
     setIsSubmitting(true);
     setError(null);
 
@@ -219,6 +264,50 @@ export default function RequestDrawer({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleConfirmAvailability = async () => {
+    setIsConfirmingStale(true);
+    try {
+      const staleProps = selectedProperties.filter((p) => p.isStale);
+      // Update all stale properties to active (which updates timestamp)
+      await Promise.all(
+        staleProps.map((p) =>
+          listingService.updateListingStatus(p.id.toString(), true),
+        ),
+      );
+
+      // Update local state to reflect changes (optional but good for UI consistency if we fail later)
+      setSelectedProperties((prev) =>
+        prev.map((p) => {
+          if (staleProps.find((sp) => sp.id === p.id)) {
+            return { ...p, isStale: false };
+          }
+          return p;
+        }),
+      );
+
+      setShowStaleConfirmation(false);
+      await submitResponse();
+    } catch (error) {
+      console.error("Failed to confirm availability:", error);
+      toast.error("Failed to update listing status");
+    } finally {
+      setIsConfirmingStale(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (selectedProperties.length === 0 || !request) return;
+
+    // Check for stale properties
+    const hasStaleListings = selectedProperties.some((p) => p.isStale);
+    if (hasStaleListings) {
+      setShowStaleConfirmation(true);
+      return;
+    }
+
+    await submitResponse();
   };
 
   if (!isOpen && !isVisible) return null;
@@ -291,6 +380,78 @@ export default function RequestDrawer({
         myListings={myListings}
       />
 
+      {/* Stale Listing Confirmation Modal */}
+      {showStaleConfirmation && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4 mx-auto">
+                <AlertTriangle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 className="text-xl font-bold text-center text-slate-900 dark:text-white mb-2">
+                Confirm Availability
+              </h3>
+              <p className="text-sm text-center text-slate-500 dark:text-slate-400 mb-6">
+                Some of the listings you selected haven't been updated in over
+                24 hours. Please confirm they are still available before
+                sending.
+              </p>
+
+              <div className="space-y-3 mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 max-h-48 overflow-y-auto">
+                {selectedProperties
+                  .filter((p) => p.isStale)
+                  .map((property) => (
+                    <div
+                      key={property.id}
+                      className="flex items-center gap-3 bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-100 dark:border-slate-700"
+                    >
+                      <img
+                        src={property.image || "/placeholder.svg"}
+                        alt={property.title}
+                        className="w-10 h-10 rounded-md object-cover"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-200 truncate">
+                          {property.title}
+                        </p>
+                        <p className="text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> Last updated:{" "}
+                          {property.lastUpdated}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowStaleConfirmation(false)}
+                  disabled={isConfirmingStale}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleConfirmAvailability}
+                  disabled={isConfirmingStale}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  {isConfirmingStale ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Confirm & Send"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${show ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         onClick={onClose}
@@ -336,15 +497,17 @@ export default function RequestDrawer({
                     {selectedProperties.length}/5
                   </Badge>
                 </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMarketplaceOpen(true)}
-                  className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:text-purple-400 dark:hover:bg-purple-900/20 gap-1"
-                >
-                  <Search className="h-4 w-4" />
-                  Select Properties
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsAddListingOpen(true)}
+                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20 gap-1"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add New Property
+                  </Button>
+                </div>
               </div>
 
               {/* Property List */}
@@ -358,7 +521,7 @@ export default function RequestDrawer({
                       variant="outline"
                       size="sm"
                       onClick={() => setIsMarketplaceOpen(true)}
-                      className="text-purple-600 border-purple-200 hover:bg-purple-50 dark:text-purple-400 dark:border-purple-500/30 dark:hover:bg-purple-500/10"
+                      className="text-[#0F172A] border-slate-200 hover:bg-slate-50 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                     >
                       Select Properties
                     </Button>
@@ -391,6 +554,18 @@ export default function RequestDrawer({
                     </div>
                   ))
                 )}
+                {selectedProperties.length > 0 &&
+                  selectedProperties.length < 5 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsMarketplaceOpen(true)}
+                      className="w-full border-dashed border-slate-300 text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add selection
+                    </Button>
+                  )}
               </div>
 
               {/* Message Input */}
@@ -547,6 +722,13 @@ export default function RequestDrawer({
           </div>
         </div>
       </div>
+
+      <AddPropertyDrawer
+        isOpen={isAddListingOpen}
+        onClose={() => setIsAddListingOpen(false)}
+        onSuccess={handleAddListingSuccess}
+        variant="modal"
+      />
     </>
   );
 }

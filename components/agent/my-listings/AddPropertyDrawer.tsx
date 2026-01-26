@@ -20,11 +20,15 @@ import { toast } from "sonner";
 interface AddPropertyDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: (listing: any) => void;
+  variant?: "drawer" | "modal";
 }
 
 export default function AddPropertyDrawer({
   isOpen,
   onClose,
+  onSuccess,
+  variant = "drawer",
 }: AddPropertyDrawerProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -205,10 +209,14 @@ export default function AddPropertyDrawer({
         },
       };
 
-      await listingService.createListing(payload as any);
+      const newListing = await listingService.createListing(payload as any);
 
       toast.success("Property listed successfully!");
-      onClose();
+      if (onSuccess) {
+        onSuccess(newListing);
+      } else {
+        onClose();
+      }
     } catch (error: any) {
       console.error("Failed to create listing:", error);
       toast.error(
@@ -222,8 +230,16 @@ export default function AddPropertyDrawer({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-2xl bg-slate-50 dark:bg-slate-900 h-full flex flex-col animate-in slide-in-from-right duration-300">
+    <div
+      className={`fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+    >
+      <div
+        className={`w-full bg-slate-50 dark:bg-slate-900 flex flex-col transition-all duration-300 overflow-hidden ${
+          variant === "modal"
+            ? "max-w-4xl h-[90vh] rounded-2xl shadow-2xl animate-in zoom-in-95 ease-out"
+            : "fixed right-0 h-full max-w-2xl animate-in slide-in-from-right ease-out"
+        }`}
+      >
         {/* Header */}
         <div className="z-10 p-6 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
           <div className="flex justify-between items-center mb-4">
